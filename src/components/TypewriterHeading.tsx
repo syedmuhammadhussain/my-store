@@ -7,7 +7,7 @@ interface Props {
   words: string[];
 }
 
-export function TypewriterHeading({ words }: Props) {
+export default function TypewriterHeading({ words }: Props) {
   const [text] = useTypewriter({
     words,
     loop: true, // infinite loop
