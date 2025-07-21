@@ -125,6 +125,7 @@
 .button--blue3d {
   @apply relative inline-flex items-center justify-center select-none font-bold;
 }
+
 .button--blue3d::before {
   content: "";
   position: absolute;
@@ -133,6 +134,7 @@
   border: 4px solid #E5E7EB; /* the light grey ring */
   z-index: 0;
 }
+
 .button--blue3d > * {
   position: relative;
   z-index: 10;
