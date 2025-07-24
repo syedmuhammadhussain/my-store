@@ -1,13 +1,22 @@
 // src/app/page.tsx
-import { Header } from '@/components/Header';
-import { HeroSection } from '@/components/HeroSection';
+import { HeroCarousel } from "@/components/HeroCarousel";
+import ProductCard from "@/components/ProductCard";
+import ProductSlider from "@/components/ProductSlider";
+import { slides } from "@/store/data";
+// import HeroSection from "@/components/home/HeroSection";
 
 export default function Home() {
   return (
     <>
-      <Header />
       <main>
-        <HeroSection />
+        {/* <HeroSection /> */}
+        <HeroCarousel />
+        <div className="h-5"></div>
+        <ProductSlider>
+          {slides.map((prod) => (
+            <ProductCard key={prod.id} {...prod} />
+          ))}
+        </ProductSlider>
         {/* …other sections */}
       </main>
     </>

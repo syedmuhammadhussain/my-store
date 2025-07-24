@@ -1,36 +1,19 @@
-"use client";
+import { AnnouncementBar } from "./AnnouncementBar";
+import MainNav from "./MainNav";
+import MobileNav from "./MobileNav";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+export default function Header() {
+  const promos = [
+    "🎉 50% off all plans – today only!",
+    "🚚 Free shipping on orders over $50",
+    "⭐️ New feature: 1-on-1 coaching now available",
+  ];
 
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Care Plans", href: "/care-plans" },
-  { label: "Learn", href: "/learn" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
-
-export function Header() {
   return (
-    <header className="flex items-center justify-between py-6 px-8 bg-transparent">
-      <Link href="/">
-        <img src="/logo.svg" alt="Nietzsche" className="h-8 w-auto" />
-      </Link>
-      <nav className="flex space-x-8">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="text-gray-700 hover:text-gray-900 font-medium"
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-      <Button size="lg">
-        <Link href="/signup">Start Now</Link>
-      </Button>
-    </header>
+    <>
+      <AnnouncementBar messages={promos} />
+      <MainNav />
+      <MobileNav />
+    </>
   );
 }

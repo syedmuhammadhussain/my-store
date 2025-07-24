@@ -1,0 +1,14 @@
+.quickBuyBtn:hover span {
+    width: auto;
+    opacity: 100;
+    margin-left: 10px;
+    /* transform: scaleY(0); */
+}
+.product-grid-item__info-separator {
+  vertical-align: middle;
+  width: 20px;
+  height: 1px;
+  margin: 0 8px;
+  background: #000000;
+  border-radius: 4px;
+}
