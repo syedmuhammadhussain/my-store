@@ -1,5 +1,4 @@
 // src/app/(public)/layout.tsx
-import Header from "@/components/Header";
 import "./../globals.css";
 
 export const metadata = {
@@ -12,9 +11,5 @@ export default function PublicLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className="antialiased">{children}</body>
-    </html>
-  );
+  return <>{children}</>;
 }

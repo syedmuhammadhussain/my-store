@@ -1,62 +1,53 @@
-// app/categories/[slug]/page.tsx
-import ProductCard from "@/components/ProductCard";
-import FilterSidebar from "@/components/product-listing/FilterSidebar";
-import { products } from "@/store/data"; // stub data
+import CategoryButton from "@/components/products/CategoryButton";
+import FilterSidebar from "@/components/products/FilterSidebar";
+import { SortingDropdown } from "@/components/products/SortingDropdown";
+import { ProductAttributes } from "@/types/product";
+import ProductGridSSR from "@/components/products/ProductGridSSR";
+import StrapiService from "@/lib/strapi.service";
+import { notFound } from "next/navigation";
+import { SubCategoryAttributes } from "@/types/category";
 
-export const dynamic = "force-dynamic"; // SSR
+type sCParams = Promise<{ slug: string }>;
 
-// interface Product {
-//   id: number;
-//   slug: string;
-//   name: string;
-//   rating?: number;
-//   images: { formats?: { small?: { url: string } } }[];
-//   variants: {
-//     price: string;
-//     compareAtPrice?: string;
-//     discount?: string;
-//   }[];
-// }
+export const dynamic = "force-static";
+export const revalidate = 300; // 5 minutes
 
-export default async function SubCategoryPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  // TODO: replace this with your Strapi fetch logic
-  const subCategories = ["T-Shirts", "Hoodies", "Denim", "Accessories"];
+export async function generateStaticParams() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/categories`, {
+    cache: "force-cache",
+  });
+  const json = await res.json();
+  return json.data.map((cat: SubCategoryAttributes) => ({
+    slug: cat.slug,
+  }));
+}
+
+export default async function CategoryPage({ params }: { params: sCParams }) {
+  const { slug } = await params;
+  const json = await StrapiService.getProductsBySubCategory(slug);
+  if (!json.data.length) return notFound();
+  const products = json.data as unknown as ProductAttributes[];
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-50 min-h-screen">
-      <FilterSidebar subCategories={subCategories} />
+    <div className="py-1 px-1 md:py-3 md:px-15">
+      <CategoryButton
+        subCategories={["T-Shirts", "Hoodies", "Denim", "Accessories"]}
+        name={slug.replace("-", " ").toUpperCase()}
+      />
 
-      <main className="flex-1 p-4">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold">
-            {params.slug.replace("-", " ").toUpperCase()}
-          </h1>
-          <p className="text-sm text-gray-600">
-            Showing {products.length} products
-          </p>
-        </div>
+      <div className="flex flex-col md:flex-row min-h-screen">
+        <FilterSidebar initialCount={products.length} category={slug} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((p) => (
-            <ProductCard
-              key={p.id}
-              id={p.id}
-              src={p.images[0]?.formats?.small?.url || ""}
-              secSrc={p.images[1]?.formats?.small?.url || ""}
-              title={p.name}
-              price={p.variants[0]?.price || ""}
-              href={p.slug}
-              rating={3}
-              // oldPrice={p.variants[0]?.compareAtPrice}
-              // discount={p.variants[0]?.discount}
-            />
-          ))}
-        </div>
-      </main>
+        <main className="flex-1 p-0 md:p-4">
+          <div className="mb-3 md:mb-6 flex items-center justify-between">
+            <SortingDropdown />
+            <p className="text-sm text-gray-600 mr-2">
+              {products.length} products
+            </p>
+          </div>
+          <ProductGridSSR products={products} />
+        </main>
+      </div>
     </div>
   );
 }

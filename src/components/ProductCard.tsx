@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { Rating } from "./Rating";
+
 import "../styles/Card.css";
 
-interface Slide {
+interface Props {
   id: number | string;
   src?: string;
   secSrc?: string;
@@ -13,38 +14,30 @@ interface Slide {
   rating?: number;
   oldPrice?: string;
   discount?: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | undefined;
 }
 
 export default function ProductCard({
-  id,
   src,
   secSrc,
   title,
   price,
-  rating,
   oldPrice,
   discount,
-}: Slide) {
+  rating,
+}: Props) {
   return (
-    <div key={id} className="group flex-shrink-0 w-full px-1">
+    <div className="group flex-shrink-0 w-full px-1">
       <div className="relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-xs">
-        {/* 1️⃣ Primary image stays static */}
         <Image
-          src={`${process.env.STRAPI_BASE_URL}${src}` || ""}
+          src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${src}`}
           alt={title}
           fill
           className="object-cover"
           sizes="(min-width: 768px) 100vw"
         />
-
-        {/* 
-          2️⃣ Secondary image overlaid off‑screen to the right.
-             On hover, translate it left into view.
-             We also fade it in from 0 → 100% opacity.
-        */}
         <Image
-          src={`${process.env.STRAPI_BASE_URL}${secSrc}` || ""}
+          src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${secSrc}`}
           alt={title}
           fill
           sizes="(min-width: 768px) 100vw"
@@ -60,8 +53,6 @@ export default function ProductCard({
             group-hover:opacity-100
           "
         />
-
-        {/* 3️⃣ Quick‑Buy button slides up on hover */}
         <button
           aria-label="Quick Buy"
           className="hidden md:flex quickBuyBtn cursor-pointer absolute bottom-5 right-5 items-center justify-center bg-white text-gray-900 rounded-sm w-10 h-10 overflow-hidden opacity-0 translate-y-4 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0 hover:w-32 hover:px-3"
@@ -72,27 +63,30 @@ export default function ProductCard({
           </span>
         </button>
       </div>
-
       <div className="mt-2">
         <div className="md:flex flex-wrap space-x-2 items-center">
           <h3 className="text-base font-bold text-gray-900">{title}</h3>
           <div className="product-grid-item__info-separator hidden md:inline-block"></div>
           &nbsp;
           <div className="flex items-baseline justify-between space-x-2">
-            <span>{price}</span>
+            <span>Rs.{price}</span>
             {discount && (
               <span className="hidden md:block text-gray-400 line-through">
-                {oldPrice}
+                Rs.{oldPrice}
               </span>
             )}
           </div>
         </div>
         {discount && (
-          <div className="hidden md:block mb-2">
+          <div className="hidden md:block">
             <span className="text-sm text-red-600">{discount}</span>
           </div>
         )}
-        {rating && <Rating rating={rating} size="w-3 h-3" />}
+        {rating && (
+          <div className="mt-2">
+            <Rating rating={rating} size="w-3 h-3" />
+          </div>
+        )}
       </div>
     </div>
   );

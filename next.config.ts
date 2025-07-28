@@ -1,18 +1,20 @@
 // next.config.js
 const nextConfig = {
+  env: {
+    NEXT_PUBLIC_STRAPI_BASE_URL: process.env.NEXT_PUBLIC_STRAPI_BASE_URL,
+  },
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '1337',
-        pathname: '/uploads/**',
+        protocol: "http",
+        hostname: "localhost",
+        port: "1337",
+        pathname: "/uploads/**",
       },
-      // If you have production/staging domains, add them too:
       {
-        protocol: 'https',
-        hostname: 'your-production-domain.com',
-        pathname: '/uploads/**',
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/uploads/**",
       },
     ],
   },
