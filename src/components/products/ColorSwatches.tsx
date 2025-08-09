@@ -6,6 +6,7 @@ export default function ColorSwatches({
   swatchVariants,
   selectedId,
   onSelect,
+  variants,
 }: {
   productSlug: string;
   swatchVariants: {
@@ -14,6 +15,12 @@ export default function ColorSwatches({
   }[];
   selectedId: string;
   onSelect: (id: string) => void;
+  variants: {
+    documentId: string;
+    size: string;
+    colorId: number;
+    inventory?: { quantity?: number } | null;
+  }[];
 }) {
   return (
     <>
@@ -22,7 +29,11 @@ export default function ColorSwatches({
           <small className="uppercase text-sm">Other Colors</small>
           <div className="flex gap-2 mt-1 mb-4">
             {swatchVariants.map(({ variant: v, swatchUrl }) => {
-              const isActive = v.documentId === selectedId;
+              const isActive =
+                // v.documentId === selectedId ||
+                variants.find((vs) => vs.documentId === selectedId);
+              console.log("ColorSwatches isActive", isActive);
+              // const isActive = v.documentId === selectedId;
               return (
                 <button
                   key={v.colorId}
@@ -33,7 +44,7 @@ export default function ColorSwatches({
                       ? "border-black"
                       : "border-gray-300 hover:border-black"
                   } `}
-                  aria-pressed={isActive}
+                  aria-pressed={Boolean(isActive)}
                   title={v.colorName}
                 >
                   {swatchUrl ? (
@@ -43,6 +54,7 @@ export default function ColorSwatches({
                       height={20}
                       alt={v.colorName}
                       className="object-cover"
+                      sizes="(max-width: 640px) 30px, 30px"
                     />
                   ) : (
                     <span

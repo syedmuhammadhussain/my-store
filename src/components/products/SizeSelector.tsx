@@ -18,6 +18,8 @@ export default function SizeSelector({
 }) {
   // const [selectedSize, setSelectedSize] = useState(variants[0].size);
 
+  console.log("SizeSelector variants", variants);
+
   return (
     <>
       <small className="uppercase text-sm">Size</small>

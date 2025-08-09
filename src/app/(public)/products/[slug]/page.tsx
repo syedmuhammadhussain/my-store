@@ -1,5 +1,5 @@
 // app/products/[slug]/page.tsx
-export const dynamic = "force-static";
+// export const dynamic = "force-static";
 export const revalidate = 300;
 
 import { notFound } from "next/navigation";
@@ -27,7 +27,7 @@ export default async function ProductPage({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = params;
+  const { slug } = await params;
   const res = await StrapiService.getProductBySlug(slug);
   if (!res.data?.length) return notFound();
 
@@ -81,6 +81,8 @@ export default async function ProductPage({
 
     return { variant: candidate, swatchUrl };
   });
+
+  console.log("SwatchVariants *******: ", swatchVariants)
 
   return (
     <ProductClient

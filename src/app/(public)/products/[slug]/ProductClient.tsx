@@ -107,6 +107,7 @@ export default function ProductClient({
             productSlug={product.slug}
             swatchVariants={swatchVariants}
             selectedId={selectedId}
+            variants={sizesForColor}
             onSelect={(id) => setVariantAndSyncUrl(id)}
           />
 

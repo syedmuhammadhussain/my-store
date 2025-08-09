@@ -139,3 +139,74 @@
   position: relative;
   z-index: 10;
 }
+
+/* --- Lightbox UI tweaks for white background --- */
+
+/* dark icon color (tweak if you want slightly lighter/darker) */
+:root {
+  --yarl-icon-color: #111827; /* tailwind gray-900 */
+}
+
+/* Ensure container is white (defensive) */
+.yarl__container,
+.yarl__root {
+  background-color: #ffffff !important;
+}
+
+/* Remove box shadows from common containers */
+.yarl__inner,
+.yarl__slide,
+.yarl__modal,
+.yarl__toolbar,
+.yarl__buttons,
+.yarl__root {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+/* Make toolbar background transparent (no card feeling) */
+.yarl__toolbar {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Icon color: apply to toolbar buttons, arrows, close button, etc. */
+.yarl__button,
+.yarl__toolbar button,
+.yarl__close,
+.yarl__prev,
+.yarl__next,
+.yarl__toolbar_button {
+  color: var(--yarl-icon-color) !important;
+  background: transparent !important;
+}
+
+/* Ensure SVGs inherit the current color (fill & stroke) */
+.yarl__button svg,
+.yarl__toolbar button svg,
+.yarl__close svg,
+.yarl__prev svg,
+.yarl__next svg {
+  fill: currentColor !important;
+  /* stroke: currentColor !important; */
+  color: var(--yarl-icon-color) !important;
+}
+
+/* If the slide image wrapper has a subtle shadow, remove it */
+.yarl__slide_image,
+.yarl__slide_content {
+  box-shadow: none !important;
+  background-color: #ffffff !important; /* keep image background white behind PNGs */
+}
+
+/* If the library renders any tinted overlay, make it fully white and not dim icons */
+.yarl__backdrop,
+.yarl__overlay {
+  background: rgba(255,255,255,1) !important;
+}
+
+/* Optional: slightly larger, bolder icons for visibility on mobile */
+.yarl__button svg {
+  width: 22px !important;
+  height: 22px !important;
+}
