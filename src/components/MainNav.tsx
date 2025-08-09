@@ -14,7 +14,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { navItems } from "@/store/data";
-import { cn } from "@/lib/utils"; // Make sure you have this utility
+import { cn } from "@/lib/utils";
 
 export default function MainNav() {
   return (
@@ -29,33 +29,38 @@ export default function MainNav() {
             className="mx-auto"
           />
         </Link>
+
         <nav className="flex md:space-x-4 lg:space-x-8">
           <NavigationMenu viewport={false}>
             <NavigationMenuList>
               {navItems.map((item) => (
-                <NavigationMenuItem key={item.href}>
+                <NavigationMenuItem key={item.href || item.label}>
                   {item.children ? (
                     <>
-                      <NavigationMenuTrigger className="[&>svg]:hidden group">
-                        <Link href={item.href} legacyBehavior passHref>
-                          <NavigationMenuLink
-                            className={cn(
-                              navigationMenuTriggerStyle(),
-                              "bg-transparent hover:bg-transparent"
-                            )}
+                      <NavigationMenuTrigger
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "relative flex items-center justify-between bg-transparent hover:bg-transparent group"
+                        )}
+                      >
+                        <span className="flex items-center space-x-2">
+                          <Link
+                            href={item.href}
+                            className="block w-full font-normal"
                           >
                             {item.label}
-                          </NavigationMenuLink>
-                        </Link>
+                          </Link>
+                        </span>
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <ul className="grid w-[200px] gap-4 p-4">
+
+                      <NavigationMenuContent className="p-0">
+                        <ul className="grid">
                           {item.children.map((child) => (
                             <li key={child.href}>
                               <NavigationMenuLink asChild>
                                 <Link
                                   href={child.href}
-                                  className="hover:text-primary"
+                                  className="hover:text-primary text-nowrap block w-full px-4 py-2 text-sm font-normal text-gray-700 hover:bg-gray-100"
                                 >
                                   {child.label}
                                 </Link>
@@ -66,13 +71,14 @@ export default function MainNav() {
                       </NavigationMenuContent>
                     </>
                   ) : (
-                    <NavigationMenuLink
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "bg-transparent hover:bg-transparent [&>svg]:hidden"
-                      )}
-                    >
-                      <Link href={item.href} passHref>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          "bg-transparent hover:bg-transparent font-normal"
+                        )}
+                      >
                         {item.label}
                       </Link>
                     </NavigationMenuLink>
@@ -83,7 +89,8 @@ export default function MainNav() {
           </NavigationMenu>
         </nav>
       </div>
-      <div>
+
+      <div className="flex items-center gap-2">
         <Button variant="outline" size="icon" className="relative border-0">
           <Search />
         </Button>
