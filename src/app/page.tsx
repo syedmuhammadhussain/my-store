@@ -14,7 +14,7 @@ export default function Home() {
         <div className="h-5"></div>
         <ProductSlider>
           {slides.map((prod) => (
-            <ProductCard key={prod.id} {...prod} />
+            <ProductCard key={prod.id} {...prod} hardCoded />
           ))}
         </ProductSlider>
         {/* …other sections */}
