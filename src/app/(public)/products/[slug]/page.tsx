@@ -1,222 +1,94 @@
-import StrapiService from "@/lib/strapi.service";
-import { ProductAttributes } from "@/types/product";
-import { ProductVariant } from "@/types/variant";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-
-import { ShieldCheck, Handshake, LockKeyhole } from "lucide-react";
-import { sizes, sizeToValue } from "@/lib/utils";
-import QuantityDropdown from "@/components/products/QuantityDropdown";
-import SizeChart from "@/components/products/SizeChart";
-
-type pParams = Promise<{ slug: string }>;
-type pSearchParams = Promise<{ sku: string | undefined }>;
-
-export const dynamic = "auto";
+// app/products/[slug]/page.tsx
+export const dynamic = "force-static";
 export const revalidate = 300;
+
+import { notFound } from "next/navigation";
+import StrapiService from "@/lib/strapi.service";
+import ProductClient from "./ProductClient";
+import { ProductAttributes } from "@/types/product";
+import { ProductColors } from "@/types/product_colors";
+import { ProductVariant } from "@/types/variant";
+import { sizeToValue } from "@/lib/utils";
+
+type CombinedVariant = ProductVariant & {
+  colorId: number;
+  colorName: string;
+  documentId: string; // ensure this exists on your type or extend it
+  inventory: { quantity?: number } | null | undefined;
+};
+
+export async function generateStaticParams() {
+  const res = await StrapiService.getAllProductSlugs();
+  return res.data.map(({ slug }) => ({ slug }));
+}
 
 export default async function ProductPage({
   params,
-  searchParams,
 }: {
-  params: pParams;
-  searchParams: pSearchParams;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
-  const { sku } = await searchParams;
+  const { slug } = params;
+  const res = await StrapiService.getProductBySlug(slug);
+  if (!res.data?.length) return notFound();
 
-  // Fetch product data
-  const productData = await StrapiService.getProductBySlug(slug);
-  if (!productData.data.length) return notFound();
+  const product = res.data[0] as ProductAttributes;
 
-  const [product] = productData.data as unknown as ProductAttributes[];
-  const variants = product.variants as ProductVariant[];
+  // Flatten and enrich with color info
+  const allVariants: CombinedVariant[] = product.product_colors.flatMap((pc) =>
+    pc.variants.map((v) => ({
+      ...v,
+      colorId: pc.color.id,
+      colorName: pc.color.name,
+      // ensure inventory shape
+      inventory: v.inventory ?? { quantity: 0 },
+    }))
+  );
+  if (!allVariants.length) return notFound();
 
-  const sortedVariants = [...variants].sort((a, b) => {
-    const diff = sizes.indexOf(a.size) - sizes.indexOf(b.size);
-    if (diff !== 0) return diff;
-    return a.color.name.localeCompare(b.color.name);
-  });
-  const defaultVariant = sortedVariants[0];
-  const selectedVariant = sku
-    ? variants.find((v) => v.sku === sku) || defaultVariant
-    : defaultVariant;
-
-  const variantsWithHref = variants.map((v) => ({
-    ...v,
-    href: `/products/${slug}?sku=${v.sku}`,
-  }));
-
-  const variantsByColor = variantsWithHref.reduce((acc, variant) => {
-    const colorId = variant.color.id;
-
-    if (!acc.has(colorId)) {
-      acc.set(colorId, []);
-    }
-    acc.get(colorId).push(variant);
-
-    return acc;
-  }, new Map());
-
-  const uniqueVariants = Array.from(variantsByColor.values()).map(
-    (variants) => {
-      return variants.reduce(
-        (smallest: { size: string }, current: { size: string }) =>
-          sizeToValue(current.size) < sizeToValue(smallest.size)
-            ? current
-            : smallest
-      );
-    }
+  // Map by documentId for O(1) lookup
+  const variantMapById: Record<string, CombinedVariant> = Object.fromEntries(
+    allVariants.map((v) => [v.documentId, v])
   );
 
+  // Images keyed by color id
+  const imagesByColor: Record<number, ProductColors["images"]> = {};
+  product.product_colors.forEach((pc) => {
+    imagesByColor[pc.color.id] = pc.images;
+  });
+
+  // Default variant = smallest size among all
+  const defaultVariantId =
+    allVariants
+      .slice()
+      .sort((a, b) => sizeToValue(a.size) - sizeToValue(b.size))[0]
+      ?.documentId ?? allVariants[0].documentId;
+
+  // Swatch reps: smallest size per color
+  const swatchVariants = product.product_colors.map((pc) => {
+    const swatchUrl =
+      pc.swatch_image?.formats?.thumbnail?.url ?? pc.swatch_image?.url ?? null;
+
+    const candidate = pc.variants
+      .map((v) => ({
+        ...v,
+        colorId: pc.color.id,
+        colorName: pc.color.name,
+        inventory: v.inventory ?? { quantity: 0 },
+      }))
+      .reduce((prev, cur) =>
+        sizeToValue(cur.size) < sizeToValue(prev.size) ? cur : prev
+      );
+
+    return { variant: candidate, swatchUrl };
+  });
+
   return (
-    <div className="py-1 px-1 md:py-3 md:px-15">
-      <div className="mx-auto grid md:grid-cols-2 gap-8">
-        {/* <code>{JSON.stringify(uniqueVariants)}</code> */}
-        {/* Two main images side-by-side */}
-        <div className="grid grid-cols-2 gap-4">
-          {selectedVariant.images.slice(0, 2).map((img) => {
-            const formats = img.formats || {};
-            const priority = [
-              "large",
-              "original",
-              "medium",
-              "small",
-              "thumbnail",
-            ];
-            const key =
-              priority.find((k) => formats[k]) || Object.keys(formats)[0];
-            const url = formats[key!]?.url;
-            return (
-              <div
-                key={img.id}
-                className="relative w-full aspect-[4/5] rounded-lg overflow-hidden"
-              >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${url}`}
-                  alt={product.name}
-                  fill
-                  className="object-contain rounded-lg"
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Info panel */}
-        <div className="px-4">
-          <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
-          <p className="text-md mb-4">Rs.{selectedVariant.price.toFixed(2)}</p>
-
-          {/* Color Swatches */}
-          <small className="uppercase">Other Colors</small>
-          <div className="flex gap-2 mb-4 mt-1">
-            {uniqueVariants.map((v) => (
-              <Link
-                key={v.color.id}
-                href={v.href}
-                className={`block border rounded border-2 p-1 ${
-                  v.sku === selectedVariant.sku
-                    ? "border-black"
-                    : "border-gray-300"
-                } hover:border-black`}
-              >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${v.images[0]?.formats.thumbnail?.url}`}
-                  width={24}
-                  height={24}
-                  alt={v.color.name}
-                  className="object-cover"
-                />
-              </Link>
-            ))}
-          </div>
-
-          {/* Size Buttons */}
-          <small className="uppercase">Size</small>
-          <div className="flex gap-2 mb-6 mt-1">
-            {sizes.map((size) => {
-              const variantForSize = variantsWithHref.find(
-                (v) =>
-                  v.size === size && v.color.id === selectedVariant.color.id
-              );
-              if (!variantForSize) return null;
-              return (
-                <Link
-                  key={size}
-                  href={variantForSize.href}
-                  className={`px-3 py-1 w-20 h-10 text-center flex flex-wrap items-center justify-center border rounded transition-colors ${
-                    variantForSize.sku === selectedVariant.sku
-                      ? "bg-black text-white"
-                      : "border-gray-300 hover:bg-gray-100"
-                  }`}
-                >
-                  {size}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Quantity & Actions */}
-          <QuantityDropdown />
-
-          <div className="flex items-center gap-4 mb-2 mt-6">
-            <Button className="bg-black text-white w-full rounded-sm">
-              {/* <Loader2 className="animate-spin h-4 w-4" />  */}
-              Add to Cart
-            </Button>
-            <Button variant="outline" className="w-full rounded-sm">
-              Buy It Now
-            </Button>
-          </div>
-
-          {/* Size Chart Dialog */}
-          <Dialog>
-            <DialogTitle></DialogTitle>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="text-xs mb-8 p-0 bg-white border-0 hover:bg-white hover:underline"
-              >
-                <span className="uppercase">Size Chart</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <SizeChart />
-              {/* <h2 className="text-xl font-semibold mb-4">Size Guide</h2>
-              <p>Here goes the size chart details...</p> */}
-            </DialogContent>
-          </Dialog>
-
-          <p className="flex items-center gap-2 text-md text-black-100 mb-4 font-semibold">
-            <ShieldCheck size="25" strokeWidth="1" />
-            <span>Exceptional Customer Service</span>
-          </p>
-          <p className="flex items-center gap-2 text-md text-black-100 mb-4 font-semibold">
-            <Handshake size="25" strokeWidth="1" />
-            <span>Easy Exchange</span>
-          </p>
-          <p className="flex items-center gap-2 text-md text-black-100 mb-4 font-semibold">
-            <LockKeyhole size="25" strokeWidth="1" />
-            <span>Secure Payment</span>
-          </p>
-
-          {/* Description */}
-          <div
-            className="prose mt-4"
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          />
-        </div>
-      </div>
-    </div>
+    <ProductClient
+      product={product}
+      variantMapById={variantMapById}
+      defaultVariantId={defaultVariantId}
+      swatchVariants={swatchVariants}
+      imagesByColor={imagesByColor}
+    />
   );
 }
