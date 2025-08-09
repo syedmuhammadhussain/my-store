@@ -1,4 +1,6 @@
-export interface SubCategory {
+import { CategoryAttributes } from "./category";
+
+export interface SubCategoryAttributes {
   id: number;
   documentId: string;
   name: string;
@@ -7,4 +9,5 @@ export interface SubCategory {
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
+  category?: CategoryAttributes;
 }

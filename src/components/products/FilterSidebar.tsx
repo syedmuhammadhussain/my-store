@@ -22,7 +22,7 @@ export default function FilterSidebar({
   const [filters, setFilters] = useState({
     inStock: false,
     outOfStock: false,
-    price: [0, 900],
+    price: [0, 30000],
     sizes: [] as string[],
   });
   const [isPending, startTransition] = useTransition();
@@ -54,6 +54,32 @@ export default function FilterSidebar({
           ${open ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:static md:block`}
       >
+        {filters.inStock || filters.outOfStock || filters.sizes.length ? (
+          <div className="mb-4">
+            <h3 className="font-medium mb-2">Applied Filters</h3>
+            <div className="flex flex-wrap gap-2">
+              {filters.inStock && (
+                <span className="px-2 py-1 bg-green-100 text-green-800 rounded">
+                  In Stock
+                </span>
+              )}
+              {filters.outOfStock && (
+                <span className="px-2 py-1 bg-red-100 text-red-800 rounded">
+                  Out of Stock
+                </span>
+              )}
+              {filters.sizes.map((sz) => (
+                <span
+                  key={sz}
+                  className="px-2 py-1 bg-blue-100 text-blue-800 rounded"
+                >
+                  {sz}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         {/* Header mobile */}
         <div className="flex items-center justify-between md:hidden mb-6">
           <h2 className="text-lg font-semibold">Filters</h2>
@@ -67,19 +93,25 @@ export default function FilterSidebar({
           <h3 className="font-medium mb-2">Availability</h3>
           <label className="flex items-center space-x-2">
             <input
-              type="checkbox"
+              type="radio"
+              name="stock"
               checked={filters.inStock}
-              onChange={() => updateFilters({ inStock: !filters.inStock })}
+              onChange={() =>
+                updateFilters({ inStock: true, outOfStock: false })
+              }
+              className="h-4 w-4 text-black border-gray-300 rounded"
             />
             <span>In Stock</span>
           </label>
           <label className="flex items-center space-x-2 mt-2">
             <input
-              type="checkbox"
+              type="radio"
+              name="stock"
               checked={filters.outOfStock}
               onChange={() =>
-                updateFilters({ outOfStock: !filters.outOfStock })
+                updateFilters({ inStock: false, outOfStock: true })
               }
+              className="h-4 w-4 text-black border-gray-300 rounded"
             />
             <span>Out of Stock</span>
           </label>
@@ -112,7 +144,7 @@ export default function FilterSidebar({
               <input
                 type="number"
                 value={filters.price[1]}
-                max={900}
+                max={30000}
                 onChange={(e) =>
                   updateFilters({ price: [filters.price[0], +e.target.value] })
                 }
@@ -124,7 +156,7 @@ export default function FilterSidebar({
           <input
             type="range"
             min={0}
-            max={900}
+            max={30000}
             value={filters.price[0]}
             onChange={(e) =>
               updateFilters({ price: [+e.target.value, filters.price[1]] })
