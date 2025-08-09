@@ -1,6 +1,6 @@
 const SizeChart = () => {
   return (
-    <div className="overflow-hidden p-6">
+    <div className="p-2">
 
       {/* Shirt Size Chart */}
       <div className="mb-8">

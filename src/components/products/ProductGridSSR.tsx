@@ -12,7 +12,7 @@ export default function ProductGridSSR({
         <ProductCard
           key={p.id}
           id={p.id}
-          src={p.images && p.images[0]?.formats?.small?.url}
+          src={p.gallery && p.gallery[0]?.formats?.small?.url}
           secSrc={p.images && p.images[0]?.formats?.small?.url}
           title={p.name}
           price={(p.variants && p.variants[0]?.price) || "1000"}

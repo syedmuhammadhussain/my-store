@@ -9,24 +9,60 @@ export default function ProductGridClient({
   category,
 }: {
   category: string;
-  filters: { price: number[] };
+  filters: {
+    price: number[];
+    sizes: string[];
+    inStock: boolean;
+    outOfStock: boolean;
+  };
 }) {
   const [items, setItems] = useState<ProductAttributes[]>([]);
 
   useEffect(() => {
+    debugger;
+    if (
+      !filters.inStock &&
+      !filters.outOfStock &&
+      !filters.sizes.length &&
+      filters.price[0] === 0 &&
+      filters.price[1] === 30000
+    ) {
+      return;
+    }
+
+    // Build your variant‐level filters
+    const variantFilters: Record<string, unknown> = {
+      price: { $gte: filters.price[0], $lte: filters.price[1] },
+    };
+
+    // Only one size at a time
+    if (filters.sizes.length) {
+      variantFilters.size = { $eq: filters.sizes[0] };
+    }
+
+    // In Stock / Out of Stock
+    if (filters.inStock) {
+      variantFilters.inventory = { inventory_status: { $eq: "In Stock" } };
+    } else if (filters.outOfStock) {
+      variantFilters.inventory = { inventory_status: { $eq: "Out of Stock" } };
+    }
+
     const q = qs.stringify(
       {
         filters: {
-          sub_category: { category: { slug: { $eq: category } } },
-          variants: {
-            price: { $gte: filters.price[0], $lte: filters.price[1] },
+          sub_category: {
+            category: { slug: { $eq: category } },
+          },
+          product_colors: {
+            variants: variantFilters
           },
         },
-        populate: ["images", "variants"],
+        populate: ["images", "product_colors.variants", "product_colors.variants.inventory"],
         pagination: { pageSize: 100 },
       },
       { encodeValuesOnly: true }
     );
+
     fetch(`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/products?${q}`)
       .then((r) => r.json())
       .then((j) => setItems(j.data));
