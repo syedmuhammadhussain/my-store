@@ -50,8 +50,8 @@ export const navItems = [
     label: "Women",
     href: "/category/women",
     children: [
-      { label: "Boxers", href: "/sub_category/boxers" },
-      { label: "Women T-Shirts", href: "/sub_category/men-t-shirts" },
+      { label: "Boxers", href: "/sub_category/boxers1" },
+      { label: "Women T-Shirts", href: "/sub_category/men-t-shirts1" },
     ],
   },
   { label: "Juniors", href: "/category/juniors" },

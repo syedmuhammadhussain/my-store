@@ -30,4 +30,14 @@ export interface UploadedImage {
   documentId: string;
   formats: ImageFormats;
   url: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  size: number; // in KB
+  sizeInBytes: number; // in bytes
+  ext: string; // e.g. ".webp"
+  mime: string; // e.g. "image/webp"
+  hash: string; // internal hash name
 }
