@@ -2,7 +2,7 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import type { UploadedImage } from "@/types/image";
 
 // Lightweight, dynamic product gallery + lightbox (lazy loads lightbox + plugins on demand)
@@ -26,9 +26,11 @@ export default function ProductGalleryClient({
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Components and plugins will be loaded dynamically on demand
+  // Components and plugins will be loaded dynamically on demand4
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [LightboxComp, setLightboxComp] = useState<any>(null);
   const [plugins, setPlugins] = useState<any[] | null>(null);
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   const [lightboxLoaded, setLightboxLoaded] = useState(false);
 
   const base = process.env.NEXT_PUBLIC_STRAPI_BASE_URL ?? "";
@@ -113,7 +115,9 @@ export default function ProductGalleryClient({
 
   // Helper to render Next Image safely (avoids Next warning about width/height changes)
   function RenderThumb({ img, idx }: { img: UploadedImage; idx: number }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const thumb = thumbFor(img) as any;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     const thumbUrl = thumb?.url ? `${base}${thumb.url}` : `${base}${img.url}`;
     const w = thumb?.width;
     const h = thumb?.height;
@@ -177,7 +181,7 @@ export default function ProductGalleryClient({
           open={open}
           index={currentIndex}
           close={() => setOpen(false)}
-          slides={slides as any}
+          slides={slides}
           plugins={plugins || []}
           styles={{
             container: { backgroundColor: "white" },

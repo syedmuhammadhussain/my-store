@@ -82,7 +82,7 @@ export default async function ProductPage({
     return { variant: candidate, swatchUrl };
   });
 
-  console.log("SwatchVariants *******: ", swatchVariants)
+  // console.log("SwatchVariants *******: ", swatchVariants)
 
   return (
     <ProductClient

@@ -32,7 +32,7 @@ export default function ColorSwatches({
               const isActive =
                 // v.documentId === selectedId ||
                 variants.find((vs) => vs.documentId === selectedId);
-              console.log("ColorSwatches isActive", isActive);
+              // console.log("ColorSwatches isActive", isActive);
               // const isActive = v.documentId === selectedId;
               return (
                 <button
