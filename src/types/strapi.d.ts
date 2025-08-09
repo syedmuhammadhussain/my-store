@@ -5,7 +5,7 @@ export interface StrapiEntity<T> {
 }
 
 export interface StrapiResponse<T> {
-  data: StrapiEntity<T> | StrapiEntity<T>[] | null;
+  data: T[];
   meta?: {
     pagination?: {
       page: number;

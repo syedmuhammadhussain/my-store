@@ -29,4 +29,5 @@ export interface UploadedImage {
   id: number;
   documentId: string;
   formats: ImageFormats;
+  url: string;
 }

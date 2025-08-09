@@ -1,8 +1,9 @@
 import { StrapiResponse } from "./common";
 import { Discount } from "./discount";
 import { UploadedImage } from "./image";
-import { SubCategory } from "./sub_category";
+import { SubCategoryAttributes } from "./sub_category";
 import { ProductVariant } from "./variant";
+import { ProductColors } from "./product_colors";
 
 export interface ProductAttributes {
   id: number;
@@ -19,9 +20,11 @@ export interface ProductAttributes {
   updatedAt: string;
   publishedAt?: string;
   images?: UploadedImage[];
+  gallery?: UploadedImage[];
   variants?: ProductVariant[];
-  sub_category?: SubCategory;
+  sub_category?: SubCategoryAttributes;
   discount?: Discount;
+  product_colors: ProductColors[];
 }
 
 export type SingleProductResponse = StrapiResponse<ProductAttributes>;

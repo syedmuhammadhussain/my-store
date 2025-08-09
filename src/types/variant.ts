@@ -1,6 +1,7 @@
 import { ColorVariant } from "./color";
 import { UploadedImage } from "./image";
 import { Inventory } from "./inventory";
+import { ProductColors } from "./product_colors";
 
 export interface ProductVariant {
   id: number;
@@ -15,4 +16,7 @@ export interface ProductVariant {
   inventory: Inventory;
   images: UploadedImage[];
   color: ColorVariant;
+  product_colors: ProductColors[];
+  colorId: number;
+  colorName: string;
 }

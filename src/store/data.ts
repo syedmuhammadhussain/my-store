@@ -38,10 +38,24 @@ export const heroData: Slide[] = [
 
 export const navItems = [
   { label: "Home", href: "/" },
-  { label: "Care Plans", href: "/care-plans" },
-  { label: "Learn", href: "/learn" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  {
+    label: "Men",
+    href: "/category/men",
+    children: [
+      { label: "Boxers", href: "/sub_category/boxers" },
+      { label: "Men T-Shirts", href: "/sub_category/men-t-shirts" },
+    ],
+  },
+  {
+    label: "Women",
+    href: "/category/women",
+    children: [
+      { label: "Boxers", href: "/sub_category/boxers" },
+      { label: "Women T-Shirts", href: "/sub_category/men-t-shirts" },
+    ],
+  },
+  { label: "Juniors", href: "/category/juniors" },
+  { label: "New Arrivals", href: "/categry/new-arrivals" },
 ];
 
 export const slides = [
