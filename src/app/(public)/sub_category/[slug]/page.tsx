@@ -1,10 +1,11 @@
 import CategoryButton from "@/components/products/CategoryButton";
 import FilterSidebar from "@/components/products/FilterSidebar";
-// import { SortingDropdown } from "@/components/products/SortingDropdown";
+import SortingDropdown from "@/components/products/SortingDropdown";
 import { ProductAttributes } from "@/types/product";
 import ProductGridSSR from "@/components/products/ProductGridSSR";
 import StrapiService from "@/lib/strapi.service";
 import { notFound } from "next/navigation";
+import ClientGridBridge from "@/components/products/ClientGridBridge";
 import { SubCategoryAttributes } from "@/types/category";
 
 type sCParams = Promise<{ slug: string }>;
@@ -14,7 +15,7 @@ export const revalidate = 300; // 5 minutes
 
 export async function generateStaticParams() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/categories`,
+    `${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/sub-categories`,
     {
       cache: "force-cache",
     }
@@ -33,7 +34,8 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
     jsonSubCategoriesSlug.data[0]?.category?.slug || ""
   );
 
-  const subcategories = jsonSubCategories.data as unknown as SubCategoryAttributes[];
+  const subcategories =
+    jsonSubCategories.data as unknown as SubCategoryAttributes[];
 
   if (!json.data.length) return notFound();
   const products = json.data as unknown as ProductAttributes[];
@@ -47,16 +49,26 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
       />
 
       <div className="flex flex-col md:flex-row min-h-screen">
+        {/* Left sidebar (client) */}
         <FilterSidebar initialCount={products.length} category={slug} />
 
+        {/* Main content */}
         <main className="flex-1 p-0 md:p-4">
           <div className="mb-3 md:mb-6 flex items-center justify-between">
-            {/* <SortingDropdown /> */}
+            <SortingDropdown />
             <p className="text-sm text-gray-600 mr-2">
               {products.length} products
             </p>
           </div>
-          <ProductGridSSR products={products} />
+
+          {/* Grid wrapper: SSR default + CSR overlay */}
+          <div id="grid-wrapper">
+            <div id="initial-grid">
+              <ProductGridSSR products={products} />
+            </div>
+            {/* Client bridge decides when to render client grid and hides SSR via CSS */}
+            <ClientGridBridge category={slug} page="subcategory" />
+          </div>
         </main>
       </div>
     </div>

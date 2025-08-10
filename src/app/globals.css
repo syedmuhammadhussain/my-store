@@ -210,3 +210,7 @@
   width: 22px !important;
   height: 22px !important;
 }
+
+#grid-wrapper:has(#csr-product-grid) #initial-grid {
+  display: none;
+}

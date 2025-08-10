@@ -3,16 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Menu as MenuIcon,
-  Plus,
-  Minus,
-  Home,
-  FileText,
-  BookOpen,
-  Info,
-  PhoneCall,
-} from "lucide-react";
+import { Menu as MenuIcon, Plus, Minus } from "lucide-react";
 import {
   Sheet,
   SheetTrigger,
@@ -22,30 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import UserProfileDropDown from "./UserProfileDropDown";
-
-const mobileMenu = [
-  { label: "Home", href: "/", Icon: Home },
-  {
-    label: "Care Plans",
-    href: "/care-plans",
-    Icon: FileText,
-    subItems: [
-      { label: "Plan A", href: "/care-plans/plan-a" },
-      { label: "Plan B", href: "/care-plans/plan-b" },
-    ],
-  },
-  {
-    label: "Learn",
-    href: "/learn",
-    Icon: BookOpen,
-    subItems: [
-      { label: "Article 1", href: "/learn/article-1" },
-      { label: "Article 2", href: "/learn/article-2" },
-    ],
-  },
-  { label: "About", href: "/about", Icon: Info },
-  { label: "Contact", href: "/contact", Icon: PhoneCall },
-];
+import { navItems } from "@/store/data";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -77,8 +45,8 @@ export default function MobileNav() {
           </SheetHeader>
 
           <nav className="mt-6 flex flex-col space-y-4">
-            {mobileMenu.map((item) => {
-              const hasSub = !!item.subItems;
+            {navItems.map((item) => {
+              const hasSub = !!item.children;
               const isOpen = openMenu === item.label;
 
               return (
@@ -90,7 +58,7 @@ export default function MobileNav() {
                     }
                   >
                     <div className="flex items-center space-x-2">
-                      <item.Icon className="h-4 w-4" />
+                      {/* <item.Icon className="h-4 w-4" /> */}
                       {hasSub ? (
                         <span className="text-md font-medium">
                           {item.label}
@@ -135,7 +103,7 @@ export default function MobileNav() {
                         }
                       `}
                     >
-                      {item.subItems!.map((sub) => (
+                      {item.children!.map((sub) => (
                         <Link
                           key={sub.href}
                           href={sub.href}

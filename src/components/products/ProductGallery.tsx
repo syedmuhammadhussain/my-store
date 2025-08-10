@@ -2,14 +2,7 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
-// import { Button } from "@/components/ui/button";
 import type { UploadedImage } from "@/types/image";
-
-// Lightweight, dynamic product gallery + lightbox (lazy loads lightbox + plugins on demand)
-// - Click any thumbnail to dynamically load yet-another-react-lightbox + plugins
-// - Uses high-res images inside the lightbox (zoom enabled)
-// - Keeps initial bundle small (lightbox code loaded only on first open)
-// - Accessibility & keyboard friendly
 
 /**
  * Props
@@ -43,7 +36,7 @@ export default function ProductGalleryClient({
         const best =
           fmt.original ?? fmt.large ?? fmt.medium ?? fmt.small ?? img;
         return {
-          src: `${base}${best.url}`,
+          src: best.url,
           width: best.width,
           height: best.height,
           alt: img.alternativeText || productName || img.name || "",
@@ -116,9 +109,9 @@ export default function ProductGalleryClient({
   // Helper to render Next Image safely (avoids Next warning about width/height changes)
   function RenderThumb({ img, idx }: { img: UploadedImage; idx: number }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const thumb = thumbFor(img) as any;
+    const thumb = thumbFor(img);
     /* eslint-enable @typescript-eslint/no-explicit-any */
-    const thumbUrl = thumb?.url ? `${base}${thumb.url}` : `${base}${img.url}`;
+    const thumbUrl = thumb?.url ? thumb.url : img.url;
     const w = thumb?.width;
     const h = thumb?.height;
 

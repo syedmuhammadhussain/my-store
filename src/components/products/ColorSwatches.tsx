@@ -8,7 +8,7 @@ export default function ColorSwatches({
   onSelect,
   variants,
 }: {
-  productSlug: string;
+  productSlug?: string;
   swatchVariants: {
     variant: { documentId: string; colorId: number; colorName: string };
     swatchUrl: string | null;
@@ -22,6 +22,11 @@ export default function ColorSwatches({
     inventory?: { quantity?: number } | null;
   }[];
 }) {
+  // Find currently selected variant (may be undefined during initial load)
+  const selectedVariant = variants.find((v) => v.documentId === selectedId);
+  const selectedColorId = selectedVariant?.colorId;
+  const selectedSize = selectedVariant?.size;
+
   return (
     <>
       {swatchVariants.length > 1 && (
@@ -29,33 +34,60 @@ export default function ColorSwatches({
           <small className="uppercase text-sm">Other Colors</small>
           <div className="flex gap-2 mt-1 mb-4">
             {swatchVariants.map(({ variant: v, swatchUrl }) => {
+              // active if this swatch's color matches the currently selected variant's color
               const isActive =
-                // v.documentId === selectedId ||
-                variants.find((vs) => vs.documentId === selectedId);
-              // console.log("ColorSwatches isActive", isActive);
-              // const isActive = v.documentId === selectedId;
+                selectedColorId !== undefined
+                  ? selectedColorId === v.colorId
+                  : v.documentId === selectedId; // fallback
+
+              // When clicking a swatch we try to keep the current size if a matching color+size exists.
+              const handleClick = () => {
+                // Try find same color + same size
+                const sameColorSameSize = variants.find(
+                  (vv) => vv.colorId === v.colorId && vv.size === selectedSize
+                );
+                if (sameColorSameSize) {
+                  onSelect(sameColorSameSize.documentId);
+                  return;
+                }
+
+                // Fallback: first variant with same color
+                const sameColorAny = variants.find(
+                  (vv) => vv.colorId === v.colorId
+                );
+                if (sameColorAny) {
+                  onSelect(sameColorAny.documentId);
+                  return;
+                }
+
+                // Final fallback: use the documentId provided by swatchVariants
+                onSelect(v.documentId);
+              };
+
               return (
                 <button
-                  key={v.colorId}
+                  key={v.documentId}
                   type="button"
-                  onClick={() => onSelect(v.documentId)}
-                  className={` cursor-pointer block rounded border-2 p-0.5 ${
+                  onClick={handleClick}
+                  className={`cursor-pointer block rounded border-2 p-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
                     isActive
                       ? "border-black"
                       : "border-gray-300 hover:border-black"
-                  } `}
+                  }`}
                   aria-pressed={Boolean(isActive)}
                   title={v.colorName}
                 >
                   {swatchUrl ? (
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${swatchUrl}`}
-                      width={30}
-                      height={20}
-                      alt={v.colorName}
-                      className="object-cover"
-                      sizes="(max-width: 640px) 30px, 30px"
-                    />
+                    <div className="relative w-8 h-10 rounded overflow-hidden">
+                      <Image
+                        src={swatchUrl}
+                        alt={v.colorName}
+                        fill
+                        className="object-cover"
+                        sizes="30px"
+                        priority={false}
+                      />
+                    </div>
                   ) : (
                     <span
                       className="inline-block w-6 h-6 rounded-full"

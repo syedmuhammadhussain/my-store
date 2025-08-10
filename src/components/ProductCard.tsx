@@ -63,14 +63,14 @@ export default function ProductCard({
           ) : (
             <>
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${src}`}
+                src={src || ""}
                 alt={title}
                 fill
                 className="object-cover"
                 sizes="(min-width: 768px) 100vw"
               />
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}${secSrc}`}
+                src={secSrc || ""}
                 alt={title}
                 fill
                 sizes="(min-width: 768px) 100vw"

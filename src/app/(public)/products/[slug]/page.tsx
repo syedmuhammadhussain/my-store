@@ -1,5 +1,3 @@
-// app/products/[slug]/page.tsx
-// export const dynamic = "force-static";
 export const revalidate = 300;
 
 import { notFound } from "next/navigation";
@@ -15,7 +13,7 @@ type CombinedVariant = ProductVariant & {
   colorName: string;
   documentId: string; // ensure this exists on your type or extend it
   inventory: { quantity?: number } | null | undefined;
-};
+}
 
 export async function generateStaticParams() {
   const res = await StrapiService.getAllProductSlugs();
@@ -26,6 +24,7 @@ export default async function ProductPage({
   params,
 }: {
   params: { slug: string };
+  searchParams: string;
 }) {
   const { slug } = await params;
   const res = await StrapiService.getProductBySlug(slug);
@@ -81,8 +80,6 @@ export default async function ProductPage({
 
     return { variant: candidate, swatchUrl };
   });
-
-  // console.log("SwatchVariants *******: ", swatchVariants)
 
   return (
     <ProductClient

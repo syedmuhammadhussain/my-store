@@ -1,9 +1,8 @@
-// src/components/products/SortingDropdown.tsx
+// components/products/SortingDropdown.tsx
 "use client";
 
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-// import qs from "qs";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +11,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { usePathname } from "next/navigation";
 import { MoveDown } from "lucide-react";
 
 const SORT_OPTIONS = [
@@ -26,19 +24,23 @@ const SORT_OPTIONS = [
   { label: "Date, new → old", value: "createdAt:desc" },
 ];
 
-export function SortingDropdown() {
-  const [position] = useState("Featured");
+export default function SortingDropdown() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  // const current = searchParams.get("sort") ?? SORT_OPTIONS[0].value;
+
+  const current = searchParams.get("sort") ?? SORT_OPTIONS[0].value;
+  const [position, setPosition] = useState(current);
+
+  useEffect(() => {
+    setPosition(current);
+  }, [current]);
 
   const onChange = (sort: string) => {
-    const params = Object.fromEntries(searchParams.entries());
-    params.sort = sort ?? SORT_OPTIONS[0].value;
-
-    // const query = qs.stringify(params, { encodeValuesOnly: false });
-    router.push(`${pathname}?${params.sort}`);
+    setPosition(sort);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", sort);
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -48,8 +50,7 @@ export function SortingDropdown() {
           variant="outline"
           className="focus-visible:shadow-none p-0 border-0 text-black ml-2 bg-white hover:bg-white"
         >
-          Sort by &nbsp;
-          <MoveDown size="14" />
+          Sort by &nbsp; <MoveDown size="14" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -62,16 +63,5 @@ export function SortingDropdown() {
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-    // <select
-    //   value={current}
-    //   onChange={onChange}
-    //   className="px-3 py-2 border rounded-md bg-white"
-    // >
-    //   {SORT_OPTIONS.map((opt) => (
-    //     <option key={opt.value} value={opt.value}>
-    //       {opt.label}
-    //     </option>
-    //   ))}
-    // </select>
   );
 }

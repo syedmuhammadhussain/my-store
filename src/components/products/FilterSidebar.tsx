@@ -1,41 +1,142 @@
 "use client";
-import React, { useState, useTransition } from "react";
-import dynamic from "next/dynamic";
-import { Button } from "@/components/ui/button";
-import { SlidersHorizontal } from "lucide-react";
 
-const ProductGridClient = dynamic(
-  () => import("@/components/products/ProductGridClient"),
-  { ssr: false, loading: () => <p>Loading products…</p> }
-);
+import React, { useEffect, useState, useTransition, useCallback } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { SlidersHorizontal, X } from "lucide-react";
+
+type FilterState = {
+  inStock: boolean;
+  outOfStock: boolean;
+  price: [number, number];
+  sizes: string[];
+};
 
 interface FilterSidebarProps {
   initialCount: number;
   category: string;
 }
 
-export default function FilterSidebar({
-  initialCount,
-  category,
-}: FilterSidebarProps) {
+/** Parse from URLSearchParams -> FilterState */
+function parseFiltersFromSearch(params: URLSearchParams): FilterState {
+  const inStock = params.has("inStock");
+  const outOfStock = params.has("outOfStock");
+  const sizes = params.get("sizes")
+    ? params.get("sizes")!.split(",").filter(Boolean)
+    : [];
+  const min = params.get("min") ? Number(params.get("min")) : 0;
+  const max = params.get("max") ? Number(params.get("max")) : 30000;
+  return {
+    inStock,
+    outOfStock,
+    sizes,
+    price: [min, max],
+  };
+}
+
+/** Serialize FilterState -> querystring (only non-defaults) */
+function serializeFiltersToParams(filters: FilterState) {
+  const params = new URLSearchParams();
+  if (filters.inStock) params.set("inStock", "1");
+  if (filters.outOfStock) params.set("outOfStock", "1");
+  if (filters.sizes.length) params.set("sizes", filters.sizes.join(","));
+  if (filters.price[0] !== 0) params.set("min", String(filters.price[0]));
+  if (filters.price[1] !== 30000) params.set("max", String(filters.price[1]));
+  return params.toString();
+}
+
+export default function FilterSidebar({}: FilterSidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Initialize from URL on mount (so deep-link/back works)
+  const initialFiltersFromUrl =
+    typeof searchParams?.toString === "function"
+      ? parseFiltersFromSearch(new URLSearchParams(searchParams.toString()))
+      : undefined;
+
+  const [filters, setFilters] = useState<FilterState>(
+    initialFiltersFromUrl ?? {
+      inStock: false,
+      outOfStock: false,
+      price: [0, 30000],
+      sizes: [],
+    }
+  );
+
   const [open, setOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    inStock: false,
-    outOfStock: false,
-    price: [0, 30000],
-    sizes: [] as string[],
-  });
   const [isPending, startTransition] = useTransition();
 
-  function updateFilters(updates: Partial<typeof filters>) {
-    startTransition(() => setFilters((f) => ({ ...f, ...updates })));
-  }
+  // updateFilters no longer triggers navigation. It only updates local state.
+  const updateFilters = useCallback((updates: Partial<FilterState>) => {
+    setFilters((prev) => {
+      const next: FilterState = { ...prev, ...updates };
+      if (updates.sizes) {
+        next.sizes = Array.from(new Set(next.sizes));
+      }
+      return next;
+    });
+  }, []);
+
+  // Remove single filters helpers
+  const removeSize = useCallback((sz: string) => {
+    setFilters((f) => ({ ...f, sizes: f.sizes.filter((s) => s !== sz) }));
+  }, []);
+
+  const clearInStock = useCallback(
+    () => setFilters((f) => ({ ...f, inStock: false })),
+    []
+  );
+  const clearOutOfStock = useCallback(
+    () => setFilters((f) => ({ ...f, outOfStock: false })),
+    []
+  );
+
+  const clearAll = useCallback(() => {
+    // reset local state
+    setFilters({
+      inStock: false,
+      outOfStock: false,
+      price: [0, 30000],
+      sizes: [],
+    });
+
+    // remove querystring (navigate to pathname without params)
+    startTransition(() => {
+      router.replace(pathname);
+    });
+  }, [router, pathname, startTransition]);
+
+  // Sync filters => URL in an effect (avoid doing router.replace while rendering)
+  useEffect(() => {
+    // build qs
+    const qs = serializeFiltersToParams(filters);
+    const url = qs ? `${pathname}?${qs}` : pathname;
+
+    // debounce to prevent too many router.replace calls while user is typing/dragging
+    const id = window.setTimeout(() => {
+      // startTransition is safe inside effects
+      startTransition(() => {
+        router.replace(url);
+      });
+    }, 300);
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [filters, pathname, router, startTransition]);
 
   return (
     <>
       {/* Mobile toggle */}
       <div className="md:hidden flex justify-end mb-4">
-        <Button variant="outline" onClick={() => setOpen(true)}>
+        <Button
+          variant="outline"
+          onClick={() => setOpen(true)}
+          className="bg-white border-0 px-4"
+        >
           <SlidersHorizontal />
         </Button>
       </div>
@@ -50,35 +151,76 @@ export default function FilterSidebar({
 
       <aside
         className={`fixed z-50 top-0 left-0 h-full bg-white md:bg-transparent w-full md:w-68 lg:w-80 p-4 overflow-auto
-          transform transition-transform duration-300
-          ${open ? "translate-x-0" : "-translate-x-full"}
+          transform transition-transform duration-300 ${
+            open ? "translate-x-0" : "-translate-x-full"
+          }
           md:translate-x-0 md:static md:block`}
       >
-        {filters.inStock || filters.outOfStock || filters.sizes.length ? (
+        {/* <pre>{JSON.stringify({ isPending })}</pre> */}
+        {/* Applied Filters */}
+        {(filters.inStock ||
+          filters.outOfStock ||
+          filters.sizes.length > 0) && (
           <div className="mb-4">
-            <h3 className="font-medium mb-2">Applied Filters</h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-medium">Applied Filters</h3>
+              <button
+                type="button"
+                onClick={clearAll}
+                className="cursor-pointer text-sm text-gray-800 hover:text-gray-700 px-2 py-1"
+                aria-label="Clear all filters"
+              >
+                Clear All
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2 items-center">
               {filters.inStock && (
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded">
-                  In Stock
+                <span className="relative inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500">
+                  <span>In Stock</span>
+                  <button
+                    aria-label="Remove in stock filter"
+                    type="button"
+                    onClick={clearInStock}
+                    className="cursor-pointer absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-black border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
+
               {filters.outOfStock && (
-                <span className="px-2 py-1 bg-red-100 text-red-800 rounded">
-                  Out of Stock
+                <span className="relative inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500">
+                  <span>Out of Stock</span>
+                  <button
+                    aria-label="Remove out of stock filter"
+                    type="button"
+                    onClick={clearOutOfStock}
+                    className="cursor-pointer absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-black border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
+
               {filters.sizes.map((sz) => (
                 <span
                   key={sz}
-                  className="px-2 py-1 bg-blue-100 text-blue-800 rounded"
+                  className="relative inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500"
                 >
-                  {sz}
+                  <span>{sz}</span>
+                  <button
+                    aria-label={`Remove size ${sz}`}
+                    type="button"
+                    onClick={() => removeSize(sz)}
+                    className="cursor-pointer absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-black border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               ))}
             </div>
           </div>
-        ) : null}
+        )}
 
         {/* Header mobile */}
         <div className="flex items-center justify-between md:hidden mb-6">
@@ -136,6 +278,7 @@ export default function FilterSidebar({
                 className="w-full px-4 py-1 h-9 text-sm focus:outline-none text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
+
             {/* Max */}
             <div className="flex-1 flex items-center border rounded overflow-hidden">
               <span className="text-sm px-4 h-9 flex items-center justify-center text-black-500">
@@ -153,15 +296,12 @@ export default function FilterSidebar({
               />
             </div>
           </div>
-          <input
-            type="range"
+          <Slider
+            value={filters?.price ?? [0, 30000]}
+            onValueChange={(val) => updateFilters({ price: [val[0], val[1]] })}
             min={0}
             max={30000}
-            value={filters.price[0]}
-            onChange={(e) =>
-              updateFilters({ price: [+e.target.value, filters.price[1]] })
-            }
-            className="w-full accent-black"
+            step={1}
           />
         </div>
 
@@ -190,14 +330,6 @@ export default function FilterSidebar({
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Client‑side grid */}
-        <div className="mt-8">
-          <p className="mb-2">
-            Showing {isPending ? "…" : initialCount} products
-          </p>
-          <ProductGridClient filters={filters} category={category} />
         </div>
       </aside>
     </>
