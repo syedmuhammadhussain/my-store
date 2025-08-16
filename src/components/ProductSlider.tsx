@@ -32,7 +32,7 @@ export default function ProductSlider({ children }: CarouselProps) {
 
   return (
     <div className="py-8">
-      <h2 className="text-2xl font-bold text-center mb-6">New Arrivals</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Featured Products</h2>
 
       {/* Embla viewport with peek on right */}
       <div className="relative">
@@ -45,6 +45,7 @@ export default function ProductSlider({ children }: CarouselProps) {
                 flex-shrink-0
                 w-[50%]      /* 2 slides on mobile */
                 sm:w-[33.333%]  /* 3 slides on sm+ */
+                grid-animate
               "
               >
                 {child}

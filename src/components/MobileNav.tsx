@@ -40,7 +40,7 @@ export default function MobileNav() {
         <SheetContent side="left" className="w-3/4 max-w-xs">
           <SheetHeader className="border-b pb-4">
             <SheetTitle>
-              <Image src="/logo.svg" alt="Logo" width={120} height={32} />
+              <Image src="/logo.png" alt="Logo" width={45} height={32} />
             </SheetTitle>
           </SheetHeader>
 
@@ -126,7 +126,7 @@ export default function MobileNav() {
       </Sheet>
 
       <Link href="/" className="mx-auto">
-        <Image src="/logo.svg" alt="Logo" width={120} height={32} />
+        <Image src="/logo.png" alt="Logo" width={45} height={32} />
       </Link>
 
       <Link

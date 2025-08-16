@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { ProductAttributes } from "@/types/product";
 import { ProductColors } from "@/types/product_colors";
 import { ProductVariant } from "@/types/variant";
-import { normalizeSize, sizeToValue } from "@/lib/utils";
 import ProductGallery from "@/components/products/ProductGallery";
 import ColorSwatches from "@/components/products/ColorSwatches";
 import SizeSelector from "@/components/products/SizeSelector";
@@ -12,12 +11,37 @@ import ActionButtons from "@/components/products/ActionButtons";
 import SizeChartTrigger from "@/components/products/SizeChartTrigger";
 import TrustBadges from "@/components/products/TrustBadges";
 import QuantityDropdown from "@/components/products/QuantityDropdown";
+import { sizes } from "@/lib/utils";
 
 type CombinedVariant = ProductVariant & {
   colorId: number;
   colorName: string;
   documentId: string;
   inventory: { quantity?: number } | null | undefined;
+  size?: { label?: string; sort_order?: number | null } | null;
+};
+
+const sizeRank = (v: {
+  size?: { label?: string; sort_order?: number | null } | null;
+}) => {
+  const sort = v?.size?.sort_order;
+  if (Number.isFinite(sort)) return Number(sort);
+
+  const raw = v?.size?.label;
+  const label = typeof raw === "string" ? raw.trim().toUpperCase() : "";
+
+  if (label) {
+    const idx = sizes.indexOf(label);
+    if (idx >= 0) return idx + 1000;
+    return 5000 + label.charCodeAt(0);
+  }
+
+  return 999999;
+};
+
+const getSizeLabelUpper = (v: CombinedVariant) => {
+  const raw = v?.size?.label;
+  return typeof raw === "string" ? raw.trim().toUpperCase() : "";
 };
 
 export default function ProductClient({
@@ -33,7 +57,6 @@ export default function ProductClient({
   swatchVariants: { variant: CombinedVariant; swatchUrl: string | null }[];
   imagesByColor: Record<number, ProductColors["images"]>;
 }) {
-  // 1) Initial selected variant from URL (only once)
   const [selectedId, setSelectedId] = useState<string>(defaultVariantId);
 
   useEffect(() => {
@@ -41,7 +64,7 @@ export default function ProductClient({
     const fromUrl = url.searchParams.get("variant");
     if (fromUrl && variantMapById[fromUrl]) {
       setSelectedId(fromUrl);
-    } else {
+    } else if (defaultVariantId) {
       url.searchParams.set("variant", defaultVariantId);
       window.history.replaceState({}, "", url.toString());
       setSelectedId(defaultVariantId);
@@ -50,31 +73,35 @@ export default function ProductClient({
   }, []);
 
   const selectedVariant =
-    variantMapById[selectedId] ?? variantMapById[defaultVariantId];
+    variantMapById[selectedId] ??
+    (defaultVariantId ? variantMapById[defaultVariantId] : undefined);
 
-  // Sizes available for the currently selected color
+  // Build sizes for the selected color, unique by normalized label, prefer in-stock
   const sizesForColor = useMemo(() => {
+    // debugger
     if (!selectedVariant) return [];
-    
+    const colorId = selectedVariant.colorId;
     const variants = Object.values(variantMapById).filter(
-      (v) => v.colorId === selectedVariant.colorId
+      (v) => v.colorId === colorId
     );
+
     const map = new Map<string, CombinedVariant>();
     for (const v of variants) {
-      const key = normalizeSize(v.size);
+      const key = getSizeLabelUpper(v);
+      if (!key) continue;
+
       const cur = map.get(key);
+      const qty = Number(v.inventory?.quantity ?? 0);
       if (!cur) {
         map.set(key, v);
       } else {
         const curQty = Number(cur.inventory?.quantity ?? 0);
-        const qty = Number(v.inventory?.quantity ?? 0);
         if (curQty <= 0 && qty > 0) map.set(key, v);
       }
     }
-    return Array.from(map.entries())
-      .sort((a, b) => sizeToValue(a[0]) - sizeToValue(b[0]))
-      .map(([, v]) => v);
-  }, [variantMapById, selectedVariant]); // Added selectedVariant to dependencies
+
+    return Array.from(map.values()).sort((a, b) => sizeRank(a) - sizeRank(b));
+  }, [variantMapById, selectedVariant?.colorId, selectedVariant]);
 
   const setVariantAndSyncUrl = (newId: string) => {
     if (!variantMapById[newId]) return;
@@ -84,23 +111,24 @@ export default function ProductClient({
     window.history.replaceState({}, "", url.toString());
   };
 
-  // Early return must come AFTER all hooks
   if (!selectedVariant) return null;
 
   const mainImages = imagesByColor[selectedVariant.colorId] ?? [];
+  const displayPrice = Number(
+    selectedVariant.price ?? product.price ?? 0
+  ).toFixed(2);
+  const isOutOfStock = Number(selectedVariant.inventory?.quantity ?? 0) === 0;
 
   return (
-    <div className="py-1 px-1 md:py-3 md:px-15">
+    <div className="py-1 px-1 md:py-3 md:px-6 animate-page-load-fade">
       <div className="mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Gallery with fullscreen zoom */}
+        {/* Gallery */}
         <ProductGallery productName={product.name} images={mainImages} />
 
         {/* Right panel */}
         <div className="px-4">
-          <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-          <p className="text-xl mb-4">
-            Rs. {Number(selectedVariant.price).toFixed(2)}
-          </p>
+          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+          <p className="text-xl mb-4">Rs. {displayPrice}</p>
 
           {/* Color swatches */}
           <ColorSwatches
@@ -122,9 +150,7 @@ export default function ProductClient({
           <QuantityDropdown />
 
           {/* Actions */}
-          <ActionButtons
-            disabled={Number(selectedVariant.inventory?.quantity ?? 0) === 0}
-          />
+          <ActionButtons disabled={isOutOfStock} />
 
           {/* Size chart */}
           <SizeChartTrigger />

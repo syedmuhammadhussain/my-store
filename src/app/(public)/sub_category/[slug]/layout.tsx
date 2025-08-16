@@ -16,14 +16,14 @@ export default function PublicLayout({
       <picture className="w-full h-full">
         <source
           media="(min-width: 768px)"
-          srcSet="https://snoozoff.com/cdn/shop/files/Best_kids_Collecton_in_Pakistan.jpg?v=1742209251&width=1640"
+          srcSet="/images/hero/inner-banner.webp"
         />
         <source
           media="(max-width: 767px)"
-          srcSet="https://snoozoff.com/cdn/shop/files/Best_kids_Collecton_in_Pakistan.jpg?v=1742209251&width=700"
+          srcSet="/images/hero/inner-banner.webp"
         />
         <img
-          src="https://snoozoff.com/cdn/shop/files/Best_kids_Collecton_in_Pakistan.jpg?v=1742209251&width=1640"
+          src="/images/hero/inner-banner.webp"
           alt="Kids"
           className="object-cover w-full h-full"
         />

@@ -6,7 +6,7 @@ import ProductGridSSR from "@/components/products/ProductGridSSR";
 import StrapiService from "@/lib/strapi.service";
 import { notFound } from "next/navigation";
 import ClientGridBridge from "@/components/products/ClientGridBridge";
-import { SubCategoryAttributes } from "@/types/category";
+import { SubCategoryAttributes } from "@/types/sub_category";
 
 type sCParams = Promise<{ slug: string }>;
 
@@ -30,8 +30,12 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
   const { slug } = await params;
   const json = await StrapiService.getProductsBySubCategory(slug);
   const jsonSubCategoriesSlug = await StrapiService.getSubCategoryBySlug(slug);
+  const firstSubCategory = (
+    jsonSubCategoriesSlug.data as unknown as SubCategoryAttributes[]
+  )[0];
+  const categorySlug = firstSubCategory?.category?.slug || "";
   const jsonSubCategories = await StrapiService.getSubCategoriesByCategorySlug(
-    jsonSubCategoriesSlug.data[0]?.category?.slug || ""
+    categorySlug
   );
 
   const subcategories =
@@ -40,8 +44,26 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
   if (!json.data.length) return notFound();
   const products = json.data as unknown as ProductAttributes[];
 
+  const slugList = [
+    "shorts-sets",
+    "sleep-shirts",
+    "button-down-pj-sets",
+    "co-ord-sets",
+    "dresses",
+    "nightwear",
+    "pajama-sets",
+    "boxers",
+    "men-t-shirts",
+  ];
+
+  const sizeType = slugList.includes(slug)
+    ? "alpha"
+    : slug === "boys" || slug === "girls"
+    ? "age"
+    : "none";
+
   return (
-    <div className="py-1 px-1 md:py-3 md:px-15">
+    <div className="py-1 px-1 md:py-1.5 md:px-4 lg:py-3 lg:px-6">
       <CategoryButton
         subCategories={subcategories}
         name={slug.replace("-", " ").toUpperCase()}
@@ -50,7 +72,11 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
 
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left sidebar (client) */}
-        <FilterSidebar initialCount={products.length} category={slug} />
+        <FilterSidebar
+          initialCount={products.length}
+          category={slug}
+          sizeType={sizeType}
+        />
 
         {/* Main content */}
         <main className="flex-1 p-0 md:p-4">

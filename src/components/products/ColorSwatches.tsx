@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ProductImage from "@/components/products/ProductImage";
 
 export default function ColorSwatches({
   swatchVariants,
@@ -31,8 +31,10 @@ export default function ColorSwatches({
     <>
       {swatchVariants.length > 1 && (
         <div>
-          <small className="uppercase text-sm">Other Colors</small>
-          <div className="flex gap-2 mt-1 mb-4">
+          <small className="uppercase text-xs font-semibold">
+            Other Colors Available
+          </small>
+          <div className="flex gap-1 mt-1 mb-4">
             {swatchVariants.map(({ variant: v, swatchUrl }) => {
               // active if this swatch's color matches the currently selected variant's color
               const isActive =
@@ -78,15 +80,20 @@ export default function ColorSwatches({
                   title={v.colorName}
                 >
                   {swatchUrl ? (
-                    <div className="relative w-8 h-10 rounded overflow-hidden">
-                      <Image
+                    <div className="relative w-8 h-12 rounded overflow-hidden">
+                      <ProductImage
+                        src={swatchUrl}
+                        alt={v.colorName}
+                        className="object-cover"
+                      />
+                      {/* <Image
                         src={swatchUrl}
                         alt={v.colorName}
                         fill
                         className="object-cover"
                         sizes="30px"
                         priority={false}
-                      />
+                      /> */}
                     </div>
                   ) : (
                     <span

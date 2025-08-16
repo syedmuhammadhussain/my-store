@@ -2,23 +2,37 @@
 import { HeroCarousel } from "@/components/HeroCarousel";
 import ProductCard from "@/components/ProductCard";
 import ProductSlider from "@/components/ProductSlider";
-import { slides } from "@/store/data";
-// import HeroSection from "@/components/home/HeroSection";
+import StrapiService from "@/lib/strapi.service";
+import { ProductAttributes } from "@/types/product";
 
-export default function Home() {
+export default async function Home() {
+  const featuredRes = await StrapiService.getFeaturedProducts();
+  const featured = featuredRes.data as unknown as ProductAttributes[];
+
   return (
-    <>
-      <main>
-        {/* <HeroSection /> */}
-        <HeroCarousel />
-        <div className="h-5"></div>
-        <ProductSlider>
-          {slides.map((prod) => (
-            <ProductCard key={prod.id} {...prod} hardCoded />
-          ))}
-        </ProductSlider>
-        {/* …other sections */}
-      </main>
-    </>
+    <main>
+      <HeroCarousel />
+      <div className="h-5" />
+
+      {/* Debug */}
+      {/* <code>{JSON.stringify(featured, null, 2)}</code> */}
+      <ProductSlider>
+        {[
+          ...(featured ?? []).map((p) => (
+            <ProductCard
+              key={p.id}
+              id={p.id}
+              src={p.gallery && p.gallery[0]?.formats?.small?.url}
+              secSrc={p.images && p.images[0]?.formats?.small?.url}
+              title={p.name}
+              discount_price={p.discount_price}
+              price={p.price || 0}
+              href={p.slug}
+              rating={p.views}
+            />
+          )),
+        ]}
+      </ProductSlider>
+    </main>
   );
 }

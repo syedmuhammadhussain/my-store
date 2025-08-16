@@ -1,93 +1,64 @@
-// src/components/HeroCarousel.tsx
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+// import { CarouselApi } from "@/components/ui/carousel"; // Keep shadcn's types
 import Autoplay from "embla-carousel-autoplay";
+import useEmblaCarousel from "embla-carousel-react";
 import { heroData } from "@/store/data";
-// import Image from "next/image";
 
 export function HeroCarousel() {
-  const [api, setApi] = useState<CarouselApi>();
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [Autoplay({ delay: 8000 })]
+  );
   const [current, setCurrent] = useState(0);
-  const [snaps, setSnaps] = useState<number[]>([]);
 
   const onSelect = useCallback(() => {
-    if (!api) return;
-    setCurrent(api.selectedScrollSnap());
-  }, [api]);
+    if (!emblaApi) return;
+    setCurrent(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
 
   useEffect(() => {
-    if (!api) return;
-    setSnaps(api.scrollSnapList());
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
     onSelect();
-    api.on("select", onSelect);
-  }, [api, onSelect]);
+  }, [emblaApi, onSelect]);
 
   return (
-    <div className="relative">
-      <Carousel
-        className="w-full overflow-hidden"
-        plugins={[Autoplay({ delay: 5000 })]}
-        opts={{ loop: true, align: "start" }}
-        setApi={setApi}
-      >
-        <CarouselContent className="-ml-4">
+    <div className="relative overflow-hidden">
+      <div className="relative h-[calc(100vh-20rem)] md:h-[80vh]" ref={emblaRef}>
+        <div className="relative w-full h-full">
           {heroData.map((slide, idx) => (
-            <CarouselItem
+            <div
               key={idx}
-              className="
-                relative basis-full pl-4
-                h-[calc(100vh-20rem)]     /* 100vh on mobile */
-                md:h-[80vh]     /* 80vh on md+ screens */
-                bg-gray-100
-                flex items-center justify-center
-                overflow-hidden
-              "
+              className={`
+                absolute inset-0 transition-opacity duration-700 ease-in-out
+                ${current === idx ? "opacity-100 z-10" : "opacity-0 z-0"}
+              `}
             >
-              {/* SSR-Friendly Responsive Image */}
               <picture className="absolute inset-0 w-full h-full">
                 <source media="(min-width: 768px)" srcSet={slide.desktopSrc} />
                 <source media="(max-width: 767px)" srcSet={slide.mobileSrc} />
-                {/* Fallback img for very old browsers */}
                 <img
                   src={slide.desktopSrc}
                   alt={slide.alt}
                   className="object-cover w-full h-full"
                 />
               </picture>
-
-              {/* Overlayed Text */}
-              <div className="relative z-10 text-white text-center space-y-2 px-4">
-                <h2 className="text-3xl md:text-4xl font-bold drop-shadow-lg">
-                  {slide.title}
-                </h2>
-                {slide.subtitle && (
-                  <p className="text-lg md:text-xl drop-shadow">
-                    {slide.subtitle}
-                  </p>
-                )}
-              </div>
-            </CarouselItem>
+            </div>
           ))}
-        </CarouselContent>
-      </Carousel>
+        </div>
+      </div>
 
-      {/* Pagination Dots */}
-      <div className="flex justify-center -mt-8 space-x-2 relative z-10">
-        {snaps.map((_, idx) => (
+      {/* Dots */}
+      <div className="flex justify-center space-x-2 mt-2 relative z-20">
+        {heroData.map((_, idx) => (
           <button
             key={idx}
-            onClick={() => api?.scrollTo(idx)}
-            className={`
-              w-3 h-3 rounded-full
-              ${current === idx ? "bg-blue-600" : "bg-gray-300"}
-            `}
+            onClick={() => emblaApi?.scrollTo(idx)}
+            className={`w-3 h-3 rounded-full transition-colors ${
+              current === idx ? "bg-blue-600" : "bg-gray-300"
+            }`}
             aria-label={`Go to slide ${idx + 1}`}
           />
         ))}

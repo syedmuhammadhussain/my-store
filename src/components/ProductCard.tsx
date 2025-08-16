@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
-import { Rating } from "./Rating";
+
+import { Discount } from "@/types/discount";
+
+import { Rating } from "@/components/Rating";
+import ProductDiscount from "@/components/products/Discount";
+import ProductImageServer from "@/components/products/ProductImage";
 
 import "../styles/Card.css";
 
@@ -10,12 +15,13 @@ interface Props {
   src?: string;
   secSrc?: string;
   title: string;
-  price: string | number;
+  price: number | null;
   href: string;
   rating?: number;
   oldPrice?: string;
-  discount?: string;
-  [key: string]: string | number | boolean | undefined;
+  discount?: Discount | null | undefined;
+  hardCoded?: boolean;
+  discount_price?: number | null;
 }
 
 export default function ProductCard({
@@ -23,23 +29,30 @@ export default function ProductCard({
   secSrc,
   title,
   price,
-  oldPrice,
-  discount,
   rating,
   href,
   hardCoded,
+  discount_price,
 }: Props) {
+  const displayPrice = discount_price ?? price;
+  const showOldPrice =
+    discount_price != null && price != null && discount_price < price;
+
   return (
-    <div className="group flex-shrink-0 w-full px-1">
+    <div className="group flex-shrink-0 w-full px-1 mb-6 card-animate">
       <Link href={`/products/${href}`}>
-        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-xs">
+        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-xs sm:min-h-[200px] md:min-h-[210px] lg:min-h-[290px] xl:min-h-[360px]">
+          <div
+            className="absolute inset-0 bg-gray-200 animate-pulse"
+            aria-hidden="true"
+          ></div>
           {hardCoded ? (
             <>
               <Image
                 src={`${src}`}
                 alt={title}
                 fill
-                className="object-cover"
+                className="object-cover object-center"
                 sizes="(min-width: 768px) 100vw"
               />
               <Image
@@ -48,46 +61,33 @@ export default function ProductCard({
                 fill
                 sizes="(min-width: 768px) 100vw"
                 className="
-            object-cover
-            absolute inset-0
-            translate-x-full
-            opacity-0
-            transition-[transform,opacity]
-            duration-600
-            ease-in-out
-            group-hover:translate-x-0
-            group-hover:opacity-100
-          "
+                  object-cover
+                  object-center
+                  absolute inset-0
+                  translate-x-full
+                  opacity-0
+                  transition-[transform,opacity]
+                  duration-600
+                  ease-in-out
+                  group-hover:translate-x-0
+                  group-hover:opacity-100
+                "
               />
             </>
-          ) : (
+          ) : src && secSrc ? (
             <>
-              <Image
-                src={src || ""}
+              <ProductImageServer
                 alt={title}
-                fill
+                src={src}
                 className="object-cover"
-                sizes="(min-width: 768px) 100vw"
               />
-              <Image
-                src={secSrc || ""}
+              <ProductImageServer
                 alt={title}
-                fill
-                sizes="(min-width: 768px) 100vw"
-                className="
-            object-cover
-            absolute inset-0
-            translate-x-full
-            opacity-0
-            transition-[transform,opacity]
-            duration-600
-            ease-in-out
-            group-hover:translate-x-0
-            group-hover:opacity-100
-          "
+                src={secSrc}
+                className="object-cover absolute inset-0 translate-x-full opacity-0 transition-[transform,opacity] duration-600 ease-in-out group-hover:translate-x-0 group-hover:opacity-100"
               />
             </>
-          )}
+          ) : null}
           <button
             aria-label="Quick Buy"
             className="hidden md:flex quickBuyBtn cursor-pointer absolute bottom-5 right-5 items-center justify-center bg-white text-gray-900 rounded-sm w-10 h-10 overflow-hidden opacity-0 translate-y-4 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0 hover:w-32 hover:px-3"
@@ -99,28 +99,25 @@ export default function ProductCard({
           </button>
         </div>
 
-        <div className="mt-2">
-          <div className="md:flex flex-wrap space-x-2 items-center">
-            <h3 className="text-base font-bold text-gray-900">{title}</h3>
-            <div className="product-grid-item__info-separator hidden md:inline-block"></div>
-            &nbsp;
-            <div className="flex items-baseline justify-between space-x-2">
-              <span>Rs.{price}</span>
-              {discount && (
-                <span className="hidden md:block text-gray-400 line-through">
-                  Rs.{oldPrice}
-                </span>
-              )}
-            </div>
-          </div>
-          {discount && (
-            <div className="hidden md:block">
-              <span className="text-sm text-red-600">{discount}</span>
-            </div>
+        <div className="mt-3 text-[14px]">
+          <h3 className="inline font-bold after:content-['—'] after:mx-2">
+            {title}
+          </h3>
+          <span className="font-normal">Rs.{displayPrice?.toFixed(2)}</span>
+          {showOldPrice && (
+            <>
+              &nbsp;&nbsp;
+              <span className="text-gray-500 line-through ml-2">
+                Rs.{price.toFixed(2)}
+              </span>
+            </>
+          )}
+          {discount_price && (
+            <ProductDiscount discount_price={discount_price} price={price} />
           )}
           {rating && (
             <div className="mt-2">
-              <Rating rating={rating} size="w-3 h-3" />
+              <Rating rating={rating} />
             </div>
           )}
         </div>
