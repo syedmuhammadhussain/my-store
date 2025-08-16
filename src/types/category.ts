@@ -1,5 +1,4 @@
-import { UploadedImage } from "./image";
-import { MultipleProductResponse } from "./product";
+import { SubCategoryAttributes } from "./sub_category";
 
 export interface CategoryAttributes {
   id: number;
@@ -7,13 +6,4 @@ export interface CategoryAttributes {
   slug: string;
   description?: string;
   sub_categories?: SubCategoryAttributes[];
-}
-
-export interface SubCategoryAttributes {
-  id: number;
-  name: string;
-  slug: string;
-  description?: string;
-  image?: UploadedImage;
-  products?: MultipleProductResponse;
 }

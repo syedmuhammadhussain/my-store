@@ -9,31 +9,48 @@ interface Slide {
 export const heroData: Slide[] = [
   {
     desktopSrc:
-      "https://snoozoff.com/cdn/shop/files/Best_kids_Collecton_in_Pakistan.jpg?v=1742209251&width=1640",
+      "/images/hero/inner-banner.webp",
     mobileSrc:
-      "https://snoozoff.com/cdn/shop/files/Kids_Collecton.jpg?v=1742209369&width=738",
+      "/images/hero/inner-banner.webp",
+    alt: "Spring Collection",
+    title: "SEO-Friendly SSR",
+    subtitle: "Fast initial paint",
+  },
+  {
+    desktopSrc:
+      "/images/hero/fashion-collection-hanging-in-modern-clothing-store-free-photo.jpg",
+    mobileSrc:
+      "/images/hero/fashion-collection-hanging-in-modern-clothing-store-free-photo.jpg",
     alt: "Kids Collection",
     title: "Welcome to Our Site",
     subtitle: "Discover awesome features",
   },
   {
-    desktopSrc:
-      "https://snoozoff.com/cdn/shop/files/Best_Menswea_Collection.webp?v=1741604192&width=1640",
-    mobileSrc:
-      "https://snoozoff.com/cdn/shop/files/T_shirt_Pajama_Set_for_Men.webp?v=1741690360&width=738",
+    desktopSrc: "/images/hero/TPWW.webp",
+    mobileSrc: "/images/hero/TPWW.webp",
     alt: "Menswear Collection",
     title: "Built with Tailwind CSS",
     subtitle: "Utility-first styling",
   },
-  {
-    desktopSrc:
-      "https://snoozoff.com/cdn/shop/files/Hues_of_Spring_4.jpg?v=1750849578&width=1640",
-    mobileSrc:
-      "https://snoozoff.com/cdn/shop/files/WhatsApp_Image_2025-06-24_at_11.45.56_AM.jpg?v=1750849536&width=738",
-    alt: "Spring Collection",
-    title: "SEO-Friendly SSR",
-    subtitle: "Fast initial paint",
-  },
+  // {
+  //   desktopSrc:
+  //     "/images/hero/collage-photos-young-people-fashion-260nw-1724618176.webp",
+  //   mobileSrc:
+  //     "/images/hero/collage-photos-young-people-fashion-260nw-1724618176.webp",
+  //   alt: "Spring Collection",
+  //   title: "SEO-Friendly SSR",
+  //   subtitle: "Fast initial paint",
+  // },
+  
+  // {
+  //   desktopSrc:
+  //     "/images/hero/group-different-men-women-on-260nw-2477681591.webp",
+  //   mobileSrc:
+  //     "/images/hero/group-different-men-women-on-260nw-2477681591.webp",
+  //   alt: "Spring Collection",
+  //   title: "SEO-Friendly SSR",
+  //   subtitle: "Fast initial paint",
+  // },
 ];
 
 export const navItems = [
@@ -65,10 +82,10 @@ export const slides = [
     secSrc: "/images/products/Geometric-Spring-5.jpg",
     alt: "Light-patterned pajama",
     id: 1,
-    price: "Rs.1229.99",
+    price: "1229.99",
     href: "/product1",
     rating: 4.5,
-    oldPrice: "Rs.1239.99",
+    oldPrice: "1239.99",
     discount: "25% off",
   },
   {
@@ -77,10 +94,10 @@ export const slides = [
     secSrc: "/images/products/Paul_1.jpeg",
     alt: "Blue tee & checkered shorts",
     id: 2,
-    price: "Rs.1229.99",
+    price: "1229.99",
     href: "/product2",
     rating: 3.5,
-    oldPrice: "Rs.1239.99",
+    oldPrice: "1239.99",
     discount: "25% off",
   },
   {
@@ -89,10 +106,10 @@ export const slides = [
     secSrc: "/images/products/Sam_3.jpeg",
     alt: "White tee & dark shorts",
     id: 3,
-    price: "Rs.1229.99",
+    price: "1229.99",
     href: "/product3",
     rating: 4.5,
-    oldPrice: "Rs.1239.99",
+    oldPrice: "1239.99",
     discount: "25% off",
   },
   {
@@ -101,10 +118,10 @@ export const slides = [
     secSrc: "/images/products/Secret-Garden.jpg",
     alt: "White tee & dark shorts",
     id: 4,
-    price: "Rs.1229.99",
+    price: "1229.99",
     href: "/product4",
     rating: 4.5,
-    oldPrice: "Rs.1239.99",
+    oldPrice: "1239.99",
     discount: "25% off",
   },
   {
@@ -113,10 +130,10 @@ export const slides = [
     secSrc: "/images/products/SnuggleBear1.jpg",
     alt: "White tee & dark shorts",
     id: 5,
-    price: "Rs.1229.99",
+    price: "1229.99",
     href: "/product5",
     rating: 4.5,
-    oldPrice: "Rs.1239.99",
+    oldPrice: "1239.99",
     discount: "25% off",
   },
   {
@@ -125,10 +142,10 @@ export const slides = [
     secSrc: "/images/products/Taffy_Navy_Pajama_Set.jpg",
     alt: "White tee & dark shorts",
     id: 6,
-    price: "Rs.1229.99",
+    price: "1229.99",
     href: "/product6",
     rating: 3.5,
-    oldPrice: "Rs.1239.99",
+    oldPrice: "1239.99",
     discount: "25% off",
   },
 ];
@@ -140,7 +157,7 @@ export const products = [
     documentId: "qo48kfmsezck2uqxxx063tzo",
     name: "Pack of Two (Black + White)",
     description:
-      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colours. Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
+      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colou Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
     slug: "pack-of-two-black-white",
     discount_price: null,
     price: 2799,
@@ -264,7 +281,7 @@ export const products = [
     documentId: "qo48kfmsezck2uqxxx063tzo",
     name: "Pack of Two (Black + White)",
     description:
-      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colours. Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
+      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colou Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
     slug: "pack-of-two-black-white",
     discount_price: null,
     price: 2799,
@@ -388,7 +405,7 @@ export const products = [
     documentId: "qo48kfmsezck2uqxxx063tzo",
     name: "Pack of Two (Black + White)",
     description:
-      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colours. Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
+      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colou Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
     slug: "pack-of-two-black-white",
     discount_price: null,
     price: 2799,
@@ -512,7 +529,7 @@ export const products = [
     documentId: "qo48kfmsezck2uqxxx063tzo",
     name: "Pack of Two (Black + White)",
     description:
-      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colours. Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
+      "Upgrade your intimate essentials with our pack of two men’s boxers, featuring navy blue and grey colou Designed with BCL cotton, 10% elastane and 100% cotton, our men’s boxers ensure maximum breathability and flexibility. These boxers are made from 90% cotton and 10% elastance that guarantees a perfect fit, making them a go-to choice for your comfort and durability.",
     slug: "pack-of-two-black-white",
     discount_price: null,
     price: 2799,

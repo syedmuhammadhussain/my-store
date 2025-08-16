@@ -3,6 +3,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import type { UploadedImage } from "@/types/image";
+import ProductImage from "./ProductImage";
 
 /**
  * Props
@@ -26,15 +27,13 @@ export default function ProductGalleryClient({
   /* eslint-enable @typescript-eslint/no-explicit-any */
   const [lightboxLoaded, setLightboxLoaded] = useState(false);
 
-  const base = process.env.NEXT_PUBLIC_STRAPI_BASE_URL ?? "";
-
   // Build slides using best available large / original formats for high-quality zoom
   const slides = useMemo(
     () =>
       images.map((img) => {
         const fmt = img.formats || {};
         const best =
-          fmt.original ?? fmt.large ?? fmt.medium ?? fmt.small ?? img;
+          img ?? fmt.original ?? fmt.large ?? fmt.medium ?? fmt.small;
         return {
           src: best.url,
           width: best.width,
@@ -42,13 +41,20 @@ export default function ProductGalleryClient({
           alt: img.alternativeText || productName || img.name || "",
         };
       }),
-    [images, base, productName]
+    [images, productName]
   );
 
   // Choose a thumbnail format to render on page (prefer small/thumbnail/medium)
   const thumbFor = useCallback((img: UploadedImage) => {
     const fmt = img.formats || {};
-    return fmt.small ?? fmt.thumbnail ?? fmt.medium ?? fmt.large ?? img;
+    return (
+      img ??
+      fmt.original ??
+      fmt.large ??
+      fmt.medium ??
+      fmt.small ??
+      fmt.thumbnail
+    );
   }, []);
 
   // Lazy-load the lightbox (JS + plugins + CSS). Called once when user opens gallery.
@@ -111,37 +117,47 @@ export default function ProductGalleryClient({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const thumb = thumbFor(img);
     /* eslint-enable @typescript-eslint/no-explicit-any */
-    const thumbUrl = thumb?.url ? thumb.url : img.url;
+    const thumbUrl = thumb?.url;
     const w = thumb?.width;
     const h = thumb?.height;
 
     // If width/height exist use an intrinsic image (preserves ratio) and set style height:auto
     if (w && h) {
       return (
-        <Image
+        <ProductImage
           src={thumbUrl}
-          alt={img.alternativeText || productName || ""}
-          width={w}
-          height={h}
-          style={{ width: "100%", height: "auto" }}
-          className="w-48 h-48 bg-gray-200 cursor-zoom-in object-contain"
-          sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 33vw"
-          loading={idx === 0 ? "eager" : "lazy"}
-          priority={idx === 0}
+          alt={productName || img.alternativeText || ""}
+          className="w-48 h-48 bg-gray-200 cursor-zoom-in object-cover object-center w-full h-auto"
         />
+        // <Image
+        //   src={thumbUrl}
+        //   alt={productName || img.alternativeText || ""}
+        //   width={w}
+        //   height={h}
+        //   style={{ width: "100%", height: "auto" }}
+        //   className="w-48 h-48 bg-gray-200 cursor-zoom-in object-contain"
+        //   sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 33vw"
+        //   loading={idx === 0 ? "eager" : "lazy"}
+        //   priority={idx === 0}
+        // />
       );
     }
 
     // fallback to fill if no dimensions are available
     return (
-      <Image
+      <ProductImage
         src={thumbUrl}
-        alt={img.alternativeText || productName || ""}
-        fill
+        alt={productName || img.alternativeText || ""}
         className="object-contain"
-        loading={idx === 0 ? "eager" : "lazy"}
-        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 33vw"
       />
+      // <Image
+      //   src={thumbUrl}
+      //   alt={img.alternativeText || productName || ""}
+      //   fill
+      //   className="object-contain"
+      //   loading={idx === 0 ? "eager" : "lazy"}
+      //   sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 33vw"
+      // />
     );
   }
 
@@ -157,7 +173,7 @@ export default function ProductGalleryClient({
             // className="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-gray-50 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
             className="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
           >
-            <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="absolute inset-0 flex items-center justify-center">
               <RenderThumb img={img} idx={i} />
             </div>
             {/* <span className="absolute bottom-2 right-2 text-xs bg-white/75 text-gray-700 px-2 py-1 rounded">

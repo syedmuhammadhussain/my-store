@@ -1,5 +1,5 @@
 import { ProductAttributes } from "@/types/product";
-import ProductCard from "../ProductCard";
+import ProductCard from "@/components/ProductCard";
 
 export default function ProductGridSSR({
   products,
@@ -7,7 +7,7 @@ export default function ProductGridSSR({
   products: ProductAttributes[];
 }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 grid-animate">
       {products.map((p) => (
         <ProductCard
           key={p.id}
@@ -15,9 +15,10 @@ export default function ProductGridSSR({
           src={p.gallery && p.gallery[0]?.formats?.small?.url}
           secSrc={p.images && p.images[0]?.formats?.small?.url}
           title={p.name}
-          price={(p.variants && p.variants[0]?.price) || "1000"}
+          discount_price={p.discount_price}
+          price={p.price || 0}
           href={p.slug}
-          rating={3}
+          rating={p.views}
         />
       ))}
     </div>

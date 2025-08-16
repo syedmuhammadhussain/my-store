@@ -3,10 +3,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import qs from "qs";
-import ProductCard from "../ProductCard";
-import type { ProductAttributes } from "@/types/product";
+import ProductCardServer from "@/components/ProductCard";
 import PageLoader from "@/components/products/PageLoader";
-import EmptyProductState from "./EmptyProductState";
+import EmptyProductState from "@/components/products/EmptyProductState";
+
+import type { ProductAttributes } from "@/types/product";
 
 type Filters = {
   price: [number, number];
@@ -30,7 +31,7 @@ export default function ProductGridClient({
   page: "category" | "subcategory" | string;
 }) {
   const searchParams = useSearchParams();
-  const [items, setItems] = useState<ProductAttributes[]>([]);
+  const [items, setItems] = useState<ProductAttributes[] | null>(null);
   const [loading, setLoading] = useState(false);
   const gridRef = useRef<HTMLDivElement | null>(null);
 
@@ -86,7 +87,12 @@ export default function ProductGridClient({
 
     if (filters.sizes.length > 0) {
       // Strapi expects comma separated values for $in when using qs with arrayFormat: 'comma'
-      vf.size = { $in: filters.sizes };
+      // vf.size = { label: { $in: filters.sizes } };
+      vf.size = {
+        $or: filters.sizes.map((sz) => ({
+          label: { $in: sz }, // case-insensitive
+        })),
+      };
     }
 
     if (filters.inStock && !filters.outOfStock) {
@@ -99,6 +105,7 @@ export default function ProductGridClient({
   }, [filters]);
 
   const queryObj = useMemo(() => {
+    // debugger
     const baseFilters =
       page === "subcategory"
         ? {
@@ -116,111 +123,116 @@ export default function ProductGridClient({
         "images",
         "gallery",
         "product_colors.variants",
+        "product_colors.variants.size",
         "product_colors.variants.inventory",
       ],
       pagination: { pageSize: 100 },
+      ...(sort ? { sort: [sort] } : {}),
     };
 
-    if (sort) obj.sort = [sort];
+    // if (sort) obj.sort = [sort];
     return obj;
   }, [category, page, variantFilters, sort]);
 
   // 3) Core effect: debounce, fetch, abort, scroll once
   useEffect(() => {
-  // If no filters active, do nothing (SSR is visible)
-  if (isDefault) return;
+    // If no filters active, do nothing (SSR is visible)
+    if (isDefault) return;
 
-  // Immediately show loader so user knows something is happening
-  setLoading(true);
+    // Immediately show loader so user knows something is happening
+    setLoading(true);
 
-  // Scroll to grid once (while loader visible) to avoid large layout jumps after data replaces content
-  if (!filteredOnceRef.current && gridRef.current) {
-    try {
-      gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch {
-      /* ignore */
-    }
-    filteredOnceRef.current = true;
-  }
-
-  // debounce + fetch
-  if (debounceRef.current) {
-    window.clearTimeout(debounceRef.current);
-  }
-
-  debounceRef.current = window.setTimeout(() => {
-    // abort previous
-    if (abortRef.current) {
-      abortRef.current.abort();
-      abortRef.current = null;
-    }
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    (async () => {
-      const minLoadingMs = 250; // keep loader visible at least this long to avoid flicker
-      const startedAt = performance.now();
-
-      const q = qs.stringify(queryObj, {
-        encodeValuesOnly: true,
-        arrayFormat: "indices", // or "comma" depending on your Strapi expectations
-      });
-
+    // Scroll to grid once (while loader visible) to avoid large layout jumps after data replaces content
+    if (!filteredOnceRef.current && gridRef.current) {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/products?${q}`, {
-          signal: controller.signal,
-          cache: "no-store",
-        });
-        if (!res.ok) {
-          // non-OK -> show empty results (or you can set an error state)
-          // eslint-disable-next-line no-console
-          console.warn("Product fetch failed:", res.status, res.statusText);
-          setItems([]);
-          return;
-        }
-        const json = await res.json();
-        setItems(json.data ?? []);
-      } catch (err: any) {
-        if (err.name !== "AbortError") {
-          // eslint-disable-next-line no-console
-          console.error("Product fetch error:", err);
-          setItems([]);
-        }
-      } finally {
-        // ensure minimum loader duration
-        const elapsed = performance.now() - startedAt;
-        const remaining = Math.max(0, minLoadingMs - elapsed);
-        setTimeout(() => {
-          // only hide loader if this is still the active fetch (not aborted)
-          // abortRef may be non-null for new requests; but we still can hide
-          setLoading(false);
-        }, remaining);
+        gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {
+        /* ignore */
       }
-    })();
-  }, 150); // debounce time
+      filteredOnceRef.current = true;
+    }
 
-  return () => {
-    // cleanup debounce
+    // debounce + fetch
     if (debounceRef.current) {
       window.clearTimeout(debounceRef.current);
-      debounceRef.current = null;
     }
-    // abort inflight fetch
-    if (abortRef.current) {
-      abortRef.current.abort();
-      abortRef.current = null;
-    }
-  };
-  // depend on queryObj only; queryObj already reflects filters/sort/page/category
-}, [queryObj]);
+
+    debounceRef.current = window.setTimeout(() => {
+      // abort previous
+      if (abortRef.current) {
+        abortRef.current.abort();
+        abortRef.current = null;
+      }
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      (async () => {
+        const minLoadingMs = 250; // keep loader visible at least this long to avoid flicker
+        const startedAt = performance.now();
+
+        const q = qs.stringify(queryObj, {
+          encodeValuesOnly: true,
+          arrayFormat: "indices", // or "comma" depending on your Strapi expectations
+        });
+
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/products?${q}`,
+            {
+              signal: controller.signal,
+              cache: "no-store",
+            }
+          );
+          if (!res.ok) {
+            // non-OK -> show empty results (or you can set an error state)
+            // eslint-disable-next-line no-console
+            console.warn("Product fetch failed:", res.status, res.statusText);
+            setItems([]);
+            return;
+          }
+          const json = await res.json();
+          setItems(json.data ?? []);
+        } catch (err: any) {
+          if (err.name !== "AbortError") {
+            // eslint-disable-next-line no-console
+            console.error("Product fetch error:", err);
+            setItems([]);
+          }
+        } finally {
+          // ensure minimum loader duration
+          const elapsed = performance.now() - startedAt;
+          const remaining = Math.max(0, minLoadingMs - elapsed);
+          setTimeout(() => {
+            // only hide loader if this is still the active fetch (not aborted)
+            // abortRef may be non-null for new requests; but we still can hide
+            setLoading(false);
+          }, remaining);
+        }
+      })();
+    }, 150); // debounce time
+
+    return () => {
+      // cleanup debounce
+      if (debounceRef.current) {
+        window.clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+      // abort inflight fetch
+      if (abortRef.current) {
+        abortRef.current.abort();
+        abortRef.current = null;
+      }
+    };
+    // depend on queryObj only; queryObj already reflects filters/sort/page/category
+  }, [queryObj]);
 
   return (
     <div id="csr-product-grid">
       <PageLoader active={loading} />
       <div ref={gridRef} />
-      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 min-h-[200px]">
-        {items.map((p) => (
-          <ProductCard
+      <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 min-h-[200px] grid-animate">
+        {items && items.map((p) => (
+          <ProductCardServer
             key={p.id}
             id={p.id}
             src={(p.images && p.images[0]?.formats?.small?.url) || ""}
@@ -230,13 +242,14 @@ export default function ProductGridClient({
               ""
             }
             title={p.name}
-            price={(p.variants && p.variants[0]?.price) || 0}
+            // price={(p.variants && p.variants[0]?.price) || 0}
+            price={p.price || 0}
             href={p.slug}
             rating={3}
           />
         ))}
 
-        {!loading && items.length === 0 && (
+        {!loading && items && items.length === 0 && (
           <div className="col-span-full text-sm text-gray-500">
             <EmptyProductState />
           </div>
