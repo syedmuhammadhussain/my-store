@@ -1,5 +1,5 @@
 import { ProductAttributes } from "@/types/product";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/products/ProductCard";
 
 export default function ProductGridSSR({
   products,

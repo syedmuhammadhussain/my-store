@@ -8,10 +8,8 @@ interface Slide {
 
 export const heroData: Slide[] = [
   {
-    desktopSrc:
-      "/images/hero/inner-banner.webp",
-    mobileSrc:
-      "/images/hero/inner-banner.webp",
+    desktopSrc: "/images/hero/inner-banner.webp",
+    mobileSrc: "/images/hero/inner-banner.webp",
     alt: "Spring Collection",
     title: "SEO-Friendly SSR",
     subtitle: "Fast initial paint",
@@ -41,7 +39,7 @@ export const heroData: Slide[] = [
   //   title: "SEO-Friendly SSR",
   //   subtitle: "Fast initial paint",
   // },
-  
+
   // {
   //   desktopSrc:
   //     "/images/hero/group-different-men-women-on-260nw-2477681591.webp",
@@ -648,3 +646,30 @@ export const products = [
     ],
   },
 ];
+
+/* -----------------------------
+   Mock data (demo) — remove in production
+   ----------------------------- */
+export const mockData = {
+  average: 3.0,
+  total: 2,
+  distribution: { 5: 1, 4: 0, 3: 0, 2: 0, 1: 1 },
+  reviews: [
+    {
+      id: 1,
+      rating: 1,
+      title: "After wearing the night suit for just one day",
+      body: "After wearing the night suit for just one day, the fabric tore, which clearly indicates poor quality and durability. I took proper care while wearing and washing it, so the damage is not due to mishandling. This is unacceptable, especially considering the price and the expectations from your brand.",
+      author: { name: "Laiba", verified: true },
+      createdAt: new Date("2025-08-08").toISOString(),
+    },
+    {
+      id: 2,
+      rating: 5,
+      title: "Great product",
+      body: "Really loved it!",
+      author: { name: "Ahmed", verified: false },
+      createdAt: new Date("2025-08-01").toISOString(),
+    },
+  ],
+};

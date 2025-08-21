@@ -41,7 +41,7 @@ export default async function CategoryPage({ params }: { params: cParams }) {
     slug === "kids" ? "age" : slugList.includes(slug) ? "alpha" : "none";
 
   return (
-    <div className="py-1 px-1 md:py-1.5 md:px-4 lg:py-3 lg:px-6">
+    <div className="py-1 px-1 md:py-1.5 md:px-4 lg:py-3 lg:px-8">
       <CategoryButton
         subCategories={cateories}
         name={slug.replace("-", " ").toUpperCase()}

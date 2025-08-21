@@ -1,6 +1,6 @@
 import { AnnouncementBar } from "./AnnouncementBar";
 import MainNav from "./MainNav";
-import MobileNav from "./MobileNav";
+import MobileNavServer from "./navigation/MobileNavServer";
 
 export default function Header() {
   const promos = [
@@ -13,7 +13,7 @@ export default function Header() {
     <>
       <AnnouncementBar messages={promos} />
       <MainNav />
-      <MobileNav />
+      <MobileNavServer />
     </>
   );
 }

@@ -8,7 +8,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-white hover:bg-primary/90",
-        outline: "border border-input bg-background hover:bg-accent",
+        outline: "border border-input bg-transparent hover:bg-accent",
         blue3d: [
           "text-lg rounded-full",
           "bg-blue-500 text-white border border-blue-400",

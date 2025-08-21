@@ -7,6 +7,12 @@ import { ProductAttributes } from "@/types/product";
 import { ProductVariant } from "@/types/variant";
 import { ProductColors } from "@/types/product_colors";
 import { sizeToValue } from "@/lib/utils";
+import ProductReviews from "@/components/products/reviews/ProductReviews";
+import { mockData } from "@/store/data";
+import SecurePaymentInfo from "@/components/products/SecurePaymentInfo";
+import ProductSlider from "@/components/ProductSlider";
+import ProductCard from "@/components/products/ProductCard";
+import RelatedProductsTabs from "@/components/products/RelatedProductsTabs";
 
 type CombinedVariant = ProductVariant & {
   colorId: number;
@@ -24,15 +30,15 @@ export default async function ProductPage({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const res = await StrapiService.getProductBySlug(slug);
   if (!res.data?.length) return notFound();
 
   const product = res.data[0] as ProductAttributes;
 
-  const allVariants: CombinedVariant[] = (product.product_colors ?? [])
-    .flatMap((pc) => {
+  const allVariants: CombinedVariant[] = (product.product_colors ?? []).flatMap(
+    (pc) => {
       const colorId = pc?.color?.id ?? 0;
       const colorName = pc?.color?.name ?? "";
       const variants = Array.isArray(pc?.variants) ? pc.variants : [];
@@ -42,17 +48,20 @@ export default async function ProductPage({
         colorName,
         inventory: v.inventory ?? { quantity: 0 },
       }));
-    });
+    }
+  );
 
   if (!allVariants.length) {
     return (
-      <ProductClient
-        product={product}
-        variantMapById={{}}
-        defaultVariantId={""}
-        swatchVariants={[]}
-        imagesByColor={{}}
-      />
+      <div className="p-6 md:py-3 md:px-25 animate-page-load-fade">
+        <ProductClient
+          product={product}
+          variantMapById={{}}
+          defaultVariantId={""}
+          swatchVariants={[]}
+          imagesByColor={{}}
+        />
+      </div>
     );
   }
 
@@ -69,14 +78,20 @@ export default async function ProductPage({
 
   const sorted = allVariants
     .slice()
-    .sort((a, b) => sizeToValue(a) - sizeToValue(b) || a.colorName.localeCompare(b.colorName));
+    .sort(
+      (a, b) =>
+        sizeToValue(a) - sizeToValue(b) ||
+        a.colorName.localeCompare(b.colorName)
+    );
 
   const defaultVariantId = sorted[0]?.documentId ?? allVariants[0].documentId;
 
   const swatchVariants = (product.product_colors ?? [])
     .map((pc) => {
       const swatchUrl =
-        pc?.swatch_image?.formats?.thumbnail?.url ?? pc?.swatch_image?.url ?? null;
+        pc?.swatch_image?.formats?.thumbnail?.url ??
+        pc?.swatch_image?.url ??
+        null;
 
       const variants = Array.isArray(pc?.variants) ? pc.variants : [];
       if (!variants.length) return null;
@@ -88,19 +103,35 @@ export default async function ProductPage({
           colorName: pc.color.name,
           inventory: v.inventory ?? { quantity: 0 },
         }))
-        .reduce((prev, cur) => (sizeToValue(cur) < sizeToValue(prev) ? cur : prev));
+        .reduce((prev, cur) =>
+          sizeToValue(cur) < sizeToValue(prev) ? cur : prev
+        );
 
       return { variant: candidate, swatchUrl };
     })
-    .filter(Boolean) as { variant: CombinedVariant; swatchUrl: string | null }[];
+    .filter(Boolean) as {
+    variant: CombinedVariant;
+    swatchUrl: string | null;
+  }[];
+
+  const featuredRes = await StrapiService.getFeaturedProducts();
+  const featured = featuredRes.data as unknown as ProductAttributes[];
 
   return (
-    <ProductClient
-      product={product}
-      variantMapById={variantMapById}
-      defaultVariantId={defaultVariantId}
-      swatchVariants={swatchVariants}
-      imagesByColor={imagesByColor}
-    />
+    <div>
+      <ProductClient
+        product={product}
+        variantMapById={variantMapById}
+        defaultVariantId={defaultVariantId}
+        swatchVariants={swatchVariants}
+        imagesByColor={imagesByColor}
+      />
+
+      <SecurePaymentInfo />
+
+      <ProductReviews productId="" initialData={mockData} />
+
+      <RelatedProductsTabs related={featured} recent={[]} />
+    </div>
   );
 }

@@ -30,11 +30,11 @@ export default function ColorSwatches({
   return (
     <>
       {swatchVariants.length > 1 && (
-        <div>
-          <small className="uppercase text-xs font-semibold">
+        <div className="mb-8">
+          <small className="uppercase text-xs font-medium">
             Other Colors Available
           </small>
-          <div className="flex gap-1 mt-1 mb-4">
+          <div className="flex gap-1 mt-1">
             {swatchVariants.map(({ variant: v, swatchUrl }) => {
               // active if this swatch's color matches the currently selected variant's color
               const isActive =

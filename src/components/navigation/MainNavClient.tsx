@@ -32,7 +32,7 @@ function MainNavClientInner({
   }, []);
 
   return (
-    <header className="hidden md:flex items-center justify-between py-3 px-6 bg-transparent">
+    <header className="hidden md:flex items-center justify-between py-3 px-12 bg-white sticky top-0 z-99">
       <div className="flex items-center md:space-x-8 lg:space-x-12">
         <Link href="/" className="flex items-center">
           <Image src="/logo.png" alt="Logo" width={45} height={32} />
@@ -105,10 +105,10 @@ function MainNavClientInner({
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" className="relative border-0">
+        <Button variant="outline" size="icon" className="relative border-0 bg-transparent">
           <Search />
         </Button>
-        <Button variant="outline" size="icon" className="relative border-0">
+        <Button variant="outline" size="icon" className="relative border-0 bg-transparent">
           <ShoppingCart />
         </Button>
       </div>

@@ -1,60 +1,54 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Box } from "lucide-react";
-import TypewriterHeading from "../TypewriterHeading";
+// import Link from "next/link";
 
-export default function HeroSection() {
+export function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="flex flex-wrap align-center justify-between py-6 px-8 pt-10 pb-16">
-        <div className="w-[100%] md:w-180 space-y-6">
-          <h1 className="text-3xl md:text-6xl leading-tight font-bold md:font-normal">
+    <section className="relative text-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-8 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Left: Text + CTAs */}
+        <div className="space-y-6">
+          <h1 className="text-5xl font-extrabold leading-tight">
             Online care that comes to you —{" "}
-            <TypewriterHeading
-              words={["weight loss", "sexual health", "hair loss", "skincare"]}
-            />
+            <span className="text-blue-500">weight loss</span>
           </h1>
-          <div className="flex flex-wrap align-center justify-between space-x-4">
-            <p className="w-[100%] md:w-100 text-md mb-10 md:mb-0">
-              Licensed U.S. providers. No insurance needed. Get virtual
-              consultations, personalized treatments, and prescriptions — all
-              from home.
-            </p>
-            <div className="space-x-4 mr-0 md:mr-10 mb-20 md:mb-0">
-              <Button size="lg" variant="blue3d">
-                Start Now
-              </Button>
-              <Button variant="white3d" size="lg">
-                Contact Us
-              </Button>
-            </div>
+          <p className="text-lg text-gray-300">
+            Licensed U.S. providers. No insurance needed. Get virtual
+            consultations, personalized treatments, and prescriptions — all from
+            home.
+          </p>
+          <div className="flex space-x-4">
+            <Button size="lg" variant="blue3d">
+              Start Now
+            </Button>
+            <Button variant="white3d" size="lg">
+              Contact Us
+            </Button>
           </div>
         </div>
 
-        <div className="w-[100%] md:w-80">
-          <Card className="bg-white text-black shadow-none border-0 rounded-2xl">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">
-                Trusted by Our Users
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[
-                "Flexible Refund Policies",
-                "Free & Discreet Shipping",
-                "Licensed & Top Rated Doctors",
-                "24/7 Customer Support",
-              ].map((text) => (
-                <div key={text} className="flex items-center space-x-3">
-                  <Box className="h-5 w-5 text-blue-500" />
-                  <span className="font-medium">{text}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+        {/* Right: “Trusted by Our Users” card */}
+        <Card className="bg-white text-black shadow-lg rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              Trusted by Our Users
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[
+              "Flexible Refund Policies",
+              "Free & Discreet Shipping",
+              "Licensed & Top Rated Doctors",
+              "24/7 Customer Support",
+            ].map((text) => (
+              <div key={text} className="flex items-center space-x-3">
+                <Box className="h-5 w-5 text-blue-500" />
+                <span className="font-medium">{text}</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Optional: Background slider images */}

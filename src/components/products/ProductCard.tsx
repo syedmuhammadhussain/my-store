@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 
@@ -8,7 +7,7 @@ import { Rating } from "@/components/Rating";
 import ProductDiscount from "@/components/products/Discount";
 import ProductImageServer from "@/components/products/ProductImage";
 
-import "../styles/Card.css";
+import "@/styles/Card.css";
 
 interface Props {
   id: number | string;
@@ -31,7 +30,6 @@ export default function ProductCard({
   price,
   rating,
   href,
-  hardCoded,
   discount_price,
 }: Props) {
   const displayPrice = discount_price ?? price;
@@ -46,35 +44,7 @@ export default function ProductCard({
             className="absolute inset-0 bg-gray-200 animate-pulse"
             aria-hidden="true"
           ></div>
-          {hardCoded ? (
-            <>
-              <Image
-                src={`${src}`}
-                alt={title}
-                fill
-                className="object-cover object-center"
-                sizes="(min-width: 768px) 100vw"
-              />
-              <Image
-                src={`${secSrc}`}
-                alt={title}
-                fill
-                sizes="(min-width: 768px) 100vw"
-                className="
-                  object-cover
-                  object-center
-                  absolute inset-0
-                  translate-x-full
-                  opacity-0
-                  transition-[transform,opacity]
-                  duration-600
-                  ease-in-out
-                  group-hover:translate-x-0
-                  group-hover:opacity-100
-                "
-              />
-            </>
-          ) : src && secSrc ? (
+          {src && secSrc ? (
             <>
               <ProductImageServer
                 alt={title}

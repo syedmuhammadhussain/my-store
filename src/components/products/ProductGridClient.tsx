@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import qs from "qs";
-import ProductCardServer from "@/components/ProductCard";
+import ProductCardServer from "@/components/products/ProductCard";
 import PageLoader from "@/components/products/PageLoader";
 import EmptyProductState from "@/components/products/EmptyProductState";
 
