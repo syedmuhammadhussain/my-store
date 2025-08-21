@@ -12,9 +12,9 @@ export default function RelatedProductsTabs({
   const [tab, setTab] = useState("youMayLike");
 
   return (
-    <section>
+    <section className="px-5 sm:px-8">
       <Tabs value={tab} onValueChange={(v) => setTab(v)}>
-        <div className="flex justify-center items-center mb-8">
+        <div className="flex justify-center items-center">
           <TabsList>
             <TabsTrigger value="youMayLike">You May Also Like</TabsTrigger>
             <TabsTrigger value="recentlyViewed">Recently Viewed</TabsTrigger>

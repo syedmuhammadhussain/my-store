@@ -1,4 +1,3 @@
-// src/components/reviews/ReviewsClient.tsx
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -101,7 +100,9 @@ function ReviewItem({ review }: { review: any }) {
             <div className="text-sm text-muted-foreground">{createdAtStr}</div>
           </div>
 
-          {review.title && <h4 className="mt-3 font-semibold">{review.title}</h4>}
+          {review.title && (
+            <h4 className="mt-3 font-semibold">{review.title}</h4>
+          )}
           <p className="mt-2 text-sm text-gray-foreground">{review.body}</p>
         </div>
       </div>

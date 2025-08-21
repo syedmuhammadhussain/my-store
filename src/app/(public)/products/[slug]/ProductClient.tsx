@@ -210,11 +210,11 @@ export default function ProductClient({
   ];
 
   return (
-    <div className="p-6 md:py-3 md:px-25">
+    <div className="p-6 xl:py-3 xl:px-25 mt-0 xl:mt-10">
       <div className="relative mx-auto grid md:grid-cols-2 xl:grid-cols-3">
         <LazyMotion features={domAnimation}>
           {/* Gallery */}
-          <div className="md:col-span-1 lg:col-span-2 md:mr-8 xl:m4-10 mb-8 sm:mb-0">
+          <div className="md:col-span-1 xl:col-span-2 md:mr-8 xl:m4-10 mb-8 sm:mb-0">
             <m.div
               variants={fadeZoom}
               initial="hidden"

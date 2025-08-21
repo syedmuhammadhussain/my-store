@@ -32,7 +32,7 @@ function MainNavClientInner({
   }, []);
 
   return (
-    <header className="hidden md:flex items-center justify-between py-3 px-12 bg-white sticky top-0 z-99">
+    <header className="hidden md:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
       <div className="flex items-center md:space-x-8 lg:space-x-12">
         <Link href="/" className="flex items-center">
           <Image src="/logo.png" alt="Logo" width={45} height={32} />

@@ -53,7 +53,7 @@ export default async function ProductPage({
 
   if (!allVariants.length) {
     return (
-      <div className="p-6 md:py-3 md:px-25 animate-page-load-fade">
+      <div className="p-6 md:py-3 md:px-25 mt-0 sm:mt-6 animate-page-load-fade">
         <ProductClient
           product={product}
           variantMapById={{}}

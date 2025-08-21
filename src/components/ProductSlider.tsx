@@ -108,7 +108,7 @@ export default function ProductSlider({ children, active = true }: CarouselProps
   };
 
   return (
-    <div className="py-5 xl:py-8 relative">
+    <div className="py-5 xl:py-12 relative">
       {/* left white fade */}
       <div
         aria-hidden
