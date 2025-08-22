@@ -166,7 +166,7 @@ export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
       )}
 
       <aside
-        className={`fixed z-50 top-0 left-0 h-full bg-white md:bg-transparent w-full md:w-50 lg:w-72 p-4 overflow-auto transform transition-transform duration-300 ${
+        className={`fixed z-49 top-0 left-0 h-full bg-white md:bg-transparent w-full md:w-50 lg:w-72 p-4 overflow-auto transform transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:block motion-preset-fade motion-delay-300`}
       >

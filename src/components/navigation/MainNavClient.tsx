@@ -1,10 +1,9 @@
-// src/components/navigation/MainNavClient.tsx
 "use client";
 
 import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingCart, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, User2 } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,19 +16,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { CategoryAttributes } from "@/types/category";
+import { useSession, signOut } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 function MainNavClientInner({
   categories,
 }: {
   categories: CategoryAttributes[];
 }) {
-  useEffect(() => {
-    // client-only mount log — runs once per mount in dev (may still double-mount in Strict Mode dev)
-    if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
-      console.log("MainNavClient mounted");
-    }
-  }, []);
+  const { data: session } = useSession();
+  const userImage = (session?.user as any)?.image;
+  const username = session?.user?.name || session?.user?.username || "Account";
 
   return (
     <header className="hidden md:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
@@ -62,7 +64,6 @@ function MainNavClientInner({
                             >
                               {cat.name}
                             </Link>
-                            {/* <ChevronDown className="w-4 h-4 text-gray-500" /> */}
                           </div>
                         </NavigationMenuTrigger>
 
@@ -105,10 +106,59 @@ function MainNavClientInner({
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" className="relative border-0 bg-transparent">
+        {session ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="relative border-0 bg-transparent rounded-full overflow-hidden"
+              >
+                {userImage ? (
+                  <Image
+                    src={userImage}
+                    alt={username}
+                    width={36}
+                    height={36}
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <User2 />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/account">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Link href="/login">
+            <Button
+              variant="outline"
+              size="icon"
+              className="relative border-0 bg-transparent"
+            >
+              <User2 />
+            </Button>
+          </Link>
+        )}
+        <Button
+          variant="outline"
+          size="icon"
+          className="relative border-0 bg-transparent"
+        >
           <Search />
         </Button>
-        <Button variant="outline" size="icon" className="relative border-0 bg-transparent">
+        <Button
+          variant="outline"
+          size="icon"
+          className="relative border-0 bg-transparent"
+        >
           <ShoppingCart />
         </Button>
       </div>
@@ -116,5 +166,4 @@ function MainNavClientInner({
   );
 }
 
-// export memoized to avoid re-render when parent re-renders but props same
 export default React.memo(MainNavClientInner);

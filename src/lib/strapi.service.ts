@@ -6,6 +6,7 @@ import { ProductVariant } from "@/types/variant";
 import { CategoryAttributes } from "@/types/category";
 import { SubCategoryAttributes } from "@/types/sub_category";
 import { ProductAttributes } from "@/types/product";
+import { Reviews } from "@/types/review";
 
 /**
  * Caches: Always store the full StrapiResponse<TItem>
@@ -52,6 +53,15 @@ const allCategoryAndSubCategory = new LRUCache<
 const allFeaturedProducts = new LRUCache<
   string,
   StrapiResponse<ProductAttributes[]>
+>({
+  max: 100,
+  ttl: 1000 * 60 * 5, // 5 minutes
+});
+
+// cache published reviews by product id
+const allPublishedReviewsByProductId = new LRUCache<
+  string,
+  StrapiResponse<Reviews[]>
 >({
   max: 100,
   ttl: 1000 * 60 * 5, // 5 minutes
@@ -373,6 +383,35 @@ export default class StrapiService {
     );
 
     allFeaturedProducts.set(cacheKey, response);
+    return response;
+  }
+
+  static async getPublishedReviewsByProductId(
+    productId: number
+  ): Promise<StrapiResponse<Reviews[]>> {
+    const cacheKey = `reviews:${productId}`;
+    if (allPublishedReviewsByProductId.has(cacheKey)) {
+      return allPublishedReviewsByProductId.get(cacheKey)!;
+    }
+
+    /**
+     * Fetch published reviews by product id (cache)
+     */
+    const response = await this.fetchData<Reviews[]>(
+      "reviews",
+      {
+        sort: ["createdAt:desc"],
+        filters: {
+          product: { id: { $eq: productId } },
+          review_status: { $eq: "Published" },
+        },
+        populate: { users_permissions_user: true },
+        pagination: { pageSize: 10, page: 1 },
+      },
+      { encodeValuesOnly: true }
+    );
+
+    allPublishedReviewsByProductId.set(cacheKey, response);
     return response;
   }
 }

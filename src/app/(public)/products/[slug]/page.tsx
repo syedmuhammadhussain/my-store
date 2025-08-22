@@ -129,7 +129,7 @@ export default async function ProductPage({
 
       <SecurePaymentInfo />
 
-      <ProductReviews productId="" initialData={mockData} />
+      <ProductReviews productId={product.id} isLoggedIn={false} />
 
       <RelatedProductsTabs related={featured} recent={[]} />
     </div>

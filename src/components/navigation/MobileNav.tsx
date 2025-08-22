@@ -1,4 +1,3 @@
-// src/components/navigation/MobileNav.tsx
 "use client";
 
 import { useState } from "react";
@@ -17,8 +16,20 @@ import { Description, DialogTitle } from "@radix-ui/react-dialog";
 
 type Props = { categories: CategoryAttributes[] };
 
+import { useSession, signOut } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { User2 } from "lucide-react";
+
 export default function MobileNav({ categories }: Props) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const userImage = (session?.user as any)?.image;
+  const username = session?.user?.name || session?.user?.username || "Account";
 
   const navItems = categories.map((c) => ({
     label: c.name ?? c.slug,
@@ -54,7 +65,6 @@ export default function MobileNav({ categories }: Props) {
 
         <SheetOverlay className="fixed inset-0 bg-black/40" />
 
-        {/* SheetContent supports data-[state] attrs; animate using those */}
         <SheetContent
           side="left"
           className="
@@ -85,7 +95,6 @@ export default function MobileNav({ categories }: Props) {
           {/* nav */}
           <nav className="pt-4 overflow-auto h-[calc(100%-112px)]">
             {" "}
-            {/* header+footer height approx */}
             <ul className="space-y-2">
               {navItems.map((it) => {
                 const hasSub = !!it.children && it.children.length > 0;
@@ -123,7 +132,6 @@ export default function MobileNav({ categories }: Props) {
                       )}
                     </div>
 
-                    {/* submenu with smooth expand */}
                     {hasSub && (
                       <div
                         className={`ml-5 overflow-hidden transition-[max-height,opacity,transform] duration-250 ease-out
@@ -154,7 +162,6 @@ export default function MobileNav({ categories }: Props) {
             </ul>
           </nav>
 
-          {/* footer */}
           <div className="p-4 border-t">
             <Link href="/account" className="text-sm block">
               Account
@@ -163,17 +170,53 @@ export default function MobileNav({ categories }: Props) {
         </SheetContent>
       </Sheet>
 
-      <Link href="/" className="mx-auto">
+      <div className="flex items-center justify-between pb-4 border-b">
         <Image
           src="/logo.png"
           alt="Logo"
-          width={0}
-          height={0}
-          sizes="45px"
-          className="w-12 h-auto"
+          width={40}
+          height={40}
+          className="w-10 h-auto"
           priority
         />
-      </Link>
+        {session ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full overflow-hidden"
+              >
+                {userImage ? (
+                  <Image
+                    src={userImage}
+                    alt={username}
+                    width={32}
+                    height={32}
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <User2 />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/account">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Link href="/login">
+            <Button variant="outline" size="icon">
+              <User2 />
+            </Button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
