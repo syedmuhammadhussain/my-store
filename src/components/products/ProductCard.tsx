@@ -4,7 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { Discount } from "@/types/discount";
 
 import { Rating } from "@/components/Rating";
-import ProductDiscount from "@/components/products/Discount";
+import ProductDiscount from "@/components/products/details/Discount";
 import ProductImageServer from "@/components/products/ProductImage";
 
 import "@/styles/Card.css";

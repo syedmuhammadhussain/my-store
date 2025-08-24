@@ -3,7 +3,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import ProductGridClient from "./ProductGridClient";
+import ProductGridClient from "./list/ProductGridClient";
 
 export default function ClientGridBridge({
   category,

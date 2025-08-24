@@ -12,13 +12,13 @@ import { ProductVariant } from "@/types/variant";
 import type { Variants, TargetAndTransition, Transition } from "framer-motion";
 
 // ** Components
-import ColorSwatches from "@/components/products/ColorSwatches";
-import SizeSelector from "@/components/products/SizeSelector";
-import ActionButtons from "@/components/products/ActionButtons";
-import SizeChartTrigger from "@/components/products/SizeChartTrigger";
-import TrustBadges from "@/components/products/TrustBadges";
-import QuantityDropdown from "@/components/products/QuantityDropdown";
-import ProductDiscount from "@/components/products/Discount";
+import ColorSwatches from "@/components/products/details/ColorSwatches";
+import SizeSelector from "@/components/products/details/SizeSelector";
+import ActionButtons from "@/components/products/details/ActionButtons";
+import SizeChartTrigger from "@/components/products/details/SizeChartDialog";
+import TrustBadges from "@/components/products/details/TrustBadges";
+import QuantityDropdown from "@/components/products/details/QuantityDropdown";
+import ProductDiscount from "@/components/products/details/Discount";
 
 // ** Utils
 import { sizes } from "@/lib/utils";

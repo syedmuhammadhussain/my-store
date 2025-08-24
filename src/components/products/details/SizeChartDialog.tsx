@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
-import SizeChart from "@/components/products/SizeChart";
+import SizeChart from "@/components/products/details/SizeChartSheet";
 
 export default function SizeChartTrigger() {
   return (

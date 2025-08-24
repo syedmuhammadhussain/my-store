@@ -1,8 +1,8 @@
 import CategoryButton from "@/components/products/CategoryButton";
-import FilterSidebar from "@/components/products/FilterSidebar";
-import SortingDropdown from "@/components/products/SortingDropdown";
+import FilterSidebar from "@/components/products/list/FilterSidebar";
+import SortingDropdown from "@/components/products/list/SortingDropdown";
 import { ProductAttributes } from "@/types/product";
-import ProductGridSSR from "@/components/products/ProductGridSSR";
+import ProductGridSSR from "@/components/products/list/ProductGridSSR";
 import StrapiService from "@/lib/strapi.service";
 import { notFound } from "next/navigation";
 import ClientGridBridge from "@/components/products/ClientGridBridge";

@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import ProductSlider from "../ProductSlider";
-import ProductCard from "./ProductCard";
+import ProductSlider from "../../ProductSlider";
+import ProductCard from "../ProductCard";
 import { ProductAttributes } from "@/types/product";
 
 export default function RelatedProductsTabs({

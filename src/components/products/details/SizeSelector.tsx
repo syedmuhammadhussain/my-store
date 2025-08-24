@@ -2,7 +2,7 @@
 
 import { normalizeSize } from "@/lib/utils";
 import type { ProductVariant } from "@/types/variant";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 /**
   Expect variants already filtered to the selected color
@@ -73,10 +73,10 @@ export default function SizeSelector({
           const base =
             "px-3 min-w-[60px] text-center flex items-center justify-center border rounded transition";
           const cls = isActive
-            ? "border-black bg-black text-white"
+            ? "border-black bg-black text-white hover:bg-black hover:text-white"
             : outOfStock
             ? "line-through cursor-not-allowed"
-            : "border-gray-300 hover:bg-gray-100";
+            : "";
           const pointer = labelKey === "standard" ? "" : "cursor-pointer ";
 
           return (

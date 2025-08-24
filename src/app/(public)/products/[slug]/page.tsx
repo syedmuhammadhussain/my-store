@@ -8,8 +8,8 @@ import { ProductVariant } from "@/types/variant";
 import { ProductColors } from "@/types/product_colors";
 import { sizeToValue } from "@/lib/utils";
 import ProductReviews from "@/components/products/reviews/ProductReviews";
-import SecurePaymentInfo from "@/components/products/SecurePaymentInfo";
-import RelatedProductsTabs from "@/components/products/RelatedProductsTabs";
+import SecurePaymentInfo from "@/components/products/details/SecurePaymentInfo";
+import RelatedProductsTabs from "@/components/products/related/RelatedProductsTabs";
 
 type CombinedVariant = ProductVariant & {
   colorId: number;

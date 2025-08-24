@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import ProductThumbnailImage from "../ProductThumbnailImage";
+import ProductThumbnailImage from "./ProductThumbnailImage";
 import ProductImage from "../ProductImage";
 import { UploadedImage } from "@/types/image";
 import "@/styles/embla.css";

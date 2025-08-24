@@ -4,9 +4,9 @@ export const revalidate = 300;
 
 import { notFound } from "next/navigation";
 import CategoryButton from "@/components/products/CategoryButton";
-import FilterSidebar from "@/components/products/FilterSidebar";
-import SortingDropdown from "@/components/products/SortingDropdown";
-import ProductGridSSR from "@/components/products/ProductGridSSR";
+import FilterSidebar from "@/components/products/list/FilterSidebar";
+import SortingDropdown from "@/components/products/list/SortingDropdown";
+import ProductGridSSR from "@/components/products/list/ProductGridSSR";
 import ClientGridBridge from "@/components/products/ClientGridBridge";
 import StrapiService from "@/lib/strapi.service";
 import { ProductAttributes } from "@/types/product";
