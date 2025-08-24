@@ -12,7 +12,6 @@ import { ProductVariant } from "@/types/variant";
 import type { Variants, TargetAndTransition, Transition } from "framer-motion";
 
 // ** Components
-import ProductGallery from "@/components/products/ProductGallery";
 import ColorSwatches from "@/components/products/ColorSwatches";
 import SizeSelector from "@/components/products/SizeSelector";
 import ActionButtons from "@/components/products/ActionButtons";
@@ -23,7 +22,8 @@ import ProductDiscount from "@/components/products/Discount";
 
 // ** Utils
 import { sizes } from "@/lib/utils";
-// import ProductGalleryClient from "@/components/products/ProductGalleryClient";
+import DesktopGallery from "@/components/products/gallery/DesktopGallery";
+import MobileGallery from "@/components/products/gallery/MobileGallery";
 
 // ** Inline Types
 type CombinedVariant = ProductVariant & {
@@ -222,7 +222,9 @@ export default function ProductClient({
               custom={0}
             >
               {/* <ProductGalleryClient productName={product.name} images={mainImages} /> */}
-              <ProductGallery productName={product.name} images={mainImages} />
+              {/* <ProductGallery productName={product.name} images={mainImages} /> */}
+              <DesktopGallery productName={product.name} images={mainImages} />
+              <MobileGallery productName={product.name} images={mainImages} />
             </m.div>
           </div>
 

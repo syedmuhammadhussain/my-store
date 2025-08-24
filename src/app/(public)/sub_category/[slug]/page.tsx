@@ -72,16 +72,27 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
 
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left sidebar (client) */}
-        <FilterSidebar
-          initialCount={products.length}
-          category={slug}
-          sizeType={sizeType}
-        />
+        <div className="hidden md:block">
+          <FilterSidebar
+            initialCount={products.length}
+            category={slug}
+            sizeType={sizeType}
+          />
+        </div>
 
         {/* Main content */}
-        <main className="flex-1 p-0 md:p-4">
+        <main className="flex-1 p-2 md:p-4">
           <div className="mb-3 md:mb-6 flex items-center justify-between">
-            <SortingDropdown />
+            <div className="flex items-center">
+              <div className="md:hidden">
+                <FilterSidebar
+                  initialCount={products.length}
+                  category={slug}
+                  sizeType={sizeType}
+                />
+              </div>
+              <SortingDropdown />
+            </div>
             <p className="text-sm text-gray-600 mr-2">
               {products.length} products
             </p>
@@ -93,7 +104,7 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
               <ProductGridSSR products={products} />
             </div>
             {/* Client bridge decides when to render client grid and hides SSR via CSS */}
-            <ClientGridBridge category={slug} page="subcategory" />
+            <ClientGridBridge category={slug} page="category" />
           </div>
         </main>
       </div>

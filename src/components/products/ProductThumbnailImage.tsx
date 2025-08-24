@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function ProductSliderImage({
+export default function ProductThumbnailImage({
   src,
   alt,
   className,
@@ -22,13 +22,14 @@ export default function ProductSliderImage({
       height={height ?? 300}
       className={className}
       priority={false}
+      quality={85}
       sizes="
-        (max-width: 400px) 30vw,
-        (max-width: 640px) 50vw,
+        (max-width: 400px) 100vw,
+        (max-width: 640px) 100vw, 100px,
         (max-width: 1024px) 33vw,
         (max-width: 1536px) 25vw,
         50vw
-    "
+      "
     />
   );
 }

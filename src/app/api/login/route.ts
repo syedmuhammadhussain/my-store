@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  debugger;
   try {
-    const { email, password } = await req.json();
+    const { identifier, password } = await req.json();
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/auth/local`,
@@ -11,8 +10,9 @@ export async function POST(req: Request) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          identifier: email,
+          identifier: identifier,
           password: password,
+          requestRefresh: true
         }),
       }
     );

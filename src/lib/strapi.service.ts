@@ -387,20 +387,22 @@ export default class StrapiService {
   }
 
   static async getPublishedReviewsByProductId(
-    productId: number
+    productId: number,
+    sort: string
+    // force = false
   ): Promise<StrapiResponse<Reviews[]>> {
-    const cacheKey = `reviews:${productId}`;
-    if (allPublishedReviewsByProductId.has(cacheKey)) {
-      return allPublishedReviewsByProductId.get(cacheKey)!;
-    }
+    // const cacheKey = `reviews:${productId}`;
 
-    /**
-     * Fetch published reviews by product id (cache)
-     */
+    // if (force) allPublishedReviewsByProductId.delete(cacheKey);
+
+    // if (!force && allPublishedReviewsByProductId.has(cacheKey)) {
+    //   return allPublishedReviewsByProductId.get(cacheKey)!;
+    // }
+
     const response = await this.fetchData<Reviews[]>(
       "reviews",
       {
-        sort: ["createdAt:desc"],
+        sort: [sort ?? "createdAt:desc"],
         filters: {
           product: { id: { $eq: productId } },
           review_status: { $eq: "Published" },
@@ -411,7 +413,7 @@ export default class StrapiService {
       { encodeValuesOnly: true }
     );
 
-    allPublishedReviewsByProductId.set(cacheKey, response);
+    // allPublishedReviewsByProductId.set(cacheKey, response);
     return response;
   }
 }

@@ -69,8 +69,8 @@ export default function ProductCard({
           </button>
         </div>
 
-        <div className="mt-3 text-[14px]">
-          <h3 className="inline font-bold after:content-['—'] after:mx-2">
+        <div className="mt-3 text-[14px] overflow-hidden text-ellipsis">
+          <h3 className="inline font-bold after:content-['—'] after:mx-2 truncate md:text-wrap">
             {title}
           </h3>
           <span className="font-normal">Rs.{displayPrice?.toFixed(2)}</span>

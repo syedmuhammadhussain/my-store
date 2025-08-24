@@ -10,7 +10,7 @@ const sortOptions = [
   { label: "Lowest rating", value: "rating:asc" },
 ];
 
-export default function SortDropdown({ onChange, initial }: { onChange: (v: string) => void; initial: string }) {
+export default function ReviewSorting({ onChange, initial }: { onChange: (v: string) => void; initial: string }) {
   const [value, setValue] = useState(initial);
 
   return (
@@ -21,7 +21,7 @@ export default function SortDropdown({ onChange, initial }: { onChange: (v: stri
         onChange(v);
       }}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="sm:w-[180px]">
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
       <SelectContent>

@@ -58,3 +58,10 @@ export const sizeToValue = (variant: {
 
   return 9999;
 };
+
+import type { UploadedImage } from "@/types/image";
+
+export function getBestImageFormat(img: UploadedImage) {
+  const fmt = img.formats || {};
+  return img ?? fmt.original ?? fmt.large ?? fmt.medium ?? fmt.small ?? fmt.thumbnail;
+}

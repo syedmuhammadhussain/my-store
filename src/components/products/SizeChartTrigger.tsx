@@ -15,7 +15,7 @@ export default function SizeChartTrigger() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="text-xs mb-8 p-0 bg-white border-0 hover:bg-white hover:underline"
+          className="text-xs mb-8 p-0 bg-white border-0 hover:bg-white hover:underline shadow-none"
         >
           <span className="uppercase">Size Chart</span>
         </Button>

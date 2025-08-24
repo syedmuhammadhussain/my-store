@@ -5,10 +5,8 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_STRAPI_BASE_URL: process.env.NEXT_PUBLIC_STRAPI_BASE_URL,
   },
   images: {
-    deviceSizes: [
-      180, 240, 300, 360, 400, 460, 540, 590, 630, 670, 720, 770, 814, 900,
-      1024, 1080, 1200, 1400
-    ],
+    deviceSizes: [640, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: "https",

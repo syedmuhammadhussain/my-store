@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingCart, User2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { BadgeCheck, LogOut, Search, ShoppingCart, User2 } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,28 +15,38 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { CategoryAttributes } from "@/types/category";
-import { useSession, signOut } from "next-auth/react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 
 function MainNavClientInner({
   categories,
 }: {
   categories: CategoryAttributes[];
 }) {
+  // const { data: session, update } = useSession();
   const { data: session } = useSession();
   const userImage = (session?.user as any)?.image;
   const username = session?.user?.name || session?.user?.username || "Account";
+  const email = session?.user?.email || "test@test.com";
+  const router = useRouter();
+
+  const handleLoginClick = () => {
+    const currentPath = window.location.pathname + window.location.search;
+    router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
+  };
 
   return (
-    <header className="hidden md:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
+    <header className="hidden lg:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
       <div className="flex items-center md:space-x-8 lg:space-x-12">
         <Link href="/" className="flex items-center">
           <Image src="/logo.png" alt="Logo" width={45} height={32} />
@@ -109,43 +121,76 @@ function MainNavClientInner({
         {session ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="relative border-0 bg-transparent rounded-full overflow-hidden"
-              >
-                {userImage ? (
-                  <Image
-                    src={userImage}
-                    alt={username}
-                    width={36}
-                    height={36}
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <User2 />
-                )}
-              </Button>
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="relative border-0 bg-transparent"
+                >
+                  <Avatar className="size-5 rounded-lg">
+                    <AvatarImage
+                      src={userImage ?? "/user-icon.svg"}
+                      alt={username}
+                      width={20}
+                      height={20}
+                    />
+                    <AvatarFallback className="rounded-lg">
+                      {username}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href="/account">Profile</Link>
+
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuLabel>
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="size-8 rounded-lg">
+                    <AvatarImage
+                      src={userImage ?? "/user-icon.svg"}
+                      alt={username}
+                      width={20}
+                      height={20}
+                    />
+                    <AvatarFallback className="rounded-lg">
+                      {username}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{username}</span>
+                    <span className="text-muted-foreground truncate text-xs">
+                      {email}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => console.log("Account")}>
+                <BadgeCheck className="w-3 h-3 text-black" />
+                Account
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
-                Logout
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                onClick={() => signOut({ callbackUrl: "/", redirect: false })}
+                className={cn("text-red-600 focus:text-red-600")}
+              >
+                <LogOut className="w-3 h-3 text-red-600" />
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Link href="/login">
-            <Button
-              variant="outline"
-              size="icon"
-              className="relative border-0 bg-transparent"
-            >
-              <User2 />
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative border-0 bg-transparent"
+            onClick={handleLoginClick}
+          >
+            <User2 />
+          </Button>
         )}
         <Button
           variant="outline"

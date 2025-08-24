@@ -4,18 +4,16 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import ReviewSummary from "./ReviewSummary";
 import ReviewsList from "./ReviewsList";
-import WriteReviewDialog from "./WriteReviewDialog";
-import SortDropdown from "./SortDropdown";
+import ReviewDialog from "./ReviewDialog";
+import ReviewSorting from "./ReviewSorting";
 import { fetchReviewData } from "@/lib/reviews";
 
-export default function ReviewSectionClient({
+export default function ReviewSection({
   productId,
-  isLoggedIn,
   initialSummary,
   initialReviews,
 }: {
   productId: number;
-  isLoggedIn: boolean;
   initialSummary: {
     average: number;
     total: number;
@@ -28,8 +26,7 @@ export default function ReviewSectionClient({
   const [sort, setSort] = useState("createdAt:desc");
 
   async function refresh(s = sort) {
-    debugger;
-    const { summary, reviews } = await fetchReviewData(productId);
+    const { summary, reviews } = await fetchReviewData(productId, s);
     setReviews(reviews);
     setSummary(summary);
   }
@@ -44,19 +41,18 @@ export default function ReviewSectionClient({
         className="max-w-6xl mx-auto"
       >
         <ReviewSummary summary={summary} />
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 my-6">
-          <SortDropdown
+        <div className="flex flex-row items-center justify-between gap-4 my-6">
+          <ReviewSorting
             initial={sort}
             onChange={(v) => {
               setSort(v);
               refresh(v);
             }}
           />
-          <WriteReviewDialog
+          <ReviewDialog
             productId={productId}
-            isLoggedIn={isLoggedIn}
             onSuccess={async () => {
-              if (isLoggedIn) await refresh();
+              await refresh();
             }}
           />
         </div>

@@ -54,7 +54,14 @@ function serializeFiltersToParams(filters: FilterState) {
 
 // Canonical lists
 const ALPHA_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "Standard"];
-const AGE_SIZES = ["3-4 Year", "5-6 Year", "7-8 Year", "9-10 Year", "11-12 Year", "13-14 Year"];
+const AGE_SIZES = [
+  "3-4 Year",
+  "5-6 Year",
+  "7-8 Year",
+  "9-10 Year",
+  "11-12 Year",
+  "13-14 Year",
+];
 
 export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
   const router = useRouter();
@@ -147,11 +154,11 @@ export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
   return (
     <>
       {/* Mobile toggle */}
-      <div className="md:hidden flex justify-end mb-4">
+      <div className="md:hidden flex justify-end mx-1 md:mx-2 my-3">
         <Button
           variant="outline"
           onClick={() => setOpen(true)}
-          className="bg-white border-0 px-4"
+          className="border-0 px-4"
         >
           <SlidersHorizontal />
         </Button>
@@ -170,6 +177,17 @@ export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
           open ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:block motion-preset-fade motion-delay-300`}
       >
+        <div className="text-right mb-2">
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+            className="size-4 bg-transparent border-0 shadow-none"
+          >
+            <X />
+          </Button>
+        </div>
         {/* Applied Filters */}
         {(filters.inStock ||
           filters.outOfStock ||

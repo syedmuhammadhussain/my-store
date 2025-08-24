@@ -1,3 +1,4 @@
+import { UploadedImage } from "./image";
 import { UsersPermission } from "./users";
 
 /**
@@ -20,5 +21,8 @@ export interface Reviews {
   publishedAt: Date | string;
   username: string | null;
   email: string | null;
+  upload_media: UploadedImage[];
   users_permissions_user: UsersPermission | null;
+  authorName?: string;
+  verified?: string;
 }

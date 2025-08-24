@@ -130,7 +130,7 @@ export default function ProductSlider({ children, active = true }: CarouselProps
 
       <div className="relative">
         {/* Embla viewport: use combinedRef so we can observe the element */}
-        <div className="overflow-hidden pl-4 pr-12" ref={combinedRef as any}>
+        <div className="overflow-hidden pl-2 pr-12 md:pl-4 md:pr-12" ref={combinedRef as any}>
           {/* IMPORTANT: prevent wrapping */}
           <div className="flex flex-nowrap space-x-4">
             {childrenArr.map((child, idx) => (

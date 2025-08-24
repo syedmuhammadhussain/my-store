@@ -1,6 +1,6 @@
 "use client";
 
-import Stars from "./Stars";
+import ReviewStars from "./ReviewStars";
 
 export default function ReviewSummary({
   summary,
@@ -14,7 +14,7 @@ export default function ReviewSummary({
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       <div className="p-6 border rounded-lg">
         <div className="flex items-center gap-3">
-          <Stars value={Math.round(Number(summary.average || 0))} />
+          <ReviewStars value={Math.round(Number(summary.average || 0))} />
           <div className="text-lg font-semibold">{average} out of 5</div>
         </div>
         <div className="mt-2 text-sm text-muted-foreground">
@@ -34,11 +34,11 @@ function Distribution({ distribution, total }: { distribution: Record<number, nu
     <div className="grid grid-cols-1 gap-2">
       {[5, 4, 3, 2, 1].map((star) => {
         const count = distribution?.[star] ?? 0;
-        const pct = total ? Math.round((count / total) * 100) : 0;
+        const pct = total ? ((count / total) * 100).toFixed(2) : 0;
         return (
           <div key={star} className="flex items-center gap-3">
             <div className="w-24 flex items-center gap-2">
-              <Stars value={star} compact />
+              <ReviewStars value={star} compact />
             </div>
             <div className="flex-1 bg-gray-100 h-3 rounded overflow-hidden">
               <div className="h-3 bg-black" style={{ width: `${pct}%` }} />

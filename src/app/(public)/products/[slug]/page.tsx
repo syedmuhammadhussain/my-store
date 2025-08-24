@@ -8,10 +8,7 @@ import { ProductVariant } from "@/types/variant";
 import { ProductColors } from "@/types/product_colors";
 import { sizeToValue } from "@/lib/utils";
 import ProductReviews from "@/components/products/reviews/ProductReviews";
-import { mockData } from "@/store/data";
 import SecurePaymentInfo from "@/components/products/SecurePaymentInfo";
-import ProductSlider from "@/components/ProductSlider";
-import ProductCard from "@/components/products/ProductCard";
 import RelatedProductsTabs from "@/components/products/RelatedProductsTabs";
 
 type CombinedVariant = ProductVariant & {
@@ -129,7 +126,7 @@ export default async function ProductPage({
 
       <SecurePaymentInfo />
 
-      <ProductReviews productId={product.id} isLoggedIn={false} />
+      <ProductReviews productId={product.id} />
 
       <RelatedProductsTabs related={featured} recent={[]} />
     </div>

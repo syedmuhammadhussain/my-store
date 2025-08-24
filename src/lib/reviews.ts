@@ -1,9 +1,8 @@
 import { Reviews } from "@/types/review";
 import StrapiService from "./strapi.service";
 
-// ** Fetch published reviews only
-export async function fetchReviewData(productId: number) {
-  const res = await StrapiService.getPublishedReviewsByProductId(productId);
+export async function fetchReviewData(productId: number, sort: string) {
+  const res = await StrapiService.getPublishedReviewsByProductId(productId, sort);
   const data = res.data as unknown as Reviews[];
 
   const reviews = data.map((r) => ({
@@ -17,7 +16,9 @@ export async function fetchReviewData(productId: number) {
   }));
 
   const total = reviews.length;
-  const average = total ? reviews.reduce((a, b) => a + (b.rating || 0), 0) / total : 0;
+  const average = total
+    ? reviews.reduce((a, b) => a + (b.rating || 0), 0) / total
+    : 0;
   const distribution = [5, 4, 3, 2, 1].reduce((acc, star) => {
     acc[star] = reviews.filter((r) => r.rating === star).length;
     return acc;
@@ -27,5 +28,4 @@ export async function fetchReviewData(productId: number) {
     summary: { average, total, distribution },
     reviews,
   };
-
 }

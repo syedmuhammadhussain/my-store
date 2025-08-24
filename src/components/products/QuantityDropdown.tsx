@@ -17,7 +17,7 @@ export default function QuantityDropdown() {
       <small className="uppercase text-xs font-medium mb-2 block">Quantity</small>
 
       <Select value={quantity} onValueChange={setQuantity}>
-        <SelectTrigger className="w-[128px] h-10 border-gray-300 hover:border-black">
+        <SelectTrigger size="sm" className="w-[128px] border-gray-300 hover:border-black">
           <SelectValue>
             {quantity} {/* Show selected value */}
           </SelectValue>

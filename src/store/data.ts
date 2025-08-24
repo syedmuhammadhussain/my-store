@@ -30,25 +30,6 @@ export const heroData: Slide[] = [
     title: "Built with Tailwind CSS",
     subtitle: "Utility-first styling",
   },
-  // {
-  //   desktopSrc:
-  //     "/images/hero/collage-photos-young-people-fashion-260nw-1724618176.webp",
-  //   mobileSrc:
-  //     "/images/hero/collage-photos-young-people-fashion-260nw-1724618176.webp",
-  //   alt: "Spring Collection",
-  //   title: "SEO-Friendly SSR",
-  //   subtitle: "Fast initial paint",
-  // },
-
-  // {
-  //   desktopSrc:
-  //     "/images/hero/group-different-men-women-on-260nw-2477681591.webp",
-  //   mobileSrc:
-  //     "/images/hero/group-different-men-women-on-260nw-2477681591.webp",
-  //   alt: "Spring Collection",
-  //   title: "SEO-Friendly SSR",
-  //   subtitle: "Fast initial paint",
-  // },
 ];
 
 export const navItems = [

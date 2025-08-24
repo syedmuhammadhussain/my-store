@@ -1,7 +1,7 @@
 /* -----------------------------
    Stars component
    ----------------------------- */
-export default function Stars({ value, compact }: { value?: number; compact?: boolean }) {
+export default function ReviewStars({ value, compact }: { value?: number; compact?: boolean }) {
   const v = Math.round(value ?? 0);
   const classes = compact
     ? "w-3 h-3 sm:w-4 sm:h-4 text-violet-500/65"

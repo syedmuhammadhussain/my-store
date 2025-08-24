@@ -1,9 +1,12 @@
 // src/app/layout.tsx
-import Header from "@/components/Header";
 import { DM_Sans } from "next/font/google";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "./providers";
+
 import "./globals.css";
-import NextAuthSessionProvider from "@/components/providers/session-provider";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -12,19 +15,21 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
       <body className={`${dmSans.variable} antialiased bg-white font-sans`}>
-        <NextAuthSessionProvider>
-        <Header />
-        {children}
-        <Toaster />
-        </NextAuthSessionProvider>
+        <Providers session={session}>
+          <Header />
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

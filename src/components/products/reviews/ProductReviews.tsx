@@ -1,22 +1,19 @@
 // components/reviews/ProductReviews.tsx
 import { fetchReviewData } from "@/lib/reviews";
-import ReviewSectionClient from "./ReviewSectionClient";
+import ReviewSection from "./ReviewSection";
 
 export default async function ProductReviews({
   productId,
-  isLoggedIn,
 }: {
   productId: number;
-  isLoggedIn: boolean;
 }) {
-  const { summary, reviews } = await fetchReviewData(productId);
+  const summary = await fetchReviewData(productId, "createdAt:desc");
 
   return (
-    <ReviewSectionClient
+    <ReviewSection
       productId={productId}
-      isLoggedIn={isLoggedIn}
-      initialSummary={summary}
-      initialReviews={reviews}
+      initialSummary={summary.summary}
+      initialReviews={summary.reviews}
     />
   );
 }
