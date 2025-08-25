@@ -85,7 +85,7 @@ export default function ProductCard({
           {discount_price && (
             <ProductDiscount discount_price={discount_price} price={price} />
           )}
-          {rating && (
+          {rating !== 0 && rating !== undefined && rating !== null && (
             <div className="mt-2">
               <Rating rating={rating} />
             </div>

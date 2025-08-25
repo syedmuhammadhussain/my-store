@@ -11,6 +11,7 @@ import ClientGridBridge from "@/components/products/ClientGridBridge";
 import StrapiService from "@/lib/strapi.service";
 import { ProductAttributes } from "@/types/product";
 import { CategoryAttributes } from "@/types/category";
+import { calculateAverageRating, defaultPageSizeForProductList } from "@/lib/utils";
 
 type cParams = Promise<{ slug: string }>;
 
@@ -19,6 +20,7 @@ export async function generateStaticParams() {
     `${process.env.NEXT_PUBLIC_STRAPI_BASE_URL}/api/categories`,
     {
       cache: "force-cache",
+      next: { revalidate: 300 },
     }
   );
   const json = await res.json();
@@ -28,11 +30,21 @@ export async function generateStaticParams() {
 export default async function CategoryPage({ params }: { params: cParams }) {
   const { slug } = await params;
 
-  const jsonProducts = await StrapiService.getProductsByCategory(slug);
+  const jsonProducts = await StrapiService.getProductsByCategory(slug, {
+    pageSize: defaultPageSizeForProductList,
+    page: 1,
+  });
   const jsonCategories = await StrapiService.getCategories();
   if (!jsonProducts.data.length) return notFound();
 
-  const products = jsonProducts.data as unknown as ProductAttributes[];
+  const allProducts = jsonProducts.data as unknown as ProductAttributes[];
+  const products =
+    allProducts &&
+    allProducts.map((p: ProductAttributes) => {
+      const { average, total } = calculateAverageRating(p.reviews || []);
+      return { ...p, averageRating: average, reviewsCount: total };
+    });
+
   const cateories = jsonCategories.data as unknown as CategoryAttributes[];
 
   const slugList = ["men", "button-down-pj-sets", "women"];
@@ -82,7 +94,7 @@ export default async function CategoryPage({ params }: { params: cParams }) {
               <ProductGridSSR products={products} />
             </div>
             {/* Client bridge decides when to render client grid and hides SSR via CSS */}
-            <ClientGridBridge category={slug} page="category" />
+            <ClientGridBridge category={slug} page="category" pageSize={defaultPageSizeForProductList} />
           </div>
         </main>
       </div>

@@ -1,5 +1,6 @@
 import { Reviews } from "@/types/review";
 import StrapiService from "./strapi.service";
+import { calculateAverageRating } from "./utils";
 
 export async function fetchReviewData(productId: number, sort: string) {
   const res = await StrapiService.getPublishedReviewsByProductId(productId, sort);
@@ -15,10 +16,8 @@ export async function fetchReviewData(productId: number, sort: string) {
     verified: !!r.users_permissions_user,
   }));
 
-  const total = reviews.length;
-  const average = total
-    ? reviews.reduce((a, b) => a + (b.rating || 0), 0) / total
-    : 0;
+  const { average, total } = calculateAverageRating(reviews);
+
   const distribution = [5, 4, 3, 2, 1].reduce((acc, star) => {
     acc[star] = reviews.filter((r) => r.rating === star).length;
     return acc;

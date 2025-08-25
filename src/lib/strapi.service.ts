@@ -111,7 +111,7 @@ export default class StrapiService {
     const url = `${STRAPI_URL}/api/${endpoint}${query ? `?${query}` : ""}`;
 
     const response = await fetch(url, {
-      next: { revalidate: 300 },
+      next: { revalidate: 300 }, // every 5min
     });
 
     if (!response.ok) {
@@ -207,13 +207,13 @@ export default class StrapiService {
    * Cached fetch of products by category slug
    */
   static async getProductsByCategory(
-    slug: string
+    slug: string,
+    pagination?: { page: number; pageSize: number }
   ): Promise<StrapiResponse<ProductListItem>> {
     // const cacheKey = `product_category:${slug}`;
     // if (cache.has(cacheKey)) {
     //   return cache.get(cacheKey)!;
     // }
-
     const response = await this.fetchData<ProductListItem>("products", {
       filters: {
         sub_category: {
@@ -222,10 +222,16 @@ export default class StrapiService {
           },
         },
       },
-      populate: ["images", "gallery"],
-      fields: ["name", "slug", "price", "discount_price"],
-      sort: ["product_colors.variants.price:asc"],
-      pagination: { pageSize: 100 },
+      populate: {
+        fields: ["name", "slug", "price", "discount_price"],
+        images: true,
+        gallery: true,
+        reviews: true,
+      },
+      pagination: {
+        pageSize: pagination?.pageSize ?? 20,
+        page: pagination?.page ?? 1,
+      },
     });
 
     // cache.set(cacheKey, response);
@@ -236,7 +242,8 @@ export default class StrapiService {
    * Cached fetch of products by sub-category slug
    */
   static async getProductsBySubCategory(
-    slug: string
+    slug: string,
+    pagination?: { page: number; pageSize: number }
   ): Promise<StrapiResponse<ProductListItem>> {
     // const cacheKey = `product_sub_category:${slug}`;
     // if (cache.has(cacheKey)) {
@@ -245,10 +252,16 @@ export default class StrapiService {
 
     const response = await this.fetchData<ProductListItem>("products", {
       filters: { sub_category: { slug: { $eq: slug } } },
-      populate: ["images", "gallery"],
-      fields: ["name", "slug", "price"],
-      sort: ["product_colors.variants.price:asc"],
-      pagination: { pageSize: 100 },
+      populate: {
+        fields: ["name", "slug", "price", "discount_price"],
+        images: true,
+        gallery: true,
+        reviews: true,
+      },
+      pagination: {
+        pageSize: pagination?.pageSize ?? 20,
+        page: pagination?.page ?? 1,
+      },
     });
 
     // cache.set(cacheKey, response);
@@ -406,6 +419,20 @@ export default class StrapiService {
 
     // allPublishedReviewsByProductId.set(cacheKey, response);
     return response;
+  }
+
+  static async fetchProductByIdForMetaData(
+    slug: string
+  ): Promise<StrapiResponse<TProductAttributes>> {
+    return this.fetchData<TProductAttributes>("products", {
+      filters: { slug: { $eq: slug } },
+      fields: ["id", "name", "slug", "description", "price"],
+      populate: {
+        gallery: {
+          fields: ["url"],
+        },
+      },
+    });
   }
 }
 

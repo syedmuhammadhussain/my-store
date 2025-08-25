@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export const defaultPageSizeForProductList = 20
+
 export const sizes = [
   "XS",
   "S",
@@ -60,8 +62,36 @@ export const sizeToValue = (variant: {
 };
 
 import type { UploadedImage } from "@/types/image";
+import { Reviews } from "@/types/review";
 
 export function getBestImageFormat(img: UploadedImage) {
   const fmt = img.formats || {};
   return img ?? fmt.original ?? fmt.large ?? fmt.medium ?? fmt.small ?? fmt.thumbnail;
 }
+
+export function calculateAverageRating(reviews: Pick<Reviews, "rating">[]) {
+  const total = reviews.length;
+  if (!total) return { average: 0, total };
+
+  const sum = reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
+  const average = sum / total;
+
+  return { average: Number(average.toFixed(2)), total };
+}
+
+// export function extractRatings(product: any): number[] {
+//   // Supports either reviews: Review[] or reviews: { data: [{ attributes: { rating } }] }
+//   if (!product?.reviews) return [];
+//   const rel = (product.reviews as any).data;
+//   if (Array.isArray(rel)) {
+//     return rel
+//       .map((r: any) => r?.attributes?.rating)
+//       .filter((n: any) => Number.isFinite(n));
+//   }
+//   if (Array.isArray(product.reviews)) {
+//     return product.reviews
+//       .map((r: any) => r?.rating)
+//       .filter((n: any) => Number.isFinite(n));
+//   }
+//   return [];
+// }

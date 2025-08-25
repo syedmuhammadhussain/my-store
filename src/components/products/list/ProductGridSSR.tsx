@@ -4,7 +4,10 @@ import ProductCard from "@/components/products/ProductCard";
 export default function ProductGridSSR({
   products,
 }: {
-  products: ProductAttributes[];
+  products: (ProductAttributes & {
+    averageRating?: number;
+    reviewsCount?: number;
+  })[];
 }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 grid-animate">
@@ -18,7 +21,7 @@ export default function ProductGridSSR({
           discount_price={p.discount_price}
           price={p.price || 0}
           href={p.slug}
-          rating={p.views}
+          rating={p.averageRating ?? 0}
         />
       ))}
     </div>

@@ -4,13 +4,17 @@
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductGridClient from "./list/ProductGridClient";
+import LoadMoreClient from "./list/LoadMoreClient";
+import { defaultPageSizeForProductList } from "@/lib/utils";
 
 export default function ClientGridBridge({
   category,
   page,
+  pageSize = defaultPageSizeForProductList,
 }: {
   category: string;
   page: string;
+  pageSize?: number;
 }) {
   const searchParams = useSearchParams();
 
@@ -36,7 +40,11 @@ export default function ClientGridBridge({
     else wrapper.classList.remove("has-csr");
   }, [isFiltered]);
 
-  if (!isFiltered) return null;
+  // If filtered -> render CSR filtered grid (replaces SSR via CSS)
+  if (isFiltered) {
+    return <ProductGridClient category={category} page={page} />;
+  }
 
-  return <ProductGridClient category={category} page={page} />;
+  // If not filtered -> keep SSR first fold and progressively load more below
+  return <LoadMoreClient category={category} page={page} pageSize={pageSize} />;
 }

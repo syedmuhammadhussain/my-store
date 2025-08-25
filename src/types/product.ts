@@ -4,6 +4,7 @@ import { UploadedImage } from "./image";
 import { SubCategoryAttributes } from "./sub_category";
 import { ProductVariant } from "./variant";
 import { ProductColors } from "./product_colors";
+import { Reviews } from "./review";
 
 export interface ProductAttributes {
   id: number;
@@ -25,6 +26,7 @@ export interface ProductAttributes {
   sub_category?: SubCategoryAttributes;
   discount?: Discount;
   product_colors: ProductColors[];
+  reviews?: Reviews[];
 }
 
 export type SingleProductResponse = StrapiResponse<ProductAttributes>;

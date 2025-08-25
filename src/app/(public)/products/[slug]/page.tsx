@@ -10,12 +10,49 @@ import { sizeToValue } from "@/lib/utils";
 import ProductReviews from "@/components/products/reviews/ProductReviews";
 import SecurePaymentInfo from "@/components/products/details/SecurePaymentInfo";
 import RelatedProductsTabs from "@/components/products/related/RelatedProductsTabs";
+import type { Metadata } from "next";
+import { buildProductMetadata } from "@/lib/metadata";
 
 type CombinedVariant = ProductVariant & {
   colorId: number;
   colorName: string;
   inventory: { quantity?: number } | null | undefined;
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const res = await StrapiService.fetchProductByIdForMetaData(params.slug);
+  const product =
+    Array.isArray(res.data) && res.data.length ? (res.data[0] as any) : null;
+
+  if (!product) {
+    return {
+      title: "Product not found • Digo Fashion",
+      description: "The requested product was not found.",
+      robots: { index: false, follow: false },
+      metadataBase: new URL(
+        process.env.NEXT_PUBLIC_SITE_URL || "https://my-store-tau-nine.vercel.app"
+      ),
+    } as Metadata;
+  }
+
+  // Build trimmed object for metadata builder (avoid passing huge objects)
+  const minimal = {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    description: product.description,
+    gallery: product.gallery ?? [],
+    price: product.price,
+    currency: product.currency,
+    availability: product.availability,
+  };
+
+  return buildProductMetadata(minimal);
+}
 
 export async function generateStaticParams() {
   const res = await StrapiService.getAllProductSlugs();

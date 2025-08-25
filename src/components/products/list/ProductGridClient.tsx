@@ -8,6 +8,10 @@ import PageLoader from "@/components/products/PageLoader";
 import EmptyProductState from "@/components/products/EmptyProductState";
 
 import type { ProductAttributes } from "@/types/product";
+import {
+  calculateAverageRating,
+  defaultPageSizeForProductList,
+} from "@/lib/utils";
 
 type Filters = {
   price: [number, number];
@@ -31,14 +35,15 @@ export default function ProductGridClient({
   page: "category" | "subcategory" | string;
 }) {
   const searchParams = useSearchParams();
-  const [items, setItems] = useState<ProductAttributes[] | null>(null);
+  const [items, setItems] = useState<
+    (ProductAttributes & { averageRating?: number })[] | null
+  >(null);
   const [loading, setLoading] = useState(false);
   const gridRef = useRef<HTMLDivElement | null>(null);
 
   // refs for debounce / abort / one-time scroll
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<number | null>(null);
-  const filteredOnceRef = useRef<boolean>(false);
 
   // 1) Parse filters + sort + isDefault from URL (stable due to useMemo)
   const { filters, sort, isDefault } = useMemo(() => {
@@ -119,20 +124,30 @@ export default function ProductGridClient({
 
     const obj: any = {
       filters: baseFilters,
-      populate: [
-        "images",
-        "gallery",
-        "product_colors.variants",
-        "product_colors.variants.size",
-        "product_colors.variants.inventory",
-      ],
-      pagination: { pageSize: 100 },
+      populate: {
+        fields: ["name", "slug", "price", "discount_price"],
+        images: true,
+        gallery: true,
+        reviews: true,
+      },
+      pagination: { pageSize: defaultPageSizeForProductList },
       ...(sort ? { sort: [sort] } : {}),
     };
 
     // if (sort) obj.sort = [sort];
     return obj;
   }, [category, page, variantFilters, sort]);
+
+  useEffect(() => {
+    const key = `scrolled-${category}`;
+    if (!sessionStorage.getItem(key) && gridRef.current) {
+      // Wait until the browser paints so this doesn’t compete with layout shifts
+      requestAnimationFrame(() => {
+        gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      sessionStorage.setItem(key, "true");
+    }
+  }, [category]);
 
   // 3) Core effect: debounce, fetch, abort, scroll once
   useEffect(() => {
@@ -141,16 +156,6 @@ export default function ProductGridClient({
 
     // Immediately show loader so user knows something is happening
     setLoading(true);
-
-    // Scroll to grid once (while loader visible) to avoid large layout jumps after data replaces content
-    if (!filteredOnceRef.current && gridRef.current) {
-      try {
-        gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch {
-        /* ignore */
-      }
-      filteredOnceRef.current = true;
-    }
 
     // debounce + fetch
     if (debounceRef.current) {
@@ -191,7 +196,12 @@ export default function ProductGridClient({
             return;
           }
           const json = await res.json();
-          setItems(json.data ?? []);
+          const data: ProductAttributes[] = json.data ?? [];
+          const mapped = data.map((p) => {
+            const { average } = calculateAverageRating(p.reviews || []);
+            return { ...p, averageRating: average };
+          });
+          setItems(mapped);
         } catch (err: any) {
           if (err.name !== "AbortError") {
             // eslint-disable-next-line no-console
@@ -231,23 +241,24 @@ export default function ProductGridClient({
       <PageLoader active={loading} />
       <div ref={gridRef} />
       <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 min-h-[200px] grid-animate">
-        {items && items.map((p) => (
-          <ProductCardServer
-            key={p.id}
-            id={p.id}
-            src={(p.images && p.images[0]?.formats?.small?.url) || ""}
-            secSrc={
-              (p.gallery && p.gallery[0]?.formats?.small?.url) ||
-              (p.images && p.images[0]?.formats?.small?.url) ||
-              ""
-            }
-            title={p.name}
-            // price={(p.variants && p.variants[0]?.price) || 0}
-            price={p.price || 0}
-            href={p.slug}
-            rating={3}
-          />
-        ))}
+        {items &&
+          items.map((p) => (
+            <ProductCardServer
+              key={p.id}
+              id={p.id}
+              src={(p.images && p.images[0]?.formats?.small?.url) || ""}
+              secSrc={
+                (p.gallery && p.gallery[0]?.formats?.small?.url) ||
+                (p.images && p.images[0]?.formats?.small?.url) ||
+                ""
+              }
+              title={p.name}
+              // price={(p.variants && p.variants[0]?.price) || 0}
+              price={p.price || 0}
+              href={p.slug}
+              rating={p.averageRating ?? 0}
+            />
+          ))}
 
         {!loading && items && items.length === 0 && (
           <div className="col-span-full text-sm text-gray-500">
