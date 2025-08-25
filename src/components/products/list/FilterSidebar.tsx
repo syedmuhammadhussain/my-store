@@ -177,7 +177,7 @@ export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
           open ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:block motion-preset-fade motion-delay-300`}
       >
-        <div className="text-right mb-2">
+        <div className="text-right mb-2 md:hidden">
           <Button
             variant="outline"
             size="icon"

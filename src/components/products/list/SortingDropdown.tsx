@@ -48,7 +48,7 @@ export default function SortingDropdown() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="focus-visible:shadow-none p-0 border-0 text-black ml-2 md:bg-white md:hover:bg-white"
+          className="focus-visible:shadow-none p-0 border-0 text-black ml-2 md:bg-white md:hover:bg-white shadow-none"
         >
           Sort by &nbsp; <MoveDown size="14" />
         </Button>

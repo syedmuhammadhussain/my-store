@@ -8,64 +8,55 @@ import { SubCategoryAttributes } from "@/types/sub_category";
 import { ProductAttributes } from "@/types/product";
 import { Reviews } from "@/types/review";
 
-/**
- * Caches: Always store the full StrapiResponse<TItem>
- * where StrapiResponse<T> has `data: T[]`.
- */
-const cache = new LRUCache<string, StrapiResponse<ProductListItem>>({
-  max: 100,
-  ttl: 1000 * 60 * 5,
-});
+// const cache = new LRUCache<string, StrapiResponse<ProductListItem>>({
+//   max: 100,
+//   ttl: 1000 * 60 * 5,
+// });
 
-// categories endpoint returns an array of CategoryAttributes
-const categoryCache = new LRUCache<
-  string,
-  StrapiResponse<CategoryAttributes[]>
->({
-  max: 50,
-  ttl: 1000 * 60 * 5,
-});
+// const categoryCache = new LRUCache<
+//   string,
+//   StrapiResponse<CategoryAttributes[]>
+// >({
+//   max: 50,
+//   ttl: 1000 * 60 * 5,
+// });
 
-// sub-categories endpoint returns an array of SubCategoryAttributes
-const subCategoryCache = new LRUCache<
-  string,
-  StrapiResponse<SubCategoryAttributes[]>
->({
-  max: 50,
-  ttl: 1000 * 60 * 5,
-});
+// const subCategoryCache = new LRUCache<
+//   string,
+//   StrapiResponse<SubCategoryAttributes[]>
+// >({
+//   max: 50,
+//   ttl: 1000 * 60 * 5,
+// });
 
-const allProductsCache = new LRUCache<string, AllProductsResponse>({
-  max: 100,
-  ttl: 1000 * 60 * 5, // 5 minutes
-});
+// const allProductsCache = new LRUCache<string, AllProductsResponse>({
+//   max: 100,
+//   ttl: 1000 * 60 * 5, // 5 minutes
+// });
 
-// allCategoryAndSubCategory should store StrapiResponse<CategoryAttributes[]>
-const allCategoryAndSubCategory = new LRUCache<
-  string,
-  StrapiResponse<CategoryAttributes[]>
->({
-  max: 100,
-  ttl: 1000 * 60 * 5, // 5 minutes
-});
+// const allCategoryAndSubCategory = new LRUCache<
+//   string,
+//   StrapiResponse<CategoryAttributes[]>
+// >({
+//   max: 100,
+//   ttl: 1000 * 60 * 5, // 5 minutes
+// });
 
-// allFeaturedProducts should store StrapiResponse<ProductAttributes[]>
-const allFeaturedProducts = new LRUCache<
-  string,
-  StrapiResponse<ProductAttributes[]>
->({
-  max: 100,
-  ttl: 1000 * 60 * 5, // 5 minutes
-});
+// const allFeaturedProducts = new LRUCache<
+//   string,
+//   StrapiResponse<ProductAttributes[]>
+// >({
+//   max: 100,
+//   ttl: 1000 * 60 * 5, // 5 minutes
+// });
 
-// cache published reviews by product id
-const allPublishedReviewsByProductId = new LRUCache<
-  string,
-  StrapiResponse<Reviews[]>
->({
-  max: 100,
-  ttl: 1000 * 60 * 5, // 5 minutes
-});
+// const allPublishedReviewsByProductId = new LRUCache<
+//   string,
+//   StrapiResponse<Reviews[]>
+// >({
+//   max: 100,
+//   ttl: 1000 * 60 * 5, // 5 minutes
+// });
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_BASE_URL;
 
@@ -145,10 +136,10 @@ export default class StrapiService {
    * Fetch all products with slug + variant SKUs
    */
   static async getAllProducts(): Promise<AllProductsResponse> {
-    const cacheKey = "all_products";
-    if (allProductsCache.has(cacheKey)) {
-      return allProductsCache.get(cacheKey)!;
-    }
+    // const cacheKey = "all_products";
+    // if (allProductsCache.has(cacheKey)) {
+    //   return allProductsCache.get(cacheKey)!;
+    // }
 
     const response = await this.fetchData<StaticProduct>("products", {
       fields: ["slug"],
@@ -162,7 +153,7 @@ export default class StrapiService {
       pagination: { pageSize: 1000 },
     });
 
-    allProductsCache.set(cacheKey, response);
+    // allProductsCache.set(cacheKey, response);
     return response;
   }
 
@@ -218,10 +209,10 @@ export default class StrapiService {
   static async getProductsByCategory(
     slug: string
   ): Promise<StrapiResponse<ProductListItem>> {
-    const cacheKey = `product_category:${slug}`;
-    if (cache.has(cacheKey)) {
-      return cache.get(cacheKey)!;
-    }
+    // const cacheKey = `product_category:${slug}`;
+    // if (cache.has(cacheKey)) {
+    //   return cache.get(cacheKey)!;
+    // }
 
     const response = await this.fetchData<ProductListItem>("products", {
       filters: {
@@ -237,7 +228,7 @@ export default class StrapiService {
       pagination: { pageSize: 100 },
     });
 
-    cache.set(cacheKey, response);
+    // cache.set(cacheKey, response);
     return response;
   }
 
@@ -247,10 +238,10 @@ export default class StrapiService {
   static async getProductsBySubCategory(
     slug: string
   ): Promise<StrapiResponse<ProductListItem>> {
-    const cacheKey = `product_sub_category:${slug}`;
-    if (cache.has(cacheKey)) {
-      return cache.get(cacheKey)!;
-    }
+    // const cacheKey = `product_sub_category:${slug}`;
+    // if (cache.has(cacheKey)) {
+    //   return cache.get(cacheKey)!;
+    // }
 
     const response = await this.fetchData<ProductListItem>("products", {
       filters: { sub_category: { slug: { $eq: slug } } },
@@ -260,22 +251,22 @@ export default class StrapiService {
       pagination: { pageSize: 100 },
     });
 
-    cache.set(cacheKey, response);
+    // cache.set(cacheKey, response);
     return response;
   }
 
   // ** Fetch Categories (returns array)
   static async getCategories(): Promise<StrapiResponse<CategoryAttributes[]>> {
-    const cacheKey = `product_category:all`;
-    if (categoryCache.has(cacheKey)) {
-      return categoryCache.get(cacheKey)!;
-    }
+    // const cacheKey = `product_category:all`;
+    // if (categoryCache.has(cacheKey)) {
+    //   return categoryCache.get(cacheKey)!;
+    // }
 
     const response = await this.fetchData<CategoryAttributes[]>(
       "categories?sort=name:desc"
     );
 
-    categoryCache.set(cacheKey, response);
+    // categoryCache.set(cacheKey, response);
     return response;
   }
 
@@ -283,10 +274,10 @@ export default class StrapiService {
   static async getSubCategoryBySlug(
     slug: string
   ): Promise<StrapiResponse<SubCategoryAttributes[]>> {
-    const cacheKey = `sub_category_slug:${slug}`;
-    if (subCategoryCache.has(cacheKey)) {
-      return subCategoryCache.get(cacheKey)!;
-    }
+    // const cacheKey = `sub_category_slug:${slug}`;
+    // if (subCategoryCache.has(cacheKey)) {
+    //   return subCategoryCache.get(cacheKey)!;
+    // }
 
     const response = await this.fetchData<SubCategoryAttributes[]>(
       "sub-categories",
@@ -298,7 +289,7 @@ export default class StrapiService {
       }
     );
 
-    subCategoryCache.set(cacheKey, response);
+    // subCategoryCache.set(cacheKey, response);
     return response;
   }
 
@@ -306,10 +297,10 @@ export default class StrapiService {
   static async getSubCategoriesByCategorySlug(
     slug: string
   ): Promise<StrapiResponse<SubCategoryAttributes[]>> {
-    const cacheKey = `sub_category_by_category_slug:${slug}`;
-    if (subCategoryCache.has(cacheKey)) {
-      return subCategoryCache.get(cacheKey)!;
-    }
+    // const cacheKey = `sub_category_by_category_slug:${slug}`;
+    // if (subCategoryCache.has(cacheKey)) {
+    //   return subCategoryCache.get(cacheKey)!;
+    // }
 
     const response = await this.fetchData<SubCategoryAttributes[]>(
       "sub-categories",
@@ -324,7 +315,7 @@ export default class StrapiService {
       }
     );
 
-    subCategoryCache.set(cacheKey, response);
+    // subCategoryCache.set(cacheKey, response);
     return response;
   }
 
@@ -335,10 +326,10 @@ export default class StrapiService {
   static async getCategoriesWithSubs(): Promise<
     StrapiResponse<CategoryAttributes[]>
   > {
-    const cacheKey = `categories-with-subs:all`;
-    if (allCategoryAndSubCategory.has(cacheKey)) {
-      return allCategoryAndSubCategory.get(cacheKey)!;
-    }
+    // const cacheKey = `categories-with-subs:all`;
+    // if (allCategoryAndSubCategory.has(cacheKey)) {
+    //   return allCategoryAndSubCategory.get(cacheKey)!;
+    // }
 
     const queryOptions = {
       sort: ["name:desc"],
@@ -355,17 +346,17 @@ export default class StrapiService {
       { encodeValuesOnly: true, arrayFormat: "indices" }
     );
 
-    allCategoryAndSubCategory.set(cacheKey, response);
+    // allCategoryAndSubCategory.set(cacheKey, response);
     return response;
   }
 
   static async getFeaturedProducts(): Promise<
     StrapiResponse<ProductAttributes[]>
   > {
-    const cacheKey = `featured_products`;
-    if (allFeaturedProducts.has(cacheKey)) {
-      return allFeaturedProducts.get(cacheKey)!;
-    }
+    // const cacheKey = `featured_products`;
+    // if (allFeaturedProducts.has(cacheKey)) {
+    //   return allFeaturedProducts.get(cacheKey)!;
+    // }
 
     /**
      * Fetch featured product and (cache)
@@ -382,7 +373,7 @@ export default class StrapiService {
       { encodeValuesOnly: true }
     );
 
-    allFeaturedProducts.set(cacheKey, response);
+    // allFeaturedProducts.set(cacheKey, response);
     return response;
   }
 
