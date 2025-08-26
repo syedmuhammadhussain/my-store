@@ -49,7 +49,7 @@ function MainNavClientInner({
     <header className="hidden lg:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
       <div className="flex items-center md:space-x-8 lg:space-x-12">
         <Link href="/" className="flex items-center">
-          <Image src="/logo.png" alt="Logo" width={45} height={32} />
+          <Image src="/logo.png" alt="Digo Fashion's Logo" width={45} height={32} priority />
         </Link>
 
         <nav className="flex md:space-x-4 lg:space-x-8">
@@ -183,14 +183,16 @@ function MainNavClientInner({
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Button
-            variant="outline"
-            size="icon"
-            className="relative border-0 bg-transparent"
-            onClick={handleLoginClick}
-          >
-            <User2 />
-          </Button>
+          <Link href="/login">
+            <Button
+              variant="outline"
+              size="icon"
+              className="relative border-0 bg-transparent"
+              onClick={handleLoginClick}
+            >
+              <User2 />
+            </Button>
+          </Link>
         )}
         <Button
           variant="outline"

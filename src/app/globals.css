@@ -141,6 +141,12 @@
   z-index: 10;
 }
 
+.quickBuyBtn span { transition-property: opacity, width, margin; }
+img, .next-image, .product-image {
+  filter: none !important;
+  box-shadow: none !important;
+}
+
 /* --- Lightbox UI tweaks for white background --- */
 
 /* dark icon color (tweak if you want slightly lighter/darker) */

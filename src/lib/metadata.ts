@@ -1,10 +1,7 @@
 // lib/metadata.ts
 import type { Metadata } from "next";
 
-const SITE_URL =
-  process.env.SITE_URL ||
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://example.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://my-store-tau-nine.vercel.app";
 
 export function absoluteUrl(path?: string | null) {
   if (!path) return "";
@@ -29,7 +26,6 @@ export function buildProductMetadata(product: {
   currency?: string | null;
   availability?: string | null;
 }): Metadata {
-  debugger;
   const title = product.name;
   const description = (product.description || "").slice(0, 160);
   const canonical = `${SITE_URL.replace(/\/$/, "")}/product/${

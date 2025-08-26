@@ -97,7 +97,7 @@ export default function MobileNav({ categories }: Props) {
           <Description></Description>
           {/* header */}
           <div className="flex items-center justify-between border-b pb-5">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="block">
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -219,7 +219,7 @@ export default function MobileNav({ categories }: Props) {
       </Sheet>
 
       <div>
-        <Link href="/" className="inline-block">
+        <Link href="/" className="inline">
           <Image
             src="/logo.png"
             alt="Logo"
@@ -293,14 +293,16 @@ export default function MobileNav({ categories }: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-transparent"
-          onClick={handleLoginClick}
-        >
-          <User2 />
-        </Button>
+        <Link href="/login">
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-transparent"
+            onClick={handleLoginClick}
+          >
+            <User2 />
+          </Button>
+        </Link>
       )}
     </div>
   );

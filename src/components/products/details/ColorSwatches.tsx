@@ -1,6 +1,6 @@
 "use client";
 
-import ProductImage from "@/components/products/ProductImage";
+import StrapiImage from "@/components/StrapiImage";
 
 export default function ColorSwatches({
   swatchVariants,
@@ -81,7 +81,7 @@ export default function ColorSwatches({
                 >
                   {swatchUrl ? (
                     <div className="relative w-8 h-12 rounded overflow-hidden">
-                      <ProductImage
+                      <StrapiImage
                         src={swatchUrl}
                         alt={v.colorName}
                         className="object-cover"

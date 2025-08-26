@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Star } from "lucide-react";
 
-export function Rating({
+export default function Rating({
   rating,
   size = "w-3 h-3",
   label,

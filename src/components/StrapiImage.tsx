@@ -1,13 +1,13 @@
 import Image from "next/image";
 
-export default function ProductImage({
+export default function StrapiImage({
   src,
   alt,
   className,
 }: {
   src: string;
   alt: string;
-  className: string;
+  className?: string;
 }) {
   return (
     <Image

@@ -8,20 +8,19 @@ import React, {
   useState,
 } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
-import { useEmblaBreakpoints } from "@/hooks/useEmblaBreakpoints";
+
 import SliderArrowButtons from "@/components/SliderArrowButtons";
+import { useEmblaBreakpoints } from "@/hooks/useEmblaBreakpoints";
 
 interface CarouselProps {
   children: ReactNode[] | ReactNode;
 }
 
-export default function ProductSlider({ children }: CarouselProps) {
+export default function RelatedProductSlider({ children }: CarouselProps) {
   const slides = useMemo(() => React.Children.toArray(children), [children]);
 
-  const emblaOptions = useEmblaBreakpoints({});
+  const emblaOptions = useEmblaBreakpoints({ alwaysOne: true });
 
   const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptions);
 
@@ -61,15 +60,14 @@ export default function ProductSlider({ children }: CarouselProps) {
 
   return (
     <section
-      className="group relative"
+      className="group relative w-full"
       role="region"
       aria-label="Product carousel"
     >
-      {/* Viewport */}
-      <div className="lg:px-10 overflow-hidden" ref={emblaRef}>
-        {/* Track with permanent side padding */}
+      <div className="overflow-hidden [touch-action:pan-y]" ref={emblaRef}>
+        {/* Track with equal side padding */}
         <motion.div
-          className="flex gap-5 mx-4 lg:px-5 ml-[calc(1rem*-1)]"
+          className="flex space-x-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -77,17 +75,26 @@ export default function ProductSlider({ children }: CarouselProps) {
           {slides.map((child, idx) => (
             <motion.div
               key={(child as any)?.key ?? idx}
-              className="flex-none w-1/2 lg:w-1/3"
+              className={[
+                "flex-shrink-0 h-auto",
+                "w-[47.5%]",
+                "md:w-[31.80%]",
+                "lg:w-[24%]",
+              ].join(" ")}
               variants={itemVariants}
             >
-              <div className="flex flex-col">{child}</div>
+              {child}
             </motion.div>
           ))}
         </motion.div>
       </div>
 
-      {/* Arrows */}
-      <SliderArrowButtons canPrev={canPrev} canNext={canNext} emblaApi={emblaApi} view="onHover" />
+      <SliderArrowButtons
+        canPrev={canPrev}
+        canNext={canNext}
+        emblaApi={emblaApi}
+        view="onHover"
+      />
     </section>
   );
 }

@@ -24,9 +24,10 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const res = await StrapiService.fetchProductByIdForMetaData(params.slug);
+  const { slug } = await params;
+  const res = await StrapiService.fetchProductByIdForMetaData(slug);
   const product =
-    Array.isArray(res.data) && res.data.length ? (res.data[0] as any) : null;
+    Array.isArray(res.data) && res.data.length ? (res.data[0] as ProductAttributes) : null;
 
   if (!product) {
     return {
@@ -47,8 +48,6 @@ export async function generateMetadata({
     description: product.description,
     gallery: product.gallery ?? [],
     price: product.price,
-    currency: product.currency,
-    availability: product.availability,
   };
 
   return buildProductMetadata(minimal);

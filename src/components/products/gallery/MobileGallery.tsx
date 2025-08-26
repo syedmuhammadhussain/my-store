@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductThumbnailImage from "./ProductThumbnailImage";
-import ProductImage from "../ProductImage";
+import StrapiImage from "@/components/StrapiImage";
 import { UploadedImage } from "@/types/image";
 import "@/styles/embla.css";
 
@@ -120,7 +120,7 @@ export default function MobileGallery({
                     aria-label={`Open image ${i + 1}`}
                     className="relative w-full aspect-[2/3] rounded overflow-hidden bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   >
-                    <ProductImage
+                    <StrapiImage
                       src={best?.url || ""}
                       alt={productName || img.alternativeText || img.name || ""}
                       className="object-contain w-full h-full cursor-zoom-in"

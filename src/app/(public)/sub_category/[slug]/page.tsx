@@ -7,6 +7,7 @@ import StrapiService from "@/lib/strapi.service";
 import { notFound } from "next/navigation";
 import ClientGridBridge from "@/components/products/ClientGridBridge";
 import { SubCategoryAttributes } from "@/types/sub_category";
+import { calculateAverageRating } from "@/lib/utils";
 
 type sCParams = Promise<{ slug: string }>;
 
@@ -42,7 +43,13 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
     jsonSubCategories.data as unknown as SubCategoryAttributes[];
 
   if (!json.data.length) return notFound();
-  const products = json.data as unknown as ProductAttributes[];
+  const allProducts = json.data as unknown as ProductAttributes[];
+  const products =
+    allProducts &&
+    allProducts.map((p: ProductAttributes) => {
+      const { average, total } = calculateAverageRating(p.reviews || []);
+      return { ...p, averageRating: average, reviewsCount: total };
+    });
 
   const slugList = [
     "shorts-sets",

@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import qs from "qs";
-import ProductCard from "@/components/products/ProductCard";
+import CategoryProductCard from "@/components/products/CategoryProductCard";
 import { calculateAverageRating, defaultPageSizeForProductList } from "@/lib/utils";
 import type { ProductAttributes } from "@/types/product";
 
@@ -95,9 +95,9 @@ export default function LoadMoreClient({
 
   return (
     <div id="load-more-grid" className="mt-6">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {items.map((p) => (
-          <ProductCard
+          <CategoryProductCard
             key={p.id}
             id={p.id}
             src={p.gallery && p.gallery[0]?.formats?.small?.url}

@@ -7,6 +7,7 @@ import { CategoryAttributes } from "@/types/category";
 import { SubCategoryAttributes } from "@/types/sub_category";
 import { ProductAttributes } from "@/types/product";
 import { Reviews } from "@/types/review";
+import { defaultPageSizeForProductList } from "./utils";
 
 // const cache = new LRUCache<string, StrapiResponse<ProductListItem>>({
 //   max: 100,
@@ -226,7 +227,11 @@ export default class StrapiService {
         fields: ["name", "slug", "price", "discount_price"],
         images: true,
         gallery: true,
-        reviews: true,
+        reviews: {
+          filters: {
+            review_status: { $eq: "Published" },
+          },
+        },
       },
       pagination: {
         pageSize: pagination?.pageSize ?? 20,
@@ -256,10 +261,14 @@ export default class StrapiService {
         fields: ["name", "slug", "price", "discount_price"],
         images: true,
         gallery: true,
-        reviews: true,
+        reviews: {
+          filters: {
+            review_status: { $eq: "Published" },
+          },
+        },
       },
       pagination: {
-        pageSize: pagination?.pageSize ?? 20,
+        pageSize: pagination?.pageSize ?? defaultPageSizeForProductList,
         page: pagination?.page ?? 1,
       },
     });
@@ -378,7 +387,15 @@ export default class StrapiService {
       "products",
       {
         filters: { is_feature: { $eq: true } },
-        populate: ["images", "gallery"],
+        populate: {
+          images: true,
+          gallery: true,
+          reviews: {
+            filters: {
+              review_status: { $eq: "Published" },
+            },
+          },
+        },
         fields: ["name", "slug", "price", "discount_price"],
         sort: ["createdAt:desc"],
         pagination: { pageSize: 12 },

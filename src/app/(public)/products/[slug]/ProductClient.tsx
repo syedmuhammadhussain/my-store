@@ -229,18 +229,20 @@ export default function ProductClient({
           </div>
 
           {/* Right panel staggered */}
-          <div className="px-0 sm:px-4 sticky top-0">
-            {animatedSections.map((section, i) => (
-              <m.div
-                key={i}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                custom={i + 1} // start after gallery
-              >
-                {section}
-              </m.div>
-            ))}
+          <div>
+            <div className="px-0 sm:px-4 sticky top-[80px]">
+              {animatedSections.map((section, i) => (
+                <m.div
+                  key={i}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  custom={i + 1} // start after gallery
+                >
+                  {section}
+                </m.div>
+              ))}
+            </div>
           </div>
         </LazyMotion>
       </div>

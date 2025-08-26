@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import qs from "qs";
-import ProductCardServer from "@/components/products/ProductCard";
+import CategoryProductCard from "@/components/products/CategoryProductCard";
 import PageLoader from "@/components/products/PageLoader";
 import EmptyProductState from "@/components/products/EmptyProductState";
 
@@ -110,7 +110,6 @@ export default function ProductGridClient({
   }, [filters]);
 
   const queryObj = useMemo(() => {
-    // debugger
     const baseFilters =
       page === "subcategory"
         ? {
@@ -240,10 +239,10 @@ export default function ProductGridClient({
     <div id="csr-product-grid">
       <PageLoader active={loading} />
       <div ref={gridRef} />
-      <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 min-h-[200px] grid-animate">
+      <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 min-h-[200px] grid-animate">
         {items &&
           items.map((p) => (
-            <ProductCardServer
+            <CategoryProductCard
               key={p.id}
               id={p.id}
               src={(p.images && p.images[0]?.formats?.small?.url) || ""}
