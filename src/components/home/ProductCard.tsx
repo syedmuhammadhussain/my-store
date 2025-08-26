@@ -49,7 +49,7 @@ export default function ProductCard({
         aria-label={title}
         className="block h-full"
       >
-        <div className="relative w-full lg:h-[500px] xl:h-[90vh] aspect-[4/5] bg-neutral-100 rounded-lg overflow-hidden">
+        <div className="relative w-full lg:h-[500px] xl:h-[90vh] aspect-[2/3] bg-neutral-100 rounded-lg overflow-hidden">
           <ProductImage
             animation={animation}
             src={src}

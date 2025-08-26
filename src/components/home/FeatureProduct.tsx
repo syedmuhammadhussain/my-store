@@ -11,8 +11,8 @@ export default function FeatureProduct({
   })[];
 }) {
   return (
-    <div className="mb-30">
-      <h2 className="text-3xl font-bold text-center my-6 xl:my-20">
+    <div className="mb-15 lg:mb-30 sm:px-0">
+      <h2 className="text-3xl font-bold text-center my-12 xl:my-20">
         Featured Products
       </h2>
       <ProductSlider>

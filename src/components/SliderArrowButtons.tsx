@@ -21,7 +21,7 @@ export default function SliderArrowButtons({
 
   // common base for both arrows
   const base =
-    "absolute top-[40%] lg:top-[45%] -translate-y-1/2 rounded-full bg-white/90 shadow-sm z-10 transition-all duration-200";
+    "absolute top-[35%] lg:top-[45%] -translate-y-1/2 rounded-full bg-white/90 shadow-sm z-10 transition-all duration-200";
 
   // "onHover" mode: hidden on lg until hover / group-hover (keeps visible on small screens)
   const onHoverMode =

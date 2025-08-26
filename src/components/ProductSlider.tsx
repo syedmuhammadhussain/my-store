@@ -66,10 +66,10 @@ export default function ProductSlider({ children }: CarouselProps) {
       aria-label="Product carousel"
     >
       {/* Viewport */}
-      <div className="lg:px-10 overflow-hidden" ref={emblaRef}>
+      <div className="lg:px-10 px-5 overflow-hidden" ref={emblaRef}>
         {/* Track with permanent side padding */}
         <motion.div
-          className="flex gap-5 mx-4 lg:px-5 ml-[calc(1rem*-1)]"
+          className="flex gap-5 mx-5 lg:px-5 ml-[calc(0.05rem*-1)] lg:ml-[calc(1rem*-1)]"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
