@@ -1,8 +1,10 @@
 import ProductCard from "@/components/home/ProductCard";
 import ProductSlider from "@/components/ProductSlider";
+import { Button } from "@/components/ui/button";
+
 import { ProductAttributes } from "@/types/product";
 
-export default function FeatureProduct({
+export default function TrendingSeason({
   products,
 }: {
   products: (ProductAttributes & {
@@ -12,19 +14,19 @@ export default function FeatureProduct({
 }) {
   return (
     <div className="mb-15 lg:mb-30 sm:px-0">
-      <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center w-full">
-          <div className="flex-grow h-[2px] bg-gray-900 rounded-xl hidden sm:block" aria-hidden="true" />
-
-          <h2
-            id="shop-by-category"
-            className="sm:px-8 my-12 xl:my-15 lg:mt-5 text-3xl font-bold text-gray-800 whitespace-nowrap"
-          >
-            Featured Products
+      <div className="flex flex-wrap justify-between items-center ml-3 px-5 sm:px-8 mb-8">
+        <div>
+          <p className="text-gray-800 text-base md:mb-5 mb-1">MOST LOVED</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-5">
+            Trending this Season
           </h2>
-
-          <div className="flex-grow h-[2px] bg-gray-900 hidden sm:block rounded-xl" aria-hidden="true" />
         </div>
+        <Button
+          variant="default"
+          className="rounded-none h-12 px-12 uppercase font-normal"
+        >
+          Shop All Trending
+        </Button>
       </div>
       <ProductSlider
         perView={{ base: 1, sm: 2, md: 2, lg: 3, xl: 3 }}
@@ -43,7 +45,7 @@ export default function FeatureProduct({
               href={p.slug}
               rating={p.averageRating ?? 0}
               animation="zoom"
-              heightClassName="aspect-[4/5] md:aspect-[2/3]"
+              heightClassName="md:aspect-[2/3]"
             />
           )),
         ]}

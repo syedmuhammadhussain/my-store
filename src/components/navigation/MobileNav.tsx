@@ -3,18 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Menu as MenuIcon,
-  Plus,
-  Minus,
-  X,
-  BadgeCheck,
-  LogOut,
-  User2,
-} from "lucide-react";
+import { Menu as MenuIcon, Plus, Minus, X, User2 } from "lucide-react";
 
 import { useSession, signOut } from "next-auth/react";
-import { cn } from "@/lib/utils";
 
 import {
   Sheet,
@@ -27,17 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Description, DialogTitle } from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import type { CategoryAttributes } from "@/types/category";
+import UserProfileDropDown from "./UserProfileDropDown";
 
 type Props = { categories: CategoryAttributes[] };
 
@@ -94,7 +78,7 @@ export default function MobileNav({ categories }: Props) {
             data-[state=open]:translate-x-0 data-[state=closed]:-translate-x-full
             "
         >
-          <Description></Description>
+          <Description hidden></Description>
           {/* header */}
           <div className="flex items-center justify-between border-b pb-5">
             <Link href="/" className="block">
@@ -209,12 +193,6 @@ export default function MobileNav({ categories }: Props) {
               </div>
             </div>
           )}
-
-          {/* <div className="p-4 border-t">
-            <Link href="/account" className="text-sm block">
-              Account
-            </Link>
-          </div> */}
         </SheetContent>
       </Sheet>
 
@@ -232,66 +210,12 @@ export default function MobileNav({ categories }: Props) {
       </div>
 
       {session ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="flex items-center gap-2 text-left text-sm">
-              <Button variant="outline" size="icon" className="bg-transparent">
-                <Avatar className="size-5 rounded-lg">
-                  <AvatarImage
-                    src={userImage ?? "/user-icon.svg"}
-                    alt={username}
-                    width={20}
-                    height={20}
-                  />
-                  <AvatarFallback className="rounded-lg">
-                    {username}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </div>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-56" align="end">
-            <DropdownMenuLabel>
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="size-8 rounded-lg">
-                  <AvatarImage
-                    src={userImage ?? "/user-icon.svg"}
-                    alt={username}
-                    width={20}
-                    height={20}
-                    sizes=""
-                  />
-                  <AvatarFallback className="rounded-lg">
-                    {username}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{username}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {email}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => console.log("Account")}>
-              <BadgeCheck className="w-3 h-3 text-black" />
-              Account
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              onClick={() => signOut({ callbackUrl: "/", redirect: false })}
-              className={cn("text-red-600 focus:text-red-600")}
-            >
-              <LogOut className="w-3 h-3 text-red-600" />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <UserProfileDropDown
+          userImage={userImage}
+          username={username}
+          email={email}
+          signOut={signOut}
+        />
       ) : (
         <Link href="/login">
           <Button

@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import RelatedProductSlider from "./RelatedProductSlider";
@@ -15,9 +16,21 @@ export default function RelatedProductsTabs({
     <div className="px-5 sm:px-8">
       <Tabs value={tab} onValueChange={(v) => setTab(v)}>
         <div className="flex justify-center items-center mb-10">
-          <TabsList>
-            <TabsTrigger value="youMayLike">You May Also Like</TabsTrigger>
-            <TabsTrigger value="recentlyViewed">Recently Viewed</TabsTrigger>
+          <TabsList className="p-0 bg-background-none justify-start border-b border-violet-500/65 rounded-none">
+            <TabsTrigger
+              value="youMayLike"
+              className="text-base font-bold rounded-none bg-background-none h-full border-gray-50 data-[state=active]:shadow-none pb-5
+              data-[state=active]:bg-background-none border-b-4 data-[state=active]:border-violet-500/65"
+            >
+              You May Also Like
+            </TabsTrigger>
+            <TabsTrigger
+              value="recentlyViewed"
+              className="text-base font-bold rounded-none bg-background-none h-full border-gray-50 data-[state=active]:shadow-none pb-5
+              data-[state=active]:bg-background-none border-b-4 data-[state=active]:border-violet-500/65"
+            >
+              Recently Viewed
+            </TabsTrigger>
           </TabsList>
         </div>
 

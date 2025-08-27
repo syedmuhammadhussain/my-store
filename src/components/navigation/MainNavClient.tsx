@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, LogOut, Search, ShoppingCart, User2 } from "lucide-react";
+import { Search, ShoppingCart, User2 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import {
   NavigationMenu,
@@ -15,18 +15,10 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { CategoryAttributes } from "@/types/category";
+import UserProfileDropDown from "./UserProfileDropDown";
 
 function MainNavClientInner({
   categories,
@@ -49,7 +41,13 @@ function MainNavClientInner({
     <header className="hidden lg:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
       <div className="flex items-center md:space-x-8 lg:space-x-12">
         <Link href="/" className="flex items-center">
-          <Image src="/logo.png" alt="Digo Fashion's Logo" width={45} height={32} priority />
+          <Image
+            src="/logo.png"
+            alt="Digo Fashion's Logo"
+            width={45}
+            height={32}
+            priority
+          />
         </Link>
 
         <nav className="flex md:space-x-4 lg:space-x-8">
@@ -119,69 +117,12 @@ function MainNavClientInner({
 
       <div className="flex items-center gap-2">
         {session ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="relative border-0 bg-transparent"
-                >
-                  <Avatar className="size-5 rounded-lg">
-                    <AvatarImage
-                      src={userImage ?? "/user-icon.svg"}
-                      alt={username}
-                      width={20}
-                      height={20}
-                    />
-                    <AvatarFallback className="rounded-lg">
-                      {username}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </div>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="size-8 rounded-lg">
-                    <AvatarImage
-                      src={userImage ?? "/user-icon.svg"}
-                      alt={username}
-                      width={20}
-                      height={20}
-                    />
-                    <AvatarFallback className="rounded-lg">
-                      {username}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{username}</span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      {email}
-                    </span>
-                  </div>
-                </div>
-              </DropdownMenuLabel>
-
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => console.log("Account")}>
-                <BadgeCheck className="w-3 h-3 text-black" />
-                Account
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem
-                onClick={() => signOut({ callbackUrl: "/", redirect: false })}
-                className={cn("text-red-600 focus:text-red-600")}
-              >
-                <LogOut className="w-3 h-3 text-red-600" />
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserProfileDropDown
+            userImage={userImage}
+            username={username}
+            email={email}
+            signOut={signOut}
+          />
         ) : (
           <Link href="/login">
             <Button

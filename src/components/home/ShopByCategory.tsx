@@ -12,7 +12,7 @@ export default function ShopByCategory({
   })[];
 }) {
   return (
-    <div className="px-5 sm:px-8">
+    <div className="px-5 sm:px-8 mb-20">
       <h2 className="text-3xl font-bold text-center my-6 xl:my-12">
         Shop By Category
       </h2>

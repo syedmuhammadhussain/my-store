@@ -1,78 +1,112 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import StrapiImage from "@/components/StrapiImage";
-import { cn } from "@/lib/utils";
+import { cn, SPINNER_SVG } from "@/lib/utils";
 
 type Props = {
   title: string;
   src: string | undefined;
-  secSrc: string | undefined;
+  secSrc?: string | undefined;
   animation: "zoom" | "fade" | "none";
+  imageClass?: string;
 };
 
-export default function ProductImage({ title, src, secSrc, animation }: Props) {
+export default function ProductImage({ title, src, secSrc, animation, imageClass }: Props) {
   if (!src) return null;
 
-  // wrapper always has group/product so children can use group-hover/product
-  return (
-    <div className="relative w-full h-full overflow-hidden rounded-md group/product">
-      {/* skeleton placeholder */}
-      <div
-        className="absolute inset-0 bg-gray-200 animate-pulse"
-        aria-hidden="true"
-      />
+  const [loaded, setLoaded] = useState(false);
+  const [inView, setInView] = useState(false);
+  const imgRef = useRef<HTMLDivElement>(null);
 
-      {/* CASE A: If we have a secondary image AND animation !== 'none' -> do swap behavior */}
+  // IntersectionObserver to trigger image load when visible
+  useEffect(() => {
+    if (!imgRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setInView(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: "100px" }
+    );
+    observer.observe(imgRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={imgRef}
+      className="relative w-full h-full overflow-hidden rounded-md group/product"
+    >
+      {/* Overlay skeleton + spinner */}
+      {!loaded && (
+        <div
+          className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10"
+          aria-hidden="true"
+        >
+          <img
+            src={SPINNER_SVG}
+            alt=""
+            aria-hidden="true"
+            className="w-12 h-12"
+          />
+        </div>
+      )}
+
+      {/* CASE A: Secondary image swap */}
       {secSrc && animation !== "none" ? (
         <>
-          {/* primary image (underneath) */}
+          {/* Primary image */}
+          {inView && (
+            <StrapiImage
+              alt={title}
+              src={src}
+              blurDataURL={SPINNER_SVG} // small blur base; could be LQIP from backend
+              className={cn(
+                `object-cover w-full h-full transform transition-transform duration-300 ease-out",
+                "scale-100 ${imageClass}`,
+                loaded ? "opacity-100" : "opacity-0"
+              )}
+              onLoadingComplete={() => setLoaded(true)}
+              priority={false} // keep false for lists, true for LCP
+            />
+          )}
+
+          {/* Secondary hover image */}
+          {inView && (
+            <StrapiImage
+              alt={`${title} - alternate`}
+              src={secSrc}
+              blurDataURL={SPINNER_SVG}
+              className={cn(
+                `object-cover absolute inset-0 w-full h-full transform transition-[transform,opacity,scale] ease-out duration-500 ${imageClass}`,
+                animation === "fade" &&
+                  "translate-x-full opacity-0 group-hover/product:translate-x-0 group-hover/product:opacity-100",
+                animation === "zoom" &&
+                  "translate-x-full opacity-0 scale-100 group-hover/product:translate-x-0 group-hover/product:opacity-100 group-hover/product:scale-[1.12] [transition-duration:1000ms,200ms]"
+              )}
+            />
+          )}
+        </>
+      ) : (
+        /* CASE B: Single image hover zoom */
+        inView && (
           <StrapiImage
             alt={title}
             src={src}
+            blurDataURL={SPINNER_SVG}
             className={cn(
-              "object-cover w-full h-full transform transition-transform duration-300 ease-out",
-              // when swapping images we keep primary static (could also add slight scale if you want)
-              "scale-100"
+              `object-cover w-full h-full transform transition-transform duration-500 ease-out ${imageClass}`,
+              "group-hover/product:scale-[1.09]",
+              loaded ? "opacity-100" : "opacity-0"
             )}
+            onLoadingComplete={() => setLoaded(true)}
           />
-
-          {/* secondary image (absolute, hidden until hover) */}
-          <StrapiImage
-            alt={`${title} - alternate`}
-            src={secSrc}
-            className={cn(
-              // common
-              "object-cover absolute inset-0 w-full h-full transform transition-[transform,opacity,scale] ease-out",
-              // default durations; overwritten for zoom below
-              "duration-500",
-
-              // FADE behavior: translate from right + opacity change
-              animation === "fade" &&
-                "translate-x-full opacity-0 group-hover/product:translate-x-0 group-hover/product:opacity-100",
-
-              // ZOOM behavior: translate + opacity + slow scale
-              // animation === "zoom" &&
-              //   // slower duration for the slow zoom feel
-              //   "duration-[1000ms] translate-x-full opacity-0
-              // scale-100 group-hover/product:translate-x-0 group-hover/product:opacity-100 group-hover/product:scale-[1.12]"
-              animation === "zoom" &&
-                // initial: moved off to right + invisible + scale 100%
-                "translate-x-full opacity-0 scale-100 group-hover/product:translate-x-0 group-hover/product:opacity-100 group-hover/product:scale-[1.12]" +
-                  // durations: opacity 500ms, transform (scale/translate) 1000ms
-                  " [transition-duration:1000ms,200ms]"
-            )}
-          />
-        </>
-      ) : (
-        /* CASE B: No secondary or animation === 'none' -> single-image with small scale on hover (both ways animate) */
-        <StrapiImage
-          alt={title}
-          src={src}
-          className={cn(
-            // base
-            "object-cover w-full h-full transform transition-transform duration-500 ease-out",
-            // small lift on hover and smooth return on hover out
-            "group-hover/product:scale-[1.09]"
-          )}
-        />
+        )
       )}
     </div>
   );

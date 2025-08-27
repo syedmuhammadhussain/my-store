@@ -9,6 +9,7 @@ import ProductThumbnailImage from "./ProductThumbnailImage";
 import StrapiImage from "@/components/StrapiImage";
 import { UploadedImage } from "@/types/image";
 import "@/styles/embla.css";
+import ProductImage from "@/components/ProductImage";
 
 export default function MobileGallery({
   productName,
@@ -104,7 +105,7 @@ export default function MobileGallery({
       {/* Main Carousel – rendered for both mobile & desktop */}
       <div className="relative embla w-full md:mb-4">
         <div className="embla__viewport" ref={mainRef}>
-          <div className="embla__container gap-3">
+          <div className="embla__container">
             {images.map((img, i) => {
               const fmt = img.formats ?? {};
               const best =
@@ -120,10 +121,18 @@ export default function MobileGallery({
                     aria-label={`Open image ${i + 1}`}
                     className="relative w-full aspect-[2/3] rounded overflow-hidden bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
                   >
-                    <StrapiImage
+                    {/* <StrapiImage
                       src={best?.url || ""}
                       alt={productName || img.alternativeText || img.name || ""}
                       className="object-contain w-full h-full cursor-zoom-in"
+                    /> */}
+                    <ProductImage
+                      animation="none"
+                      src={best?.url || ""}
+                      title={
+                        productName || img.alternativeText || img.name || ""
+                      }
+                      imageClass="cursor-zoom-in"
                     />
                   </button>
                 </div>
@@ -168,9 +177,9 @@ export default function MobileGallery({
                 return (
                   <div
                     key={img.id ?? i}
-                    className={`embla__slide-thumb flex-none rounded overflow-hidden border ${
+                    className={`embla__slide-thumb flex-none rounded-md overflow-hidden border ${
                       i === currentIndex
-                        ? "border-2 border-primary"
+                        ? "border-4 border-violet-500/65"
                         : "border-transparent"
                     }`}
                     style={{ flex: "0 0 calc(100%/4 - 0.5rem)" }}

@@ -21,6 +21,7 @@ export interface CardProps {
   discount_price?: number | null;
   className?: string;
   animation?: "fade" | "zoom" | "none";
+  heightClassName?: string;
 }
 
 export default function ProductCard({
@@ -34,6 +35,7 @@ export default function ProductCard({
   discount_price,
   className = "",
   animation = "fade",
+  heightClassName = "aspect-[2/3] md:aspect-[5/6]",
 }: CardProps) {
   const displayPrice = discount_price ?? price;
   const showOldPrice =
@@ -49,7 +51,7 @@ export default function ProductCard({
         aria-label={title}
         className="block h-full"
       >
-        <div className="relative w-full lg:h-[500px] xl:h-[90vh] aspect-[2/3] bg-neutral-100 rounded-lg overflow-hidden">
+        <div className={`relative w-full ${heightClassName} bg-neutral-100 rounded-lg overflow-hidden`}>
           <ProductImage
             animation={animation}
             src={src}

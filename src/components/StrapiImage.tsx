@@ -4,10 +4,16 @@ export default function StrapiImage({
   src,
   alt,
   className,
+  blurDataURL,
+  onLoadingComplete,
+  priority,
 }: {
   src: string;
   alt: string;
   className?: string;
+  blurDataURL?: React.ReactNode;
+  onLoadingComplete?: (() => void) | undefined;
+  priority?: boolean;
 }) {
   return (
     <Image
@@ -22,9 +28,13 @@ export default function StrapiImage({
         50vw
       "
       placeholder="blur"
-      blurDataURL={`${src.replace("/upload/", "/upload/w_20,q_20/")}`}
+      blurDataURL={`${
+        blurDataURL ?? src.replace("/upload/", "/upload/w_20,q_20/")
+      }`}
       className={className}
+      onLoadingComplete={onLoadingComplete}
       quality={90}
+      priority={priority ?? false}
     />
   );
 }
