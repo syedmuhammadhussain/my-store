@@ -57,7 +57,7 @@ export default function BestSeller({
                   href={p.slug}
                   rating={p.averageRating ?? 0}
                   animation="fade"
-                  heightClassName="md:aspect-[3/4]"
+                  heightClassName="aspect-[4/5] md:aspect-[2/3]"
                 />
               )),
             ]}
@@ -81,7 +81,7 @@ export default function BestSeller({
                   href={p.slug}
                   rating={p.averageRating ?? 0}
                   animation="fade"
-                  heightClassName="md:aspect-[3/4]"
+                  heightClassName="aspect-[4/5] md:aspect-[2/3]"
                 />
               )),
             ]}

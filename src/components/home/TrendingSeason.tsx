@@ -45,7 +45,7 @@ export default function TrendingSeason({
               href={p.slug}
               rating={p.averageRating ?? 0}
               animation="zoom"
-              heightClassName="md:aspect-[2/3]"
+              heightClassName="aspect-[4/5] md:aspect-[2/3]"
             />
           )),
         ]}
