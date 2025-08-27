@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Search, ShoppingCart, User2 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -31,6 +31,7 @@ function MainNavClientInner({
   const username = session?.user?.name || session?.user?.username || "Account";
   const email = session?.user?.email || "test@test.com";
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLoginClick = () => {
     const currentPath = window.location.pathname + window.location.search;
@@ -124,7 +125,12 @@ function MainNavClientInner({
             signOut={signOut}
           />
         ) : (
-          <Link href="/login">
+          <Link
+            href={{
+              pathname: "/login",
+              query: { callbackUrl: pathname },
+            }}
+          >
             <Button
               variant="outline"
               size="icon"
