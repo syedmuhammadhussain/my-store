@@ -11,6 +11,7 @@ import type { ProductAttributes } from "@/types/product";
 import {
   calculateAverageRating,
   defaultPageSizeForProductList,
+  getProductBadge,
 } from "@/lib/utils";
 
 type Filters = {
@@ -36,7 +37,12 @@ export default function ProductGridClient({
 }) {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<
-    (ProductAttributes & { averageRating?: number })[] | null
+    | (ProductAttributes & {
+        averageRating?: number;
+        reviewsCount?: number;
+        badge?: string | null;
+      })[]
+    | null
   >(null);
   const [loading, setLoading] = useState(false);
   const gridRef = useRef<HTMLDivElement | null>(null);
@@ -127,7 +133,22 @@ export default function ProductGridClient({
         fields: ["name", "slug", "price", "discount_price"],
         images: true,
         gallery: true,
-        reviews: true,
+        reviews: {
+          filters: {
+            review_status: { $eq: "Published" },
+          },
+        },
+        product_colors: {
+          fields: ["id"],
+          populate: {
+            variants: {
+              fields: ["id"],
+              populate: {
+                inventory: { fields: ["quantity", "inventory_status"] },
+              },
+            },
+          },
+        },
       },
       pagination: { pageSize: defaultPageSizeForProductList },
       ...(sort ? { sort: [sort] } : {}),
@@ -197,8 +218,13 @@ export default function ProductGridClient({
           const json = await res.json();
           const data: ProductAttributes[] = json.data ?? [];
           const mapped = data.map((p) => {
-            const { average } = calculateAverageRating(p.reviews || []);
-            return { ...p, averageRating: average };
+            const { average, total } = calculateAverageRating(p.reviews || []);
+            return {
+              ...p,
+              averageRating: average,
+              reviewsCount: total,
+              badge: getProductBadge(p),
+            };
           });
           setItems(mapped);
         } catch (err: any) {
@@ -245,17 +271,14 @@ export default function ProductGridClient({
             <CategoryProductCard
               key={p.id}
               id={p.id}
-              src={(p.images && p.images[0]?.formats?.small?.url) || ""}
-              secSrc={
-                (p.gallery && p.gallery[0]?.formats?.small?.url) ||
-                (p.images && p.images[0]?.formats?.small?.url) ||
-                ""
-              }
+              src={p.gallery && p.gallery[0]?.formats?.small?.url}
+              secSrc={p.images && p.images[0]?.formats?.small?.url}
               title={p.name}
-              // price={(p.variants && p.variants[0]?.price) || 0}
+              discount_price={p.discount_price}
               price={p.price || 0}
               href={p.slug}
               rating={p.averageRating ?? 0}
+              badge={p.badge ?? ""}
             />
           ))}
 

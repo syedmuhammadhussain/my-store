@@ -7,6 +7,7 @@ export default function ProductGridSSR({
   products: (ProductAttributes & {
     averageRating?: number;
     reviewsCount?: number;
+    badge?: string | null;
   })[];
 }) {
   return (
@@ -22,6 +23,7 @@ export default function ProductGridSSR({
           price={p.price || 0}
           href={p.slug}
           rating={p.averageRating ?? 0}
+          badge={p.badge ?? ""}
         />
       ))}
     </div>

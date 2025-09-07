@@ -4,7 +4,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import qs from "qs";
 import CategoryProductCard from "@/components/products/CategoryProductCard";
-import { calculateAverageRating, defaultPageSizeForProductList } from "@/lib/utils";
+import {
+  calculateAverageRating,
+  defaultPageSizeForProductList,
+  getProductBadge,
+} from "@/lib/utils";
 import type { ProductAttributes } from "@/types/product";
 
 export default function LoadMoreClient({
@@ -17,7 +21,11 @@ export default function LoadMoreClient({
   pageSize?: number;
 }) {
   const [items, setItems] = useState<
-    (ProductAttributes & { averageRating?: number })[]
+    (ProductAttributes & {
+      averageRating?: number;
+      reviewsCount?: number;
+      badge?: string | null;
+    })[]
   >([]);
   const [pageNum, setPageNum] = useState(2); // SSR already rendered page 1
   const [hasMore, setHasMore] = useState(true);
@@ -30,6 +38,7 @@ export default function LoadMoreClient({
       : { sub_category: { category: { slug: { $eq: category } } } };
 
   const fetchPage = useCallback(async () => {
+    debugger;
     if (!hasMore || loading) return;
     setLoading(true);
     const q = qs.stringify(
@@ -38,9 +47,26 @@ export default function LoadMoreClient({
           ...baseFilters,
         },
         populate: {
-          images: { populate: "*" },
-          gallery: { populate: "*" },
-          reviews: { fields: ["rating"] },
+          fields: ["name", "slug", "price", "discount_price"],
+          images: true,
+          gallery: true,
+          reviews: {
+            fields: ["rating"],
+            filters: {
+              review_status: { $eq: "Published" },
+            },
+          },
+          product_colors: {
+            fields: ["id"],
+            populate: {
+              variants: {
+                fields: ["id"],
+                populate: {
+                  inventory: { fields: ["quantity", "inventory_status"] },
+                },
+              },
+            },
+          },
         },
         pagination: { page: pageNum, pageSize },
       },
@@ -59,8 +85,13 @@ export default function LoadMoreClient({
       const json = await res.json();
       const data: ProductAttributes[] = json?.data ?? [];
       const mapped = data.map((p) => {
-        const { average } = calculateAverageRating(p.reviews || []);
-        return { ...p, averageRating: average };
+        const { average, total } = calculateAverageRating(p.reviews || []);
+        return {
+          ...p,
+          averageRating: average,
+          reviewsCount: total,
+          badge: getProductBadge(p),
+        };
       });
       setItems((prev) => [...prev, ...mapped]);
 
@@ -103,10 +134,11 @@ export default function LoadMoreClient({
             src={p.gallery && p.gallery[0]?.formats?.small?.url}
             secSrc={p.images && p.images[0]?.formats?.small?.url}
             title={p.name}
-            discount_price={(p as any).discount_price}
+            discount_price={p.discount_price}
             price={p.price || 0}
             href={p.slug}
             rating={p.averageRating ?? 0}
+            badge={p.badge ?? ""}
           />
         ))}
       </div>

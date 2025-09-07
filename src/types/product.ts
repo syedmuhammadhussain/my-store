@@ -5,6 +5,7 @@ import { SubCategoryAttributes } from "./sub_category";
 import { ProductVariant } from "./variant";
 import { ProductColors } from "./product_colors";
 import { Reviews } from "./review";
+import { SizeGroup } from "./size";
 
 export interface ProductAttributes {
   id: number;
@@ -27,6 +28,7 @@ export interface ProductAttributes {
   discount?: Discount;
   product_colors: ProductColors[];
   reviews?: Reviews[];
+  size_group?: SizeGroup
 }
 
 export type SingleProductResponse = StrapiResponse<ProductAttributes>;

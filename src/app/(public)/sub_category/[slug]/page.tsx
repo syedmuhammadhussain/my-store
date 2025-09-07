@@ -7,7 +7,7 @@ import StrapiService from "@/lib/strapi.service";
 import { notFound } from "next/navigation";
 import ClientGridBridge from "@/components/products/ClientGridBridge";
 import { SubCategoryAttributes } from "@/types/sub_category";
-import { calculateAverageRating } from "@/lib/utils";
+import { calculateAverageRating, getProductBadge } from "@/lib/utils";
 
 type sCParams = Promise<{ slug: string }>;
 
@@ -48,7 +48,12 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
     allProducts &&
     allProducts.map((p: ProductAttributes) => {
       const { average, total } = calculateAverageRating(p.reviews || []);
-      return { ...p, averageRating: average, reviewsCount: total };
+      return {
+        ...p,
+        averageRating: average,
+        reviewsCount: total,
+        badge: getProductBadge(p),
+      };
     });
 
   const slugList = [

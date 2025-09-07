@@ -1,7 +1,3 @@
-// app/(public)/category/[slug]/page.tsx
-export const dynamic = "force-static";
-export const revalidate = 300;
-
 import { notFound } from "next/navigation";
 import CategoryButton from "@/components/products/CategoryButton";
 import FilterSidebar from "@/components/products/list/FilterSidebar";
@@ -11,9 +7,16 @@ import ClientGridBridge from "@/components/products/ClientGridBridge";
 import StrapiService from "@/lib/strapi.service";
 import { ProductAttributes } from "@/types/product";
 import { CategoryAttributes } from "@/types/category";
-import { calculateAverageRating, defaultPageSizeForProductList } from "@/lib/utils";
+import {
+  calculateAverageRating,
+  defaultPageSizeForProductList,
+  getProductBadge,
+} from "@/lib/utils";
 
 type cParams = Promise<{ slug: string }>;
+
+export const dynamic = "force-static";
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const res = await fetch(
@@ -42,7 +45,12 @@ export default async function CategoryPage({ params }: { params: cParams }) {
     allProducts &&
     allProducts.map((p: ProductAttributes) => {
       const { average, total } = calculateAverageRating(p.reviews || []);
-      return { ...p, averageRating: average, reviewsCount: total };
+      return {
+        ...p,
+        averageRating: average,
+        reviewsCount: total,
+        badge: getProductBadge(p),
+      };
     });
 
   const cateories = jsonCategories.data as unknown as CategoryAttributes[];
@@ -94,7 +102,11 @@ export default async function CategoryPage({ params }: { params: cParams }) {
               <ProductGridSSR products={products} />
             </div>
             {/* Client bridge decides when to render client grid and hides SSR via CSS */}
-            <ClientGridBridge category={slug} page="category" pageSize={defaultPageSizeForProductList} />
+            <ClientGridBridge
+              category={slug}
+              page="category"
+              pageSize={defaultPageSizeForProductList}
+            />
           </div>
         </main>
       </div>

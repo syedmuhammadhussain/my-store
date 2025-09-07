@@ -3,7 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu as MenuIcon, Plus, Minus, X, User2 } from "lucide-react";
+import {
+  Menu as MenuIcon,
+  Plus,
+  Minus,
+  X,
+  User2,
+  ShoppingCart,
+} from "lucide-react";
 
 import { useSession, signOut } from "next-auth/react";
 
@@ -16,22 +23,29 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Description, DialogTitle } from "@radix-ui/react-dialog";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import type { CategoryAttributes } from "@/types/category";
 import UserProfileDropDown from "./UserProfileDropDown";
+import { USER_ICON_SVG } from "@/lib/utils";
+import CartDrawer from "../cart/CartDrawer";
 
 type Props = { categories: CategoryAttributes[] };
 
 export default function MobileNav({ categories }: Props) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  // ** Session
   const { data: session } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const userImage = (session?.user as any)?.image;
   const username = session?.user?.name || session?.user?.username || "Account";
   const email = session?.user?.email || "test@test.com";
-  const router = useRouter();
 
   const navItems = categories.map((c) => ({
     label: c.name ?? c.slug,
@@ -175,7 +189,7 @@ export default function MobileNav({ categories }: Props) {
             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar className="size-8 rounded-lg">
                 <AvatarImage
-                  src={userImage ?? "/user-icon.svg"}
+                  src={userImage ?? USER_ICON_SVG}
                   alt={username}
                   width={20}
                   height={20}
@@ -209,25 +223,43 @@ export default function MobileNav({ categories }: Props) {
         </Link>
       </div>
 
-      {session ? (
-        <UserProfileDropDown
-          userImage={userImage}
-          username={username}
-          email={email}
-          signOut={signOut}
-        />
-      ) : (
-        <Link href="/login">
-          <Button
-            variant="outline"
-            size="icon"
-            className="bg-transparent"
-            onClick={handleLoginClick}
+      <div className="flex gap-2">
+        {session ? (
+          <UserProfileDropDown
+            userImage={userImage}
+            username={username}
+            email={email}
+            signOut={signOut}
+          />
+        ) : (
+          <Link
+            href={{
+              pathname: "/login",
+              query: { callbackUrl: pathname },
+            }}
           >
-            <User2 />
-          </Button>
-        </Link>
-      )}
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-transparent"
+              onClick={handleLoginClick}
+            >
+              <User2 />
+            </Button>
+          </Link>
+        )}
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-transparent"
+          onClick={() => setCartOpen(true)} // 🛒 open cart
+        >
+          <ShoppingCart />
+        </Button>
+      </div>
+
+      {/* 🛒 Cart Drawer */}
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </div>
   );
 }

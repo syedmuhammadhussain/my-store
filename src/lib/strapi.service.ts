@@ -193,6 +193,44 @@ export default class StrapiService {
   }
 
   /**
+   * Fetch a small details of single product by slug
+   */
+  static async getSmallDetailProductBySlug(
+    slug: string
+  ): Promise<StrapiResponse<TProductAttributes>> {
+    return this.fetchData<TProductAttributes>("products", {
+      filters: { slug: { $eq: slug } },
+      fields: ["name", "description", "price", "discount_price", "slug", "id"],
+      populate: {
+        product_colors: {
+          fields: ["id"],
+          populate: {
+            images: {
+              fields: ["formats"],
+            },
+            variants: {
+              fields: ["id", "sku"],
+              populate: {
+                size: { fields: ["label"] },
+                inventory: { fields: ["quantity"] },
+              },
+            },
+          },
+        },
+        size_group: {
+          fields: ["id"],
+          populate: {
+            sizes: { fields: ["label", "id"] },
+          },
+        },
+        reviews: {
+          fields: ["rating"],
+        },
+      },
+    });
+  }
+
+  /**
    * Fetch category with its products
    */
   static async getCategoryWithProducts(
@@ -232,6 +270,17 @@ export default class StrapiService {
             review_status: { $eq: "Published" },
           },
         },
+        product_colors: {
+          fields: ["id"],
+          populate: {
+            variants: {
+              fields: ["id"],
+              populate: {
+                inventory: { fields: ["quantity", "inventory_status"] },
+              },
+            },
+          },
+        },
       },
       pagination: {
         pageSize: pagination?.pageSize ?? 20,
@@ -264,6 +313,17 @@ export default class StrapiService {
         reviews: {
           filters: {
             review_status: { $eq: "Published" },
+          },
+        },
+        product_colors: {
+          fields: ["id"],
+          populate: {
+            variants: {
+              fields: ["id"],
+              populate: {
+                inventory: { fields: ["quantity", "inventory_status"] },
+              },
+            },
           },
         },
       },

@@ -25,6 +25,10 @@ import { sizes } from "@/lib/utils";
 import DesktopGallery from "@/components/products/gallery/DesktopGallery";
 import MobileGallery from "@/components/products/gallery/MobileGallery";
 
+// ** Stores
+import { useCartStore } from "@/stores/useCartStore";
+import CartDrawer from "@/components/cart/CartDrawer";
+
 // ** Inline Types
 type CombinedVariant = ProductVariant & {
   colorId: number;
@@ -94,6 +98,10 @@ export default function ProductClient({
   imagesByColor: Record<number, ProductColors["images"]>;
 }) {
   const [selectedId, setSelectedId] = useState<string>(defaultVariantId);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const addToCart = useCartStore((state) => state.addItem);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -154,6 +162,29 @@ export default function ProductClient({
     product.discount_price < product.price;
   const isOutOfStock = Number(selectedVariant.inventory?.quantity ?? 0) === 0;
 
+  const handleAddToCart = () => {
+    setLoading(true);
+    if (!selectedVariant) return;
+
+    addToCart({
+      productId: product?.id ?? 0,
+      variantId: selectedVariant.id,
+      name: product?.name ?? "",
+      price: Number(displayPrice),
+      image: mainImages[0].formats.small?.url ?? "",
+      size: selectedVariant.size.label ?? "",
+      quantity: 1,
+      slug: product?.slug ?? "",
+      sku: selectedVariant.sku,
+    });
+
+    // Optionally open Cart Drawer
+    setTimeout(() => {
+      setOpen(true);
+      setLoading(false);
+    }, 300);
+  };
+
   // Sections to animate in order
   const animatedSections = [
     <h1 key="title" className="text-2xl font-bold mb-4">
@@ -197,7 +228,12 @@ export default function ProductClient({
       onSelect={(id) => setVariantAndSyncUrl(id)}
     />,
     <QuantityDropdown key="quantity-dropdown" />,
-    <ActionButtons key="action-buttons" disabled={isOutOfStock} />,
+    <ActionButtons
+      key="action-buttons"
+      disabled={isOutOfStock}
+      onClick={handleAddToCart}
+      loading={loading}
+    />,
     <SizeChartTrigger key="size-chart-trigger" />,
     <TrustBadges key="trust-badges" />,
     product.description && (
@@ -210,42 +246,48 @@ export default function ProductClient({
   ];
 
   return (
-    <div className="p-6 xl:py-3 xl:px-25 mt-0 xl:mt-10">
-      <div className="relative mx-auto grid md:grid-cols-2 xl:grid-cols-3">
-        <LazyMotion features={domAnimation}>
-          {/* Gallery */}
-          <div className="md:col-span-1 xl:col-span-2 md:mr-8 xl:m4-10 mb-8 sm:mb-0">
-            <m.div
-              variants={fadeZoom}
-              initial="hidden"
-              animate="visible"
-              custom={0}
-            >
-              {/* <ProductGalleryClient productName={product.name} images={mainImages} /> */}
-              {/* <ProductGallery productName={product.name} images={mainImages} /> */}
-              <DesktopGallery productName={product.name} images={mainImages} />
-              <MobileGallery productName={product.name} images={mainImages} />
-            </m.div>
-          </div>
-
-          {/* Right panel staggered */}
-          <div>
-            <div className="px-0 sm:px-4 sticky top-[80px]">
-              {animatedSections.map((section, i) => (
-                <m.div
-                  key={i}
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
-                  custom={i + 1} // start after gallery
-                >
-                  {section}
-                </m.div>
-              ))}
+    <>
+      <div className="p-6 xl:py-3 xl:px-25 mt-0 xl:mt-10">
+        <div className="relative mx-auto grid md:grid-cols-2 xl:grid-cols-3">
+          <LazyMotion features={domAnimation}>
+            {/* Gallery */}
+            <div className="md:col-span-1 xl:col-span-2 md:mr-8 xl:m4-10 mb-8 sm:mb-0">
+              <m.div
+                variants={fadeZoom}
+                initial="hidden"
+                animate="visible"
+                custom={0}
+              >
+                {/* <ProductGalleryClient productName={product.name} images={mainImages} /> */}
+                {/* <ProductGallery productName={product.name} images={mainImages} /> */}
+                <DesktopGallery
+                  productName={product.name}
+                  images={mainImages}
+                />
+                <MobileGallery productName={product.name} images={mainImages} />
+              </m.div>
             </div>
-          </div>
-        </LazyMotion>
+
+            {/* Right panel staggered */}
+            <div>
+              <div className="px-0 sm:px-4 sticky top-[80px]">
+                {animatedSections.map((section, i) => (
+                  <m.div
+                    key={i}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate="visible"
+                    custom={i + 1} // start after gallery
+                  >
+                    {section}
+                  </m.div>
+                ))}
+              </div>
+            </div>
+          </LazyMotion>
+        </div>
       </div>
-    </div>
+      <CartDrawer open={open} onOpenChange={setOpen} />
+    </>
   );
 }

@@ -1,6 +1,6 @@
-import { AnnouncementBar } from "./AnnouncementBar";
+import { AnnouncementBar } from "../home/AnnouncementBar";
 import MainNav from "./MainNav";
-import MobileNavServer from "./navigation/MobileNavServer";
+import MobileNavServer from "../navigation/MobileNavServer";
 
 export default function Header() {
   const promos = [

@@ -4,6 +4,7 @@ import QuickButton from "@/components/QuickButton";
 import "@/styles/Card.css";
 import ProductContent from "@/components/ProductContent";
 import ProductImage from "@/components/ProductImage";
+import QuickViewDrawer from "@/components/cart/QuickViewDrawer";
 
 interface Props {
   id: number | string;
@@ -58,7 +59,7 @@ export default function RelatedProductSliderCard({
             title={title}
           />
 
-          <QuickButton label="Quick buy" />
+          <QuickViewDrawer slug={href} />
         </div>
 
         {/* Product text content */}

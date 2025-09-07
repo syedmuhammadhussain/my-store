@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/dsybndjcb/**",
       },
+      {
+        protocol: "https",
+        hostname: "commondatastorage.googleapis.com",
+      },
     ],
   },
 };

@@ -1,6 +1,6 @@
 import { useMedia } from "react-use";
 import { BadgeCheck, LogOut } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, USER_ICON_SVG } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +42,7 @@ export default function UserProfileDropDown({
           >
             <Avatar className="size-5 rounded-lg">
               <AvatarImage
-                src={userImage ?? "/user-icon.svg"}
+                src={userImage ?? USER_ICON_SVG}
                 alt={username}
                 width={20}
                 height={20}
@@ -58,7 +58,7 @@ export default function UserProfileDropDown({
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="size-8 rounded-lg">
               <AvatarImage
-                src={userImage ?? "/user-icon.svg"}
+                src={userImage ?? USER_ICON_SVG}
                 alt={username}
                 width={20}
                 height={20}

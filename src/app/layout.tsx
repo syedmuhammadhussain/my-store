@@ -4,11 +4,12 @@ import { getServerSession } from "next-auth";
 import NextTopLoader from "nextjs-toploader";
 
 import { authOptions } from "@/lib/auth";
-import Header from "@/components/Header";
+import Header from "@/components/main/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
 
 import "./globals.css";
+import { CartHydration } from "@/components/cart/CartHydration";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.variable} antialiased bg-white font-sans`}>
+        <CartHydration />
         <NextTopLoader
           // color="#2b7fff"
           initialPosition={0.3}

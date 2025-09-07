@@ -18,7 +18,7 @@ export default function BestSeller({
   const [tab, setTab] = useState("bestSeller");
 
   return (
-    <div className="mb-15 lg:mb-30 sm:px-0">
+    <div className="mb-10 lg:mb-15 sm:px-0">
       <Tabs value={tab} onValueChange={(v) => setTab(v)}>
         <div className="flex justify-center items-center mb-10">
           <TabsList className="p-0 bg-background-none justify-start border-b border-violet-500/65 rounded-none">
@@ -57,7 +57,7 @@ export default function BestSeller({
                   href={p.slug}
                   rating={p.averageRating ?? 0}
                   animation="fade"
-                  heightClassName="aspect-[4/5] md:aspect-[2/3]"
+                  heightClassName="aspect-[3/5] md:aspect-[2/3]"
                 />
               )),
             ]}
@@ -81,7 +81,7 @@ export default function BestSeller({
                   href={p.slug}
                   rating={p.averageRating ?? 0}
                   animation="fade"
-                  heightClassName="aspect-[4/5] md:aspect-[2/3]"
+                  heightClassName="aspect-[3/5] md:aspect-[2/3]"
                 />
               )),
             ]}

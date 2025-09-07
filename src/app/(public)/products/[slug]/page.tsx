@@ -66,6 +66,7 @@ export default async function ProductPage({
   const { slug } = await params;
 
   const res = await StrapiService.getProductBySlug(slug);
+  // debugger
   if (!res.data?.length) return notFound();
 
   const product = res.data[0] as ProductAttributes;

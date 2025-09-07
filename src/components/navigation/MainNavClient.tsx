@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -18,6 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { CategoryAttributes } from "@/types/category";
+import CartDrawer from "@/components/cart/CartDrawer";
+
 import UserProfileDropDown from "./UserProfileDropDown";
 
 function MainNavClientInner({
@@ -33,130 +35,138 @@ function MainNavClientInner({
   const router = useRouter();
   const pathname = usePathname();
 
+  // 🛒 Cart drawer state
+  const [cartOpen, setCartOpen] = useState(false);
+
   const handleLoginClick = () => {
     const currentPath = window.location.pathname + window.location.search;
     router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
   };
 
   return (
-    <header className="hidden lg:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
-      <div className="flex items-center md:space-x-8 lg:space-x-12">
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Digo Fashion's Logo"
-            width={45}
-            height={32}
-            priority
-          />
-        </Link>
-
-        <nav className="flex md:space-x-4 lg:space-x-8">
-          <NavigationMenu viewport={false}>
-            <NavigationMenuList>
-              {categories.map((cat) => {
-                const hasChildren =
-                  Array.isArray(cat.sub_categories) &&
-                  cat.sub_categories.length > 0;
-                return (
-                  <NavigationMenuItem key={cat.slug || cat.id}>
-                    {hasChildren ? (
-                      <>
-                        <NavigationMenuTrigger
-                          className={cn(
-                            navigationMenuTriggerStyle(),
-                            "relative flex items-center gap-2 bg-transparent hover:bg-transparent"
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Link
-                              href={`/category/${cat.slug}`}
-                              className="text-md font-semibold"
-                            >
-                              {cat.name}
-                            </Link>
-                          </div>
-                        </NavigationMenuTrigger>
-
-                        <NavigationMenuContent className="p-0">
-                          <ul className="grid bg-white border rounded-md shadow-sm min-w-[200px]">
-                            {cat.sub_categories!.map((sub) => (
-                              <li key={sub.slug}>
-                                <NavigationMenuLink asChild>
-                                  <Link
-                                    href={`/sub_category/${sub.slug}`}
-                                    className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                  >
-                                    {sub.name}
-                                  </Link>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={`/category/${cat.slug}`}
-                          className={cn(
-                            navigationMenuTriggerStyle(),
-                            "text-md font-semibold bg-transparent"
-                          )}
-                        >
-                          {cat.name}
-                        </Link>
-                      </NavigationMenuLink>
-                    )}
-                  </NavigationMenuItem>
-                );
-              })}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </nav>
-      </div>
-
-      <div className="flex items-center gap-2">
-        {session ? (
-          <UserProfileDropDown
-            userImage={userImage}
-            username={username}
-            email={email}
-            signOut={signOut}
-          />
-        ) : (
-          <Link
-            href={{
-              pathname: "/login",
-              query: { callbackUrl: pathname },
-            }}
-          >
-            <Button
-              variant="outline"
-              size="icon"
-              className="relative border-0 bg-transparent"
-              onClick={handleLoginClick}
-            >
-              <User2 />
-            </Button>
+    <>
+      <header className="hidden lg:flex items-center justify-between py-3 px-12 sticky top-0 bg-white z-50 shadow">
+        <div className="flex items-center md:space-x-8 lg:space-x-12">
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="Digo Fashion's Logo"
+              width={45}
+              height={32}
+              priority
+            />
           </Link>
-        )}
-        <Button
-          variant="outline"
-          size="icon"
-          className="relative border-0 bg-transparent"
-        >
-          <Search />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          className="relative border-0 bg-transparent"
-        >
-          <ShoppingCart />
-        </Button>
-      </div>
-    </header>
+
+          <nav className="flex md:space-x-4 lg:space-x-8">
+            <NavigationMenu viewport={false}>
+              <NavigationMenuList>
+                {categories.map((cat) => {
+                  const hasChildren =
+                    Array.isArray(cat.sub_categories) &&
+                    cat.sub_categories.length > 0;
+                  return (
+                    <NavigationMenuItem key={cat.slug || cat.id}>
+                      {hasChildren ? (
+                        <>
+                          <NavigationMenuTrigger
+                            className={cn(
+                              navigationMenuTriggerStyle(),
+                              "relative flex items-center gap-2 bg-transparent hover:bg-transparent"
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Link
+                                href={`/category/${cat.slug}`}
+                                className="text-md font-semibold"
+                              >
+                                {cat.name}
+                              </Link>
+                            </div>
+                          </NavigationMenuTrigger>
+
+                          <NavigationMenuContent className="p-0">
+                            <ul className="grid bg-white border rounded-md shadow-sm min-w-[200px]">
+                              {cat.sub_categories!.map((sub) => (
+                                <li key={sub.slug}>
+                                  <NavigationMenuLink asChild>
+                                    <Link
+                                      href={`/sub_category/${sub.slug}`}
+                                      className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                    >
+                                      {sub.name}
+                                    </Link>
+                                  </NavigationMenuLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </NavigationMenuContent>
+                        </>
+                      ) : (
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={`/category/${cat.slug}`}
+                            className={cn(
+                              navigationMenuTriggerStyle(),
+                              "text-md font-semibold bg-transparent"
+                            )}
+                          >
+                            {cat.name}
+                          </Link>
+                        </NavigationMenuLink>
+                      )}
+                    </NavigationMenuItem>
+                  );
+                })}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {session ? (
+            <UserProfileDropDown
+              userImage={userImage}
+              username={username}
+              email={email}
+              signOut={signOut}
+            />
+          ) : (
+            <Link
+              href={{
+                pathname: "/login",
+                query: { callbackUrl: pathname },
+              }}
+            >
+              <Button
+                variant="outline"
+                size="icon"
+                className="relative border-0 bg-transparent"
+                onClick={handleLoginClick}
+              >
+                <User2 />
+              </Button>
+            </Link>
+          )}
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative border-0 bg-transparent"
+          >
+            <Search />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative border-0 bg-transparent"
+            onClick={() => setCartOpen(true)} // 🛒 open cart
+          >
+            <ShoppingCart />
+          </Button>
+        </div>
+      </header>
+      {/* 🛒 Cart Drawer */}
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
+    </>
   );
 }
 
