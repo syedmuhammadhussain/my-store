@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Box, X } from "lucide-react";
+// import Link from "next/link";
+// import { Button } from "@/components/ui/button";
+import { Box } from "lucide-react";
 
 type Props = {
   onClearFilters?: () => void;
   viewAllHref?: string;
 };
 
-export default function EmptyProductState({ onClearFilters, viewAllHref = "/" }: Props) {
+export default function EmptyProductState({}: Props) {
   return (
     <div className="w-full flex items-center justify-center py-12 px-4">
       <div className="text-center max-w-lg">
@@ -17,7 +17,9 @@ export default function EmptyProductState({ onClearFilters, viewAllHref = "/" }:
           <Box className="w-8 h-8 text-gray-400" />
         </div>
 
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No products found
+        </h3>
         <p className="text-sm text-gray-600 mb-4">
           Try clearing filters or browse other product.
         </p>

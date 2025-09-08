@@ -245,6 +245,13 @@ img, .next-image, .product-image {
   scrollbar-width: none; /* Firefox */
 }
 
+@media (max-width: 565px) {
+  .data-\[vaul-drawer-direction\=right\]\:w-3\/4[data-vaul-drawer-direction="right"] {
+    max-width: 100vw !important;
+    width: 100vw !important;
+  }
+}
+
 
 /* ** Animations CSS ** */
 

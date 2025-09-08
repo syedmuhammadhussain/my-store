@@ -51,6 +51,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       setServerError("Something wrong in the catch block...");
+      console.log(err)
     } finally {
       setLoading(false);
     }

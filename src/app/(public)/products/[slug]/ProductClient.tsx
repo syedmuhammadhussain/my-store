@@ -140,7 +140,7 @@ export default function ProductClient({
       }
     }
     return Array.from(map.values()).sort((a, b) => sizeRank(a) - sizeRank(b));
-  }, [variantMapById, selectedVariant?.colorId, selectedVariant]);
+  }, [variantMapById, selectedVariant]);
 
   const setVariantAndSyncUrl = (newId: string) => {
     if (!variantMapById[newId]) return;

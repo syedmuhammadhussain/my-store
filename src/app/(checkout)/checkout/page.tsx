@@ -1,8 +1,12 @@
 "use client";
 
+import Link from "next/link";
+import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
+
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +25,7 @@ import ShippingAddressSection from "@/components/checkout/ShippingAddressSection
 import ShippingMethodSection from "@/components/checkout/ShippingMethodSection";
 import PaymentSection from "@/components/checkout/PaymentSection";
 import OrderSummary from "@/components/checkout/OrderSummary";
+import CartDrawer from "@/components/cart/CartDrawer";
 
 import { useCartStore } from "@/stores/useCartStore";
 import { redirect } from "next/navigation";
@@ -28,6 +33,8 @@ import { redirect } from "next/navigation";
 export default function CheckoutPage() {
   const { data: session } = useSession();
   const items = useCartStore((s) => s.items);
+
+  const [cartOpen, setCartOpen] = useState<boolean>(false);
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(CheckoutSchema),
@@ -129,60 +136,91 @@ export default function CheckoutPage() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <motion.div
-        variants={fadeContainer}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-      >
-        {/* Left: form */}
-        <motion.section
-          variants={fadeItem}
-          className="bg-white border rounded-lg p-6"
-        >
-          <h1 className="text-2xl font-semibold mb-1">Checkout</h1>
-          <p className="text-sm text-gray-500 mb-6">
-            We’ll use this info to fulfill your order.
-          </p>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <ContactSection control={form.control} />
-              <div className="my-4 h-px bg-gray-200" />
-              <ShippingAddressSection
-                control={form.control}
-                currentCountry={form.getValues("country")}
-                setCountry={(val) =>
-                  form.setValue("country", val, { shouldValidate: true })
-                }
+    <main className="relative">
+      <div className="border-b bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-8">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="Digo Fashion's Logo"
+                width={65}
+                height={54}
+                priority
               />
-              <div className="my-4 h-px bg-gray-200" />
-              <ShippingMethodSection control={form.control} />
-              <div className="my-4 h-px bg-gray-200" />
-              <PaymentSection control={form.control} />
+            </Link>
+            <Button
+              variant="ghost"
+              size="lg"
+              className="bg-transparent border-0 shadow-none hover:bg-transparent"
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingBag className="size-10" />
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="relative mx-auto max-w-6xl px-4 py-8">
+        <motion.div
+          variants={fadeContainer}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+        >
+          {/* Left: form */}
+          <motion.section
+            variants={fadeItem}
+            className="bg-white border rounded-lg p-6"
+          >
+            <h1 className="text-2xl font-semibold mb-1">Checkout</h1>
+            <p className="text-sm text-gray-500 mb-6">
+              We’ll use this info to fulfill your order.
+            </p>
 
-              <div className="flex items-center justify-between pt-2">
-                <p className="text-xs text-gray-500">
-                  By placing the order you agree to our Terms & Privacy Policy.
-                </p>
-                <Button
-                  type="submit"
-                  className="bg-black text-white"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {form.formState.isSubmitting
-                    ? "Processing..."
-                    : "Place order"}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </motion.section>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <ContactSection control={form.control} />
+                <div className="my-4 h-px bg-gray-200" />
+                <ShippingAddressSection
+                  control={form.control}
+                  currentCountry={form.getValues("country")}
+                  setCountry={(val) =>
+                    form.setValue("country", val, { shouldValidate: true })
+                  }
+                />
+                <div className="my-4 h-px bg-gray-200" />
+                <ShippingMethodSection control={form.control} />
+                <div className="my-4 h-px bg-gray-200" />
+                <PaymentSection control={form.control} />
 
-        {/* Right: summary */}
-        <OrderSummary control={form.control} />
-      </motion.div>
+                <div className="flex items-center justify-between pt-2">
+                  <p className="text-xs text-gray-500">
+                    By placing the order you agree to our Terms & Privacy
+                    Policy.
+                  </p>
+                  <Button
+                    type="submit"
+                    className="bg-black text-white"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting
+                      ? "Processing..."
+                      : "Place order"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </motion.section>
+
+          {/* Right: summary */}
+          <OrderSummary control={form.control} />
+        </motion.div>
+      </div>
+      {/* 🛒 Cart Drawer */}
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </main>
   );
 }

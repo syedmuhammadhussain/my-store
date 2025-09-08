@@ -130,14 +130,14 @@ export function HeroCarouselFade() {
       {/* Arrows */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
+        className="cursor-pointer hover:bg-black/80 absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
+        className="cursor-pointer hover:bg-black/80 absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
         aria-label="Next slide"
       >
         <ChevronRight className="w-5 h-5" />

@@ -259,7 +259,7 @@ export default function ProductGridClient({
       }
     };
     // depend on queryObj only; queryObj already reflects filters/sort/page/category
-  }, [queryObj]);
+  }, [queryObj, isDefault]);
 
   return (
     <div id="csr-product-grid">

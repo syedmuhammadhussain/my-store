@@ -16,7 +16,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { SlidersHorizontal, X, Minus, Plus } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 
 type FilterState = {
   inStock: boolean;
@@ -82,7 +82,7 @@ export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
     }
   );
   const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [_, startTransition] = useTransition();
 
   // When size type changes (navigating between kids/men/women), reset sizes that don't belong
   useEffect(() => {

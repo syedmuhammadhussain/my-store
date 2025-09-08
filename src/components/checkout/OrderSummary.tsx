@@ -25,7 +25,7 @@ function OrderSummaryBase({ control }: Props) {
   return (
     <motion.aside
       variants={fadeItem}
-      className="bg-white border rounded-lg p-6 h-max"
+      className="bg-white border rounded-lg p-6 h-max sticky top-8"
     >
       <h2 className="text-lg font-medium mb-4">Order summary</h2>
 

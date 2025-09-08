@@ -1,15 +1,19 @@
-// src/app/(public)/layout.tsx
-import "./../globals.css";
+// ** Reusable Components
+import Header from "@/components/main/Header";
+import { FloatingSocial } from "@/components/main/FloatingSocial";
+import { Footer } from "@/components/main/Footer";
 
-export const metadata = {
-  title: "My Store",
-  description: "Your one-stop shop for everything.",
-};
-
-export default function PublicLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <Header />
+      {children}
+      <Footer />
+      <FloatingSocial />
+    </>
+  );
 }

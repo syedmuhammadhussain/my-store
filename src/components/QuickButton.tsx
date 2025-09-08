@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";

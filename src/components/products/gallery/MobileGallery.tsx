@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductThumbnailImage from "./ProductThumbnailImage";
-import StrapiImage from "@/components/StrapiImage";
+// import StrapiImage from "@/components/StrapiImage";
 import { UploadedImage } from "@/types/image";
 import "@/styles/embla.css";
 import ProductImage from "@/components/ProductImage";

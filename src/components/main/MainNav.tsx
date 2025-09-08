@@ -1,5 +1,3 @@
-// src/components/navigation/MainNav.tsx
-import React from "react";
 import MainNavClient from "../navigation/MainNavClient";
 import StrapiService from "@/lib/strapi.service";
 import type { CategoryAttributes } from "@/types/category";

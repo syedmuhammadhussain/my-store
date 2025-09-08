@@ -1,15 +1,15 @@
-// src/app/layout.tsx
+// ** Third Components
 import { DM_Sans } from "next/font/google";
-import { getServerSession } from "next-auth";
 import NextTopLoader from "nextjs-toploader";
+import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
-import Header from "@/components/main/Header";
 import { Toaster } from "@/components/ui/sonner";
+import { CartHydration } from "@/components/cart/CartHydration";
+
 import { Providers } from "./providers";
 
 import "./globals.css";
-import { CartHydration } from "@/components/cart/CartHydration";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -41,7 +41,6 @@ export default async function RootLayout({
           zIndex={999999999999}
         />
         <Providers session={session}>
-          <Header />
           {children}
           <Toaster />
         </Providers>

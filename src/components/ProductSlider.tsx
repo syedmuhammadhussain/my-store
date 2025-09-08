@@ -69,13 +69,13 @@ export default function ProductSlider({
     return prefix ? `${prefix}:${base}` : base;
   };
 
-  const slideWidthClasses = [
-    widthClassFor(pv.xl, "xl"),
-    widthClassFor(pv.lg, "lg"),
-    widthClassFor(pv.md, "md"),
-    widthClassFor(pv.sm, "sm"),
-    widthClassFor(pv.base),
-  ].join(" ");
+  // const slideWidthClasses = [
+  //   widthClassFor(pv.xl, "xl"),
+  //   widthClassFor(pv.lg, "lg"),
+  //   widthClassFor(pv.md, "md"),
+  //   widthClassFor(pv.sm, "sm"),
+  //   widthClassFor(pv.base),
+  // ].join(" ");
 
   // Embla options via your breakpoint hook with scroll overrides
   const emblaOptions = useEmblaBreakpoints({

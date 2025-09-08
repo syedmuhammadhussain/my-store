@@ -61,6 +61,7 @@ export default function RegisterPage() {
       }
     } catch (err) {
       setServerError("Something wrong in the catch block...");
+      console.log(err)
     } finally {
       setLoading(false);
     }

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 
 export default function UserProfileDropDown({
   userImage,
@@ -76,16 +77,18 @@ export default function UserProfileDropDown({
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => console.log("Account")}>
-          <BadgeCheck className="w-3 h-3 text-black" />
-          Account
+        <DropdownMenuItem>
+          <Link href="/dashboard/account" className="flex gap-2 items-center">
+            <BadgeCheck className="w-3 h-3 text-black" />
+            Account
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
           onClick={() => signOut({ callbackUrl: "/", redirect: false })}
-          className={cn("text-red-600 focus:text-red-600")}
+          className={cn("text-red-600 focus:text-red-600 hover:bg-red")}
         >
           <LogOut className="w-3 h-3 text-red-600" />
           Log out

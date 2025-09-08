@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Discount } from "@/types/discount";
-import QuickButton from "@/components/QuickButton";
+// import QuickButton from "@/components/QuickButton";
 import "@/styles/Card.css";
 import ProductContent from "@/components/ProductContent";
 import ProductImage from "@/components/ProductImage";

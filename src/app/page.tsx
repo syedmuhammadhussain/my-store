@@ -18,11 +18,13 @@ import WhatsNew from "@/components/home/WhatsNew";
 // import { FeatureHighlights } from "@/components/home/FeatureHighlights";
 // import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 // import { ScrollRevealFooter } from "@/components/ScrollRevealFooter";
-import { FloatingSocial } from "@/components/main/FloatingSocial";
+
 import { FeatureAndNewsletter } from "@/components/home/FeatureAndNewsletter";
 import { TextImageSwap } from "@/components/home/TextImageSwap";
 import { PromoGridSection } from "@/components/home/PromoGridSection";
+import Header from "@/components/main/Header";
 import { Footer } from "@/components/main/Footer";
+import { FloatingSocial } from "@/components/main/FloatingSocial";
 
 export default async function Home() {
   const featuredRes = await StrapiService.getFeaturedProducts();
@@ -40,27 +42,31 @@ export default async function Home() {
     });
 
   return (
-    <main>
-      <HeroCarouselFade />
-      <WhatsNew products={products} />
-      <FeatureProduct products={products} />
-      <ShopByCategory products={products} />
-      <TrendingSeason products={products} />
-      <BestSeller products={products} />
-      {/* <FeatureHighlights /> */}
-      {/* <NewsletterSignup /> */}
-      <PromoGridSection />
-      <TextImageSwap />
-      <FeatureAndNewsletter />
-      {/* <ScrollRevealFooter
+    <>
+      <Header />
+      <main>
+        <HeroCarouselFade />
+        <WhatsNew products={products} />
+        <FeatureProduct products={products} />
+        <ShopByCategory products={products} />
+        <TrendingSeason products={products} />
+        <BestSeller products={products} />
+        {/* <FeatureHighlights /> */}
+        {/* <NewsletterSignup /> */}
+        <PromoGridSection />
+        <TextImageSwap />
+        <FeatureAndNewsletter />
+        {/* <ScrollRevealFooter
         logoSrc="/logo.png"
         logoAlt="Snoozzfit"
         whatsappHref="https://wa.me/923001234567"
         rewardsHref="/rewards"
       /> */}
+
+        {/* <TabsWithBadgeDemo /> */}
+      </main>
       <Footer />
       <FloatingSocial />
-      {/* <TabsWithBadgeDemo /> */}
-    </main>
+    </>
   );
 }

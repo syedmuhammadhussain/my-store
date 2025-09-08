@@ -6,10 +6,7 @@ import RelatedProductSlider from "./RelatedProductSlider";
 import RelatedProductSliderCard from "./RelatedProductSliderCard";
 import { ProductAttributes } from "@/types/product";
 
-export default function RelatedProductsTabs({
-  related = [],
-  recent = [],
-}: any) {
+export default function RelatedProductsTabs({ related = [] }: any) {
   const [tab, setTab] = useState("youMayLike");
 
   return (

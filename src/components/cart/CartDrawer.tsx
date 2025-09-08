@@ -59,16 +59,16 @@ const fadeUp: Variants = {
   }),
 };
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 18, scale: 0.995 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring", stiffness: 600, damping: 28 },
-  },
-  exit: { opacity: 0, y: -12, scale: 0.995, transition: { duration: 0.18 } },
-};
+// const itemVariants: Variants = {
+//   hidden: { opacity: 0, y: 18, scale: 0.995 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     scale: 1,
+//     transition: { type: "spring", stiffness: 600, damping: 28 },
+//   },
+//   exit: { opacity: 0, y: -12, scale: 0.995, transition: { duration: 0.18 } },
+// };
 
 export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const { items, removeItem, updateQuantity } = useCartStore();
@@ -88,11 +88,11 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   );
 
   // Respect prefers-reduced-motion
-  const shouldReduceMotion = useReducedMotion();
+  // const shouldReduceMotion = useReducedMotion();
 
   // Delay before starting list animation to let drawer finish slide-in
   const drawerSlideMs = 220; // tweak to match your drawer CSS/transitions
-  const [itemsReady, setItemsReady] = useState(false);
+  const [_, setItemsReady] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -127,14 +127,14 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
     [removeItem]
   );
 
-  const containerVariants = useMemo(
-    () => makeContainerVariants(shouldReduceMotion ? 0 : drawerSlideMs / 1000),
-    [drawerSlideMs, shouldReduceMotion]
-  );
+  // const containerVariants = useMemo(
+  //   () => makeContainerVariants(shouldReduceMotion ? 0 : drawerSlideMs / 1000),
+  //   [drawerSlideMs, shouldReduceMotion]
+  // );
 
   return (
     <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="fixed right-0 top-0 h-full w-full md:max-w-lg bg-white shadow-lg flex flex-col">
+      <DrawerContent className="fixed right-0 top-0 h-full w-full max-w-full md:max-w-lg bg-white shadow-lg flex flex-col">
         <div className="flex-1 overflow-y-auto no-scrollbar">
           {/* Header */}
           <DrawerHeader className="px-5 py-4 pb-2 flex justify-between flex-row">
@@ -309,7 +309,11 @@ export default function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                   custom={5}
                   className="px-5 py-4 text-center"
                 >
-                  <Link href="/checkout" className="w-full" onClick={() => onOpenChange(false)}>
+                  <Link
+                    href="/checkout"
+                    className="w-full"
+                    onClick={() => onOpenChange(false)}
+                  >
                     <Button className="w-full bg-black text-white h-10 rounded hover:scale-[1.02] transition-transform">
                       CHECKOUT • Rs.{subtotal.toLocaleString()} PKR
                     </Button>

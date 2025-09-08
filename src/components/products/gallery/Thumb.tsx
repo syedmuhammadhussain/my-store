@@ -1,6 +1,6 @@
-import StrapiImage from "@/components/StrapiImage";
+// import StrapiImage from "@/components/StrapiImage";
 import type { UploadedImage } from "@/types/image";
-import { getBestImageFormat, SPINNER_SVG } from "@/lib/utils";
+import { getBestImageFormat } from "@/lib/utils";
 import ProductImage from "@/components/ProductImage";
 
 interface ThumbProps {
