@@ -159,6 +159,7 @@ export default function FilterSidebar({ sizeType }: FilterSidebarProps) {
           variant="outline"
           onClick={() => setOpen(true)}
           className="border-0 px-4"
+          size="icon"
         >
           <SlidersHorizontal />
         </Button>

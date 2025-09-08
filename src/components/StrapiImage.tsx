@@ -32,7 +32,7 @@ export default function StrapiImage({
         blurDataURL ?? src.replace("/upload/", "/upload/w_20,q_20/")
       }`}
       className={className}
-      onLoadingComplete={onLoadingComplete}
+      onLoad={onLoadingComplete}
       quality={90}
       priority={priority ?? false}
     />

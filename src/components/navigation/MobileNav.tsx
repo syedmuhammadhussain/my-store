@@ -104,6 +104,7 @@ export default function MobileNav({ categories }: Props) {
                 sizes="40px"
                 className="w-10 h-auto"
                 priority
+                style={{ width: "auto", height: "auto" }}
               />
             </Link>
             <SheetTrigger asChild nonce="">
@@ -219,6 +220,7 @@ export default function MobileNav({ categories }: Props) {
             height={40}
             className="w-10 h-auto"
             priority
+            style={{ width: "auto", height: "auto" }}
           />
         </Link>
       </div>

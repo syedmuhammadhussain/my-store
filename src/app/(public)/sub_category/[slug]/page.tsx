@@ -134,7 +134,7 @@ export default async function CategoryPage({ params }: { params: sCParams }) {
               <ProductGridSSR products={products} />
             </div>
             {/* Client bridge decides when to render client grid and hides SSR via CSS */}
-            <ClientGridBridge category={slug} page="category" />
+            <ClientGridBridge category={slug} page="subcategory" />
           </div>
         </main>
       </div>

@@ -45,37 +45,38 @@ export default function CategoryProductCard({
       className={`group/product relative bg-white rounded-md overflow-hidden h-full mb-8 ${className}`}
       aria-labelledby={`product-${id}-title`}
     >
-      <Link
-        href={`/products/${href}`}
-        aria-label={title}
-        className="block h-full"
-      >
-        <div className="relative w-full aspect-[4/6] bg-neutral-100 rounded-lg overflow-hidden">
-          {badge && (
-            <div className="absolute top-1 right-2 z-10">
-              <span className={getBadgeColor(badge as any)}>{badge}</span>
-            </div>
-          )}
-          <ProductImage
-            animation="fade"
-            src={src}
-            secSrc={secSrc}
-            title={title}
-          />
+      <div className="relative">
+        <Link
+          href={`/products/${href}`}
+          aria-label={title}
+          className="block h-full"
+        >
+          <div className="relative w-full aspect-[4/6] bg-neutral-100 rounded-lg overflow-hidden">
+            {badge && (
+              <div className="absolute top-1 right-2 z-10">
+                <span className={getBadgeColor(badge as any)}>{badge}</span>
+              </div>
+            )}
+            <ProductImage
+              animation="fade"
+              src={src}
+              secSrc={secSrc}
+              title={title}
+            />
+          </div>
+        </Link>
 
-          <QuickViewDrawer slug={href} />
-        </div>
-
-        <ProductContent
-          id={id}
-          title={title}
-          price={price}
-          discount_price={discount_price}
-          showOldPrice={showOldPrice}
-          rating={rating}
-          displayPrice={displayPrice}
-        />
-      </Link>
+        <QuickViewDrawer slug={href} />
+      </div>
+      <ProductContent
+        id={id}
+        title={title}
+        price={price}
+        discount_price={discount_price}
+        showOldPrice={showOldPrice}
+        rating={rating}
+        displayPrice={displayPrice}
+      />
     </article>
   );
 }

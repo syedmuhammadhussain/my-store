@@ -37,6 +37,7 @@ const slides: Slide[] = [
   {
     type: "image",
     desktopSrc: "/images/hero/inner-banner.webp",
+    mobileSrc: 'images/hero/inner-banner-mobile.jpg',
     alt: "Desk to Brunch",
     heading: "From Desk to Brunch",
     subheading: "Slay in effortless loungewear",
@@ -44,7 +45,7 @@ const slides: Slide[] = [
   },
 ];
 
-const AUTO_DELAY = 8000;
+const AUTO_DELAY = 10000;
 
 export function HeroCarouselFade() {
   const [current, setCurrent] = useState(0);

@@ -21,7 +21,7 @@ export default function WhatsNew({
       align: "start",
       containScroll: "trimSnaps",
     },
-    [Autoplay({ delay: 2000, stopOnInteraction: false })]
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
   );
 
   return (
@@ -57,6 +57,7 @@ export default function WhatsNew({
                         alt={p.name}
                         fill
                         className="object-cover"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     </div>
                     <h3 className="mt-3 text-sm font-medium text-gray-800">
