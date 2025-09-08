@@ -13,10 +13,28 @@ import {
   getProductBadge,
 } from "@/lib/utils";
 
+// ** Meta
+import type { Metadata } from "next";
+import { buildProductMetadata } from "@/lib/metadata";
+
 type cParams = Promise<{ slug: string }>;
 
 export const dynamic = "force-static";
 export const revalidate = 300;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const minimal = {
+    name: "Digo Fashion: Choose Style That Makes You Beauty",
+    slug: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "https://my-store-tau-nine.vercel.app"
+    ).toString(),
+    description:
+      "Explore Digo Fashion Category, where fashion meets sophistication. Explore our collection of exquiste clothing, designed to upgrade your wardrobe with grace and charm.",
+    gallery: [{ url: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png` }],
+  };
+
+  return buildProductMetadata(minimal);
+}
 
 export async function generateStaticParams() {
   const res = await fetch(

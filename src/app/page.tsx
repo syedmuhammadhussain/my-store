@@ -26,6 +26,24 @@ import Header from "@/components/main/Header";
 import { Footer } from "@/components/main/Footer";
 import { FloatingSocial } from "@/components/main/FloatingSocial";
 
+// ** Meta
+import type { Metadata } from "next";
+import { buildProductMetadata } from "@/lib/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const minimal = {
+    name: "Digo Fashion: Upgrade Your Style with Timeless Elegance",
+    slug: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "https://my-store-tau-nine.vercel.app"
+    ).toString(),
+    description:
+      "Explore Digo Fashion, where fashion meets sophistication. Explore our collection of exquiste clothing, designed to upgrade your wardrobe with grace and charm.",
+    gallery: [{ url: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png` }],
+  };
+
+  return buildProductMetadata(minimal);
+}
+
 export default async function Home() {
   const featuredRes = await StrapiService.getFeaturedProducts();
   const featured = featuredRes.data as unknown as ProductAttributes[];
