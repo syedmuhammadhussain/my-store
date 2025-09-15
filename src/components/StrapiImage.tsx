@@ -21,7 +21,7 @@ export default function StrapiImage({
       alt={alt}
       fill
       sizes="
-        (max-width: 400px) 20vw,
+        (max-width: 400px) 80vw,
         (max-width: 640px) 70vw,
         (max-width: 1024px) 50vw, 50vw,
         (max-width: 1536px) 25vw,

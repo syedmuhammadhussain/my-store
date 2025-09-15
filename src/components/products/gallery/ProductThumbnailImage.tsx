@@ -24,7 +24,7 @@ export default function ProductThumbnailImage({
       priority={false}
       quality={85}
       sizes="
-        (max-width: 400px) 100vw,
+        (max-width: 400px) 80vw,
         (max-width: 640px) 100vw, 100px,
         (max-width: 1024px) 33vw,
         (max-width: 1536px) 25vw,
